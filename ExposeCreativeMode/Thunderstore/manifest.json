@@ -1,7 +1,7 @@
 {
   "name": "ExposeCreativeMode",
-  "version_number": "0.0.2",
-  "website_url": "",
+  "version_number": "0.0.3",
+  "website_url": "https://github.com/Velociraptor115/DSPMods",
   "description": "Exposes the hidden \"test mode\" left in by the devs as \"creative mode\"",
-  "dependencies": ["xiaoye97-BepInEx-5.4.11"]
+  "dependencies": [ "xiaoye97-BepInEx-5.4.11" ]
 }

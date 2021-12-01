@@ -38,7 +38,16 @@ This mod merely exposes the "test mode" left in the game by the devs as "creativ
 * Makes all stations set to demand have items more than half of max
 * In the case of ILS, only remote supply/demand is checked. If remote is set to storage, then local is taken
 
+## Contact / Feedback / Bug Reports
+You can either find me on the DSP Discord's #modding channel  
+Or you can create an issue on [GitHub](https://github.com/Velociraptor115/DSPMods)  
+\- Raptor#4825
+
 ## Changelog
+
+### v0.0.3
+
+* Added contact information
 
 ### v0.0.2
 
