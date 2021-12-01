@@ -1,0 +1,7 @@
+{
+  "name": "ExposeCreativeMode",
+  "version_number": "0.0.2",
+  "website_url": "",
+  "description": "Exposes the hidden \"test mode\" left in by the devs as \"creative mode\"",
+  "dependencies": ["xiaoye97-BepInEx-5.4.11"]
+}
