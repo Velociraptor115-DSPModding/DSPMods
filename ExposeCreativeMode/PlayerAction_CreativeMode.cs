@@ -33,6 +33,15 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       {
         active = !active;
         OnActiveChange(active);
+
+        // Auto-enable commonly used creative mode functions
+        if (active)
+        {
+          if (!isInfiniteInventoryActive)
+            ToggleInfiniteInventory();
+          if (!isInstantBuildActive)
+            ToggleInstantBuild();
+        }
       }
 
       if (active)
