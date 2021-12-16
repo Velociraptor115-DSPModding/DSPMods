@@ -20,6 +20,12 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
     bool active = false;
 
+    public override void Free()
+    {
+      OnActiveChange(false);
+      base.Free();
+    }
+
     public override void GameTick(long timei)
     {
 
