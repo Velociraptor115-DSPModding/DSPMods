@@ -22,6 +22,12 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
     public override void Free()
     {
+      if (isInfiniteInventoryActive)
+        ToggleInfiniteInventory();
+      if (isInfiniteStationActive)
+        ToggleInfiniteStation();
+      if (isInstantBuildActive)
+        ToggleInstantBuild();
       OnActiveChange(false);
       base.Free();
     }
@@ -40,6 +46,16 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
           if (!isInfiniteInventoryActive)
             ToggleInfiniteInventory();
           if (!isInstantBuildActive)
+            ToggleInstantBuild();
+        }
+        else
+        {
+          // Disable all creative mode functions when creative mode is disabled
+          if (isInfiniteInventoryActive)
+            ToggleInfiniteInventory();
+          if (isInfiniteStationActive)
+            ToggleInfiniteStation();
+          if (isInstantBuildActive)
             ToggleInstantBuild();
         }
       }
