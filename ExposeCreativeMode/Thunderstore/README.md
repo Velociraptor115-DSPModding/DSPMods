@@ -5,13 +5,15 @@ to upload to the Milky Way.
 
 ## How to use this mod
 * First install the mod, and reboot the game.
-* Press Shift + F4 to toggle creative mode
+* Press Shift + F4 to toggle creative mode  
+  (**NEW**: Enabling creative mode will now auto-enable Infinite Inventory and Instant Build)
 * When in creative mode
   * Ctrl + T : Unlocks all techs
   * Numpad 3 : Covers the current planet in foundation entirely
   * Numpad 6 : Immediately researches the current queued tech
+  * Ctrl + Numpad 2 : Toggles Instant Build mode
   * Ctrl + Numpad 1 : Toggles infinite inventory mode  
-  (**WARNING**: Saving while in infinite inventory mode, will permanently change the player inventory for the particular save - meaning you won't be able to toggle back after relaunching DSP)
+    (**NEW**: Infinite Inventory is skipped when saving game data, so you will have your previous inventory when you load it the next time)
   * Ctrl + Numpad 0 : Toggles infinite station mode  
   (**WARNING**: This probably does not do what you think it does. Read the description carefully before trying it out)
 
@@ -37,6 +39,14 @@ Or you can create an issue on [GitHub](https://github.com/Velociraptor115/DSPMod
 \- Raptor#4825
 
 ## Changelog
+
+### v0.0.5
+
+* Added "Instant Build" functionality
+* Auto-enable "Infinite Inventory" and "Instant Build" when enabling "Creative Mode". They can be individually toggled off later if you do not want to use them.
+* Fixed various UI issues with "Infinite Inventory"
+* "Infinite Inventory" is no longer saved as part of game data, so you can load the save with your previous inventory
+* Fixed "Creative Mode" UI text still being visible on quitting to main menu or loading another game
 
 ### v0.0.4
 
