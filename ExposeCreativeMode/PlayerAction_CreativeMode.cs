@@ -15,6 +15,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
     bool isInfiniteInventoryActive = false;
     bool isInfiniteStationActive = false;
+    bool isInstantBuildActive = false;
     StorageComponent infiniteInventoryRestore;
 
     bool active = false;
@@ -40,6 +41,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
           ToggleInfiniteInventory();
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleInfiniteStation).keyValue)
           ToggleInfiniteStation();
+        if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleInstantBuild).keyValue)
+          ToggleInstantBuild();
       }
 
       if (isInfiniteInventoryActive)
@@ -89,6 +92,26 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
           }
         }
       }
+
+      if (isInstantBuildActive)
+      {
+        for (int i = 0; i < player.factory.prebuildPool.Length; i++)
+        {
+          ref var prebuild = ref player.factory.prebuildPool[i];
+          if (prebuild.itemRequired > 0)
+          {
+            int protoId = prebuild.protoId;
+            int itemRequired = prebuild.itemRequired;
+            player.package.TakeTailItems(ref protoId, ref itemRequired, false);
+            prebuild.itemRequired -= itemRequired;
+            player.factory.AlterPrebuildModelState(i);
+          }
+          if (prebuild.itemRequired <= 0)
+          {
+            player.factory.BuildFinally(player, prebuild.id);
+          }
+        }
+      }
     }
 
     public void ToggleInfiniteStation()
@@ -101,6 +124,19 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       else
       {
         Debug.Log("Infinite Station Disabled");
+      }
+    }
+
+    public void ToggleInstantBuild()
+    {
+      isInstantBuildActive = !isInstantBuildActive;
+      if (isInstantBuildActive)
+      {
+        Debug.Log("Instant Build Enabled");
+      }
+      else
+      {
+        Debug.Log("Instant Build Disabled");
       }
     }
 

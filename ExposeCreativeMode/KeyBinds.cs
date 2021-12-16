@@ -9,6 +9,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     public const string ToggleCreativeMode = nameof(ToggleCreativeMode);
     public const string ToggleInfiniteInventory = nameof(ToggleInfiniteInventory);
     public const string ToggleInfiniteStation = nameof(ToggleInfiniteStation);
+    public const string ToggleInstantBuild = nameof(ToggleInstantBuild);
     public const string CoverPlanetInFoundation = nameof(CoverPlanetInFoundation);
     public const string UnlockAllPublishedTech = nameof(UnlockAllPublishedTech);
     public const string ResearchCurrentTechInstantly = nameof(ResearchCurrentTechInstantly);
@@ -18,6 +19,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       ToggleCreativeMode,
       ToggleInfiniteInventory,
       ToggleInfiniteStation,
+      ToggleInstantBuild,
       CoverPlanetInFoundation,
       UnlockAllPublishedTech,
       ResearchCurrentTechInstantly
@@ -28,6 +30,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       new CombineKey((int)KeyCode.F4, CombineKey.SHIFT_COMB, ECombineKeyAction.OnceClick, false),
       new CombineKey((int)KeyCode.Keypad1, CombineKey.CTRL_COMB, ECombineKeyAction.OnceClick, false),
       new CombineKey((int)KeyCode.Keypad0, CombineKey.CTRL_COMB, ECombineKeyAction.OnceClick, false),
+      new CombineKey((int)KeyCode.Keypad2, CombineKey.CTRL_COMB, ECombineKeyAction.OnceClick, false),
       new CombineKey((int)KeyCode.Keypad3, 0, ECombineKeyAction.OnceClick, false),
       new CombineKey((int)KeyCode.T, CombineKey.CTRL_COMB, ECombineKeyAction.OnceClick, false),
       new CombineKey((int)KeyCode.Keypad6, 0, ECombineKeyAction.OnceClick, false),
@@ -38,6 +41,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       "Toggle Creative Mode",
       "(Creative Mode) Toggle Infinite Inventory",
       "(Creative Mode) Toggle Infinite Station",
+      "(Creative Mode) Toggle Instant Build",
       "(Creative Mode) Cover Planet in foundation",
       "(Creative Mode) Unlock all Tech",
       "(Creative Mode) Research current Tech instantly",
