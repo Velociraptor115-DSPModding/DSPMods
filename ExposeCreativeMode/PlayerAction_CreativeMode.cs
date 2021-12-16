@@ -146,43 +146,13 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       if (isInfiniteInventoryActive)
       {
         infiniteInventoryRestore = this.player.package;
-
-        var items = LDB.items.dataArray;
-        var itemCount = items.Length;
-        var colCount = UIRoot.instance.uiGame.inventory.colCount;
-        // We need to set extra size, otherwise the UI bugs out when dropping items on the extra space
-        // by throwing an IndexOutOfRange exception
-        var size = itemCount + (itemCount % colCount > 0 ? colCount - (itemCount % colCount) : 0);
-        var infiniteInventory = new StorageComponent(size);
-        infiniteInventory.type = EStorageType.Filtered;
-        for (int i = 0; i < items.Length; ++i)
-        {
-          var item = items[i];
-          infiniteInventory.grids[i].itemId = item.ID;
-          infiniteInventory.grids[i].filter = item.ID;
-          infiniteInventory.grids[i].stackSize = 30000;
-          infiniteInventory.grids[i].count = 9999;
-        }
-        for (int i = items.Length; i < size; i++)
-        {
-          infiniteInventory.grids[i].itemId = 0;
-          // We need to do this, because filter <= 0 is considered fair game by the UI
-          infiniteInventory.grids[i].filter = int.MaxValue;
-          infiniteInventory.grids[i].stackSize = 0;
-          infiniteInventory.grids[i].count = 0;
-        }
-
         UIRoot.instance.uiGame.TogglePlayerInventory();
-        // This weird color stuff is because for some reason the UI insists on resetting colors
-        // for a storage with filter enabled, but never uses it otherwise.
-        // The default values for these colors for the inventory window is Color.clear
-        // Although the text boxes are initialized with a Prefab which has the usual color
-        UIRoot.instance.uiGame.inventory.numNormalColor = UIRoot.instance.uiGame.mechaWindow.warpGrid.numNormalColor;
-        UIRoot.instance.uiGame.inventory.numLackColor = UIRoot.instance.uiGame.mechaWindow.warpGrid.numLackColor;
-        UIRoot.instance.uiGame.inventory.OnStorageSizeChanged(); // Force the UI to recalculate stuff
+        // Force the UI to recalculate stuff
                                                                  // Because we change the storage component itself, the UI will not know the
                                                                  // underlying object has changed entirely and will continue to display
                                                                  // the old storage component till we close and reopen it. Hence the TogglePlayerInventory()
+        var infiniteInventory = InfiniteInventory.Create();
+        InfiniteInventoryUIPatch.Register(infiniteInventory);
         this.player.package = infiniteInventory;
         UIRoot.instance.uiGame.TogglePlayerInventory();
 
@@ -193,11 +163,9 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
         if (infiniteInventoryRestore != null)
         {
           UIRoot.instance.uiGame.TogglePlayerInventory();
-          UIRoot.instance.uiGame.inventory.numNormalColor = Color.clear;
-          UIRoot.instance.uiGame.inventory.numLackColor = Color.clear;
-          UIRoot.instance.uiGame.inventory.OnStorageSizeChanged(); // Force the UI to recalculate stuff
           this.player.package = infiniteInventoryRestore;
           infiniteInventoryRestore = null;
+          InfiniteInventoryUIPatch.Unregister();
           UIRoot.instance.uiGame.TogglePlayerInventory();
         }
         Debug.Log("Infinite Inventory Disabled");
