@@ -30,7 +30,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       _harmony = new Harmony(GUID);
       _harmony.PatchAll(typeof(PlayerController__Init));
       _harmony.PatchAll(typeof(CreativeModeFunctions));
-      _harmony.PatchAll(typeof(InfiniteInventoryUIPatch));
+      _harmony.PatchAll(typeof(InfiniteInventoryPatch));
       KeyBinds.RegisterKeyBinds();
       Logger.LogInfo("ExposeCreativeMode Awake() called");
     }

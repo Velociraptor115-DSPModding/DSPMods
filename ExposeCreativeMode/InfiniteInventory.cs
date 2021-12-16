@@ -44,32 +44,65 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     }
   }
 
-  [HarmonyPatch]
-  public static class InfiniteInventoryUIPatch
+  public interface IInfiniteInventoryProvider
   {
-    private static StorageComponent infiniteInventory;
+    StorageComponent Storage { get; }
+    bool IsEnabled { get; }
 
-    public static void Register(StorageComponent storage)
+    void Enable();
+    void Disable();
+  }
+
+  [HarmonyPatch]
+  public static class InfiniteInventoryPatch
+  {
+    private static IInfiniteInventoryProvider provider;
+
+    public static void Register(IInfiniteInventoryProvider p)
     {
-      infiniteInventory = storage;
+      provider = p;
     }
 
-    public static void Unregister()
+    public static void Unregister(IInfiniteInventoryProvider p)
     {
-      infiniteInventory = null;
+      if (provider == p)
+        provider = null;
     }
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(UIStorageGrid), nameof(UIStorageGrid.OnStorageContentChanged))]
     static void EnsureThatInfiniteInventoryHasProperTextColors(UIStorageGrid __instance)
     {
-      if (__instance.storage != infiniteInventory)
+      var infiniteInventory = provider?.Storage;
+      if (infiniteInventory == null || __instance.storage != infiniteInventory)
         return;
 
       for (int i = 0; i < __instance.numTexts.Length; i++)
       {
         if (__instance.numTexts[i] != null)
           __instance.numTexts[i].color = __instance.prefabNumText.color;
+      }
+    }
+
+    [HarmonyPrefix]
+    [HarmonyPatch(typeof(GameSave), nameof(GameSave.SaveCurrentGame))]
+    static void BeforeSaveCurrentGame(ref bool __state)
+    {
+      __state = false;
+      if (provider != null && provider.IsEnabled)
+      {
+        __state = true;
+        provider.Disable();
+      }
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(GameSave), nameof(GameSave.SaveCurrentGame))]
+    static void AfterSaveCurrentGame(ref bool __state)
+    {
+      if (__state && provider != null)
+      {
+        provider.Enable();
       }
     }
   }

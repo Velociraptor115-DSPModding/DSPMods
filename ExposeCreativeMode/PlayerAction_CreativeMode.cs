@@ -4,7 +4,7 @@ using CommonAPI.Systems;
 
 namespace DysonSphereProgram.Modding.ExposeCreativeMode
 {
-  public class PlayerAction_CreativeMode : PlayerAction
+  public class PlayerAction_CreativeMode : PlayerAction, IInfiniteInventoryProvider
   {
     const string uiCreativeModeContainerPath = "UI Root/Overlay Canvas/In Game";
     const string uiCreativeModeTextName = "creative-mode-text";
@@ -17,8 +17,12 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     bool isInfiniteStationActive = false;
     bool isInstantBuildActive = false;
     StorageComponent infiniteInventoryRestore;
+    StorageComponent infiniteInventory;
 
     bool active = false;
+
+    StorageComponent IInfiniteInventoryProvider.Storage => infiniteInventory;
+    bool IInfiniteInventoryProvider.IsEnabled => isInfiniteInventoryActive;
 
     public override void Free()
     {
@@ -29,7 +33,14 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       if (isInstantBuildActive)
         ToggleInstantBuild();
       OnActiveChange(false);
+      InfiniteInventoryPatch.Unregister(this);
       base.Free();
+    }
+
+    public override void Init(Player _player)
+    {
+      base.Init(_player);
+      InfiniteInventoryPatch.Register(this);
     }
 
     public override void GameTick(long timei)
@@ -179,11 +190,10 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
         infiniteInventoryRestore = this.player.package;
         UIRoot.instance.uiGame.TogglePlayerInventory();
         // Force the UI to recalculate stuff
-                                                                 // Because we change the storage component itself, the UI will not know the
-                                                                 // underlying object has changed entirely and will continue to display
-                                                                 // the old storage component till we close and reopen it. Hence the TogglePlayerInventory()
-        var infiniteInventory = InfiniteInventory.Create();
-        InfiniteInventoryUIPatch.Register(infiniteInventory);
+        // Because we change the storage component itself, the UI will not know the
+        // underlying object has changed entirely and will continue to display
+        // the old storage component till we close and reopen it. Hence the TogglePlayerInventory()
+        this.infiniteInventory = InfiniteInventory.Create();
         this.player.package = infiniteInventory;
         UIRoot.instance.uiGame.TogglePlayerInventory();
 
@@ -196,9 +206,9 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
           UIRoot.instance.uiGame.TogglePlayerInventory();
           this.player.package = infiniteInventoryRestore;
           infiniteInventoryRestore = null;
-          InfiniteInventoryUIPatch.Unregister();
           UIRoot.instance.uiGame.TogglePlayerInventory();
         }
+        this.infiniteInventory = null;
         Debug.Log("Infinite Inventory Disabled");
       }
 
@@ -234,6 +244,18 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       // So we set it's index next to the version-text
       creativeModeText.transform.SetSiblingIndex(versionText.transform.GetSiblingIndex() + 1);
       return creativeModeText;
+    }
+
+    void IInfiniteInventoryProvider.Enable()
+    {
+      if (!isInfiniteInventoryActive)
+        ToggleInfiniteInventory();
+    }
+
+    void IInfiniteInventoryProvider.Disable()
+    {
+      if (isInfiniteInventoryActive)
+        ToggleInfiniteInventory();
     }
   }
 }
