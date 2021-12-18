@@ -64,6 +64,8 @@ namespace DysonSphereProgram.Modding.Blackbox
     bool isWorking = false;
 
     const bool continuousStats = true;
+
+    public float CycleProgress { get { return timeIdx / (float)(Recipe.timeSpend - 1); } }
     
     public void BeginBlackboxing()
     {
@@ -81,29 +83,29 @@ namespace DysonSphereProgram.Modding.Blackbox
 
       for (int i = 0; i < assemblerIds.Length; i++)
       {
-        Factory.factorySystem.assemblerPool[assemblerIds[i]].id = -assemblerIds[i];
+        Factory.factorySystem.assemblerPool[assemblerIds[i]].id = -Id;
       }
       for (int i = 0; i < labIds.Length; i++)
       {
-        Factory.factorySystem.labPool[labIds[i]].id = -labIds[i];
+        Factory.factorySystem.labPool[labIds[i]].id = -Id;
       }
       for (int i = 0; i < inserterIds.Length; i++)
       {
-        Factory.factorySystem.inserterPool[inserterIds[i]].id = -inserterIds[i];
+        Factory.factorySystem.inserterPool[inserterIds[i]].id = -Id;
       }
       for (int i = 0; i < cargoPathIds.Length; i++)
       {
         var cargoPath = Factory.cargoTraffic.pathPool[cargoPathIds[i]];
-        cargoPath.id = -cargoPathIds[i];
+        cargoPath.id = -Id;
         for (int j = 0; j < cargoPath.belts.Count; j++)
         {
           var beltId = cargoPath.belts[j];
-          Factory.cargoTraffic.beltPool[beltId].id = -beltId;
+          Factory.cargoTraffic.beltPool[beltId].id = -Id;
         }
       }
       for (int i = 0; i < splitterIds.Length; i++)
       {
-        Factory.cargoTraffic.splitterPool[splitterIds[i]].id = -splitterIds[i];
+        Factory.cargoTraffic.splitterPool[splitterIds[i]].id = -Id;
       }
 
       Factory.powerSystem.consumerPool[pcIds[0]].idleEnergyPerTick = Recipe.idleEnergyPerTick;
