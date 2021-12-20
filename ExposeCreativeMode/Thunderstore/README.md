@@ -18,7 +18,7 @@ to upload to the Milky Way.
   (**WARNING**: This probably does not do what you think it does. Read the description carefully before trying it out)
 
 All controls are rebindable. I have removed a few redundant options from the previous versions. I will be adding a few extra options as well in the future.  
-In case you were using a particular option that I have removed and you would like it back, please contact me on Discord or raise an issue on GitHub. In the meantime, you can go back to version 0.0.3 which has the most options, but no rebindability. 
+In case you were using a particular option that I have removed and you would like it back, please contact me on Discord or raise an issue on GitHub. In the meantime, you can go back to [version 0.0.3](https://dsp.thunderstore.io/package/Raptor/ExposeCreativeMode/0.0.3/) which has the most options, but no rebindability. 
 
 ### Infinite Inventory mode
 
@@ -40,7 +40,11 @@ Or you can create an issue on [GitHub](https://github.com/Velociraptor115/DSPMod
 
 ## Changelog
 
-### v0.0.5
+### [v0.0.6](https://dsp.thunderstore.io/package/Raptor/ExposeCreativeMode/0.0.6/)
+
+* Fixed an issue with "Instant Build" throwing an exception when not on a planet
+
+### [v0.0.5](https://dsp.thunderstore.io/package/Raptor/ExposeCreativeMode/0.0.5/)
 
 * Added "Instant Build" functionality
 * Auto-enable "Infinite Inventory" and "Instant Build" when enabling "Creative Mode". They can be individually toggled off later if you do not want to use them.
@@ -48,21 +52,21 @@ Or you can create an issue on [GitHub](https://github.com/Velociraptor115/DSPMod
 * "Infinite Inventory" is no longer saved as part of game data, so you can load the save with your previous inventory
 * Fixed "Creative Mode" UI text still being visible on quitting to main menu or loading another game
 
-### v0.0.4
+### [v0.0.4](https://dsp.thunderstore.io/package/Raptor/ExposeCreativeMode/0.0.4/)
 
 * Removed some of the redundant options and consolidated them
 * Infinite Inventory now shows "(Infinite)" on the inventory UI Window
 * Added support for rebinding controls
 
-### v0.0.3
+### [v0.0.3](https://dsp.thunderstore.io/package/Raptor/ExposeCreativeMode/0.0.3/)
 
 * Added contact information
 
-### v0.0.2
+### [v0.0.2](https://dsp.thunderstore.io/package/Raptor/ExposeCreativeMode/0.0.2/)
 
 * Uploaded source code to GitHub  
 * Added a couple of functions for testing blueprints and mods
 
-### v0.0.1
+### [v0.0.1](https://dsp.thunderstore.io/package/Raptor/ExposeCreativeMode/0.0.1/)
 
 * Initial version that just exposes already existing mode
