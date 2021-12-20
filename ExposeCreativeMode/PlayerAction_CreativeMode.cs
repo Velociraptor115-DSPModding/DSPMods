@@ -137,20 +137,23 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
       if (isInstantBuildActive)
       {
-        for (int i = 0; i < player.factory.prebuildPool.Length; i++)
+        if (player.factory != null)
         {
-          ref var prebuild = ref player.factory.prebuildPool[i];
-          if (prebuild.itemRequired > 0)
+          for (int i = 0; i < player.factory.prebuildPool.Length; i++)
           {
-            int protoId = prebuild.protoId;
-            int itemRequired = prebuild.itemRequired;
-            player.package.TakeTailItems(ref protoId, ref itemRequired, false);
-            prebuild.itemRequired -= itemRequired;
-            player.factory.AlterPrebuildModelState(i);
-          }
-          if (prebuild.itemRequired <= 0)
-          {
-            player.factory.BuildFinally(player, prebuild.id);
+            ref var prebuild = ref player.factory.prebuildPool[i];
+            if (prebuild.itemRequired > 0)
+            {
+              int protoId = prebuild.protoId;
+              int itemRequired = prebuild.itemRequired;
+              player.package.TakeTailItems(ref protoId, ref itemRequired, false);
+              prebuild.itemRequired -= itemRequired;
+              player.factory.AlterPrebuildModelState(i);
+            }
+            if (prebuild.itemRequired <= 0)
+            {
+              player.factory.BuildFinally(player, prebuild.id);
+            }
           }
         }
       }
