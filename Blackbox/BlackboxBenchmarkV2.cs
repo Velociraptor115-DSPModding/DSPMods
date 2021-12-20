@@ -32,9 +32,9 @@ namespace DysonSphereProgram.Modding.Blackbox
     const bool profileInserters = false;
     const bool logProfiledData = false;
     const bool analyzeInserterStackEffect = false;
-    const bool forceNoStacking = true;
+    const bool forceNoStacking = false;
     
-    const bool continuousLogging = false;
+    const bool continuousLogging = true;
     StreamWriter continuousLogger;
 
 
@@ -42,6 +42,8 @@ namespace DysonSphereProgram.Modding.Blackbox
     Dictionary<int, int> itemIndices;
 
     ProduceConsumePair[] totalStats;
+    ISummarizer<int> summarizer;
+    int[] cycleDetectionData;
     TimeSeriesData<int> profilingTsData;
 
     const int pcOffset = 0;
@@ -96,10 +98,15 @@ namespace DysonSphereProgram.Modding.Blackbox
         for (int i = 0; i < pcSummary.Length; i++)
           pcSummary[i] += pcDetailed[i];
 
-        var restDetailed = detailed.Slice(analysis.assemblerOffset);
-        var restSummary = summary.Slice(analysis.assemblerOffset);
+        var restDetailed = detailed.Slice(analysis.assemblerOffset, analysis.assemblerSize + analysis.stationSize + analysis.inserterSize + analysis.labSize + analysis.statsSize);
+        var restSummary = summary.Slice(analysis.assemblerOffset, analysis.assemblerSize + analysis.stationSize + analysis.inserterSize + analysis.labSize + analysis.statsSize);
         for (int i = 0; i < restSummary.Length; i++)
           restSummary[i] += restDetailed[i];
+
+        var statsDiffDetailed = detailed.Slice(analysis.statsDiffOffset, analysis.statsDiffSize);
+        var statsDiffSummary = summary.Slice(analysis.statsDiffOffset, analysis.statsDiffSize);
+        for (int i = 0; i < statsDiffSummary.Length; i++)
+          statsDiffSummary[i] = statsDiffDetailed[i];
       }
     }
 
@@ -243,9 +250,10 @@ namespace DysonSphereProgram.Modding.Blackbox
       mlg.entryCounts = new[] { timeSpendGCD, this.profilingEntryCount };
       mlg.ratios = new[] { timeSpendGCD };
 
-      var summarizer = new BlackboxBenchmarkV2Summarizer() { analysis = this };
+      this.summarizer = new BlackboxBenchmarkV2Summarizer() { analysis = this };
 
       profilingTsData = new TimeSeriesData<int>(this.perTickProfilingSize, mlg, summarizer);
+      this.cycleDetectionData = new int[this.perTickProfilingSize * 2];
       profilingTick = 0;
 
       if (continuousLogging)
@@ -365,9 +373,9 @@ namespace DysonSphereProgram.Modding.Blackbox
       continuousLogger.WriteLine($"EOL");
     }
 
-    private void WriteContinuousLoggingData()
+    private void WriteContinuousLoggingData(int level)
     {
-      var entry = profilingTsData.LevelEntryOffset(0, profilingTick);
+      var entry = profilingTsData.LevelEntryOffset(level, profilingTick);
 
       var pcData = MemoryMarshal.Cast<int, long>(entry.Slice(pcOffset, pcSize));
       for (int i = 0; i < pcIds.Length; i++)
@@ -540,7 +548,7 @@ namespace DysonSphereProgram.Modding.Blackbox
         totalStatsDiffSpan[i] = totalStats[i].Produced - totalStats[i].Consumed;
     }
 
-      private void ClearItemStats()
+    private void ClearItemStats()
     {
       var itemStatsSpan = profilingTsData.LevelEntryOffset(0, profilingTick).Slice(statsOffset, statsSize);
       itemStatsSpan.Clear();
@@ -550,8 +558,8 @@ namespace DysonSphereProgram.Modding.Blackbox
     {
       LogItemStats();
       LogTotalItemStats();
-      if (continuousLogging) WriteContinuousLoggingData();
       profilingTsData.SummarizeAtHigherGranularity(profilingTick);
+      if (continuousLogging && (profilingTick + 1) % timeSpendGCD == 0)  WriteContinuousLoggingData(1);
       profilingTick += 1;
       ClearItemStats();
 
@@ -574,13 +582,36 @@ namespace DysonSphereProgram.Modding.Blackbox
           var span1 = profilingTsData.Level(1).Entry((i1 + circularOffset) % profilingEntryCount);
           var span2 = profilingTsData.Level(1).Entry((i2 + circularOffset) % profilingEntryCount);
 
-          for (int i = 0; i < span2.Length; i++)
+          for (int i = this.statsDiffOffset; i < this.statsDiffOffset + this.statsDiffSize; i++)
             if (span1[i] != span2[i])
               return false;
           return true;
         });
 
-        if (CycleDetection.TryDetectCycles(endIndex, 0, analysisVerificationCount, indexEquals, out int cycleLength))
+        var summarizeEquals = new Func<int, int, int, bool>((int i1, int i2, int stride) =>
+        {
+          var span1Summary = new Span<int>(cycleDetectionData, 0, perTickProfilingSize);
+          var span2Summary = new Span<int>(cycleDetectionData, perTickProfilingSize, perTickProfilingSize);
+
+          summarizer.Initialize(span1Summary);
+          summarizer.Initialize(span2Summary);
+
+          for (int j = stride - 1; j >= 0; j--)
+          {
+            var span1 = profilingTsData.Level(1).Entry((i1 - j + circularOffset) % profilingEntryCount);
+            var span2 = profilingTsData.Level(1).Entry((i2 - j + circularOffset) % profilingEntryCount);
+
+            summarizer.Summarize(span1, span1Summary);
+            summarizer.Summarize(span2, span2Summary);
+          }
+
+          for (int i = this.statsDiffOffset; i < this.statsDiffOffset + this.statsDiffSize; i++)
+            if (span1Summary[i] != span2Summary[i])
+              return false;
+          return true;
+        });
+
+        if (CycleDetection.TryDetectCyclesV2(endIndex, 0, analysisVerificationCount, indexEquals, summarizeEquals, out int cycleLength))
         {
           this.observedCycleLength = cycleLength * timeSpendGCD;
           Debug.Log($"Cycle Length of {this.observedCycleLength} detected");

@@ -48,5 +48,35 @@ namespace DysonSphereProgram.Modding.Blackbox
       }
       return false;
     }
+
+    public static bool VerifyKIterationsFromEndV2(int endIndex, int beginIndex, int stride, Func<int, int, bool> indexEquals, Func<int, int, int, bool> summarizeEquals, int k)
+    {
+      var numIters = 0;
+      for (int i = endIndex - stride; i - stride >= beginIndex; i -= stride)
+      {
+        if (!summarizeEquals(endIndex, i, stride))
+          return false;
+        numIters++;
+        if (numIters >= k)
+          return true;
+      }
+      return false;
+    }
+
+    public static bool TryDetectCyclesV2(int endIndex, int beginIndex, int verificationCount, Func<int, int, bool> indexEquals, Func<int, int, int, bool> summarizeEquals, out int cycleLength)
+    {
+      cycleLength = -1;
+      var potentialCycleLengths = DetectCycleLengthsFromEnd(endIndex, beginIndex, 1, indexEquals);
+
+      foreach (var potentialCycleLength in potentialCycleLengths)
+      {
+        if (VerifyKIterationsFromEndV2(endIndex, beginIndex, potentialCycleLength, indexEquals, summarizeEquals, verificationCount))
+        {
+          cycleLength = potentialCycleLength;
+          return true;
+        }
+      }
+      return false;
+    }
   }
 }
