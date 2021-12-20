@@ -137,20 +137,23 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
       if (isInstantBuildActive)
       {
-        for (int i = 0; i < player.factory.prebuildPool.Length; i++)
+        if (player.factory != null)
         {
-          ref var prebuild = ref player.factory.prebuildPool[i];
-          if (prebuild.itemRequired > 0)
+          for (int i = 0; i < player.factory.prebuildPool.Length; i++)
           {
-            int protoId = prebuild.protoId;
-            int itemRequired = prebuild.itemRequired;
-            player.package.TakeTailItems(ref protoId, ref itemRequired, false);
-            prebuild.itemRequired -= itemRequired;
-            player.factory.AlterPrebuildModelState(i);
-          }
-          if (prebuild.itemRequired <= 0)
-          {
-            player.factory.BuildFinally(player, prebuild.id);
+            ref var prebuild = ref player.factory.prebuildPool[i];
+            if (prebuild.itemRequired > 0)
+            {
+              int protoId = prebuild.protoId;
+              int itemRequired = prebuild.itemRequired;
+              player.package.TakeTailItems(ref protoId, ref itemRequired, false);
+              prebuild.itemRequired -= itemRequired;
+              player.factory.AlterPrebuildModelState(i);
+            }
+            if (prebuild.itemRequired <= 0)
+            {
+              player.factory.BuildFinally(player, prebuild.id);
+            }
           }
         }
       }
@@ -188,14 +191,14 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       if (isInfiniteInventoryActive)
       {
         infiniteInventoryRestore = this.player.package;
-        UIRoot.instance.uiGame.TogglePlayerInventory();
+        UIRoot.instance?.uiGame.TogglePlayerInventory();
         // Force the UI to recalculate stuff
         // Because we change the storage component itself, the UI will not know the
         // underlying object has changed entirely and will continue to display
         // the old storage component till we close and reopen it. Hence the TogglePlayerInventory()
         this.infiniteInventory = InfiniteInventory.Create();
         this.player.package = infiniteInventory;
-        UIRoot.instance.uiGame.TogglePlayerInventory();
+        UIRoot.instance?.uiGame.TogglePlayerInventory();
 
         Debug.Log("Infinite Inventory Enabled");
       }
@@ -203,22 +206,25 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       {
         if (infiniteInventoryRestore != null)
         {
-          UIRoot.instance.uiGame.TogglePlayerInventory();
+          UIRoot.instance?.uiGame.TogglePlayerInventory();
           this.player.package = infiniteInventoryRestore;
           infiniteInventoryRestore = null;
-          UIRoot.instance.uiGame.TogglePlayerInventory();
+          UIRoot.instance?.uiGame.TogglePlayerInventory();
         }
         this.infiniteInventory = null;
         Debug.Log("Infinite Inventory Disabled");
       }
 
       var inventoryWindowTitle = GameObject.Find("UI Root/Overlay Canvas/In Game/Windows/Player Inventory/panel-bg/title-text");
-      var title = inventoryWindowTitle.GetComponent<UnityEngine.UI.Text>();
+      var title = inventoryWindowTitle?.GetComponent<UnityEngine.UI.Text>();
 
-      if (isInfiniteInventoryActive)
-        title.text = title.text.Replace("(Infinite)", "").Trim() + " (Infinite)";
-      else
-        title.text = title.text.Replace("(Infinite)", "").Trim();
+      if (title != null)
+      {
+        if (isInfiniteInventoryActive)
+          title.text = title.text.Replace("(Infinite)", "").Trim() + " (Infinite)";
+        else
+          title.text = title.text.Replace("(Infinite)", "").Trim();
+      }
     }
 
     void OnActiveChange(bool active)
@@ -226,6 +232,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       var creativeModeText = GameObject.Find(uiCreativeModeTextPath);
       if (creativeModeText == null)
         creativeModeText = MakeCreativeModeTextUI();
+      if (creativeModeText == null)
+        return;
 
       var uiTextComponent = creativeModeText.GetComponent<UnityEngine.UI.Text>();
       uiTextComponent.text = active ? "Creative Mode" : "";
@@ -234,6 +242,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     static GameObject MakeCreativeModeTextUI()
     {
       var versionText = GameObject.Find(uiVersionTextPath);
+      if (versionText == null)
+        return null;
       var creativeModeText = Object.Instantiate(versionText, versionText.transform.parent);
       creativeModeText.name = uiCreativeModeTextName;
       var componentToRemove = creativeModeText.GetComponent<UIVersionText>();
