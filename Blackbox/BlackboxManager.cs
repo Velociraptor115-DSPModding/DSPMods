@@ -300,9 +300,9 @@ namespace DysonSphereProgram.Modding.Blackbox
     public BlackboxAnalysis AddAnalysis(BlackboxAnalysis analysis) => AddAnalysis(analysis, out _);
     public BlackboxAnalysis AddAnalysis(BlackboxAnalysis analysis, out int id)
     {
-      analyses.Add(analysis);
       lock (Instance)
-      {
+      { 
+        analyses.Add(analysis);
         id = blackboxIdCounter;
         blackboxIdCounter++;
       }
@@ -313,19 +313,28 @@ namespace DysonSphereProgram.Modding.Blackbox
 
     public void MarkAnalysisForRemoval(BlackboxAnalysis analysis)
     {
-      toRemove.Add(analysis);
+      lock(Instance)
+      {
+        toRemove.Add(analysis);
+      }
     }
 
     public void RemoveFinishedAnalyses()
     {
-      foreach (var analysis in toRemove)
-        analyses.Remove(analysis);
-      toRemove.Clear();
+      lock (Instance)
+      {
+        foreach (var analysis in toRemove)
+          analyses.Remove(analysis);
+        toRemove.Clear();
+      }
     }
 
     public void AddBlackbox(Blackbox blackbox)
     {
-      blackboxes.Add(blackbox);
+      lock (Instance)
+      {
+        blackboxes.Add(blackbox);
+      }  
     }
 
     public void SimulateBlackboxes()
@@ -336,10 +345,13 @@ namespace DysonSphereProgram.Modding.Blackbox
 
     public void ClearAll()
     {
-      analyses.Clear();
-      blackboxes.Clear();
-      toRemove.Clear();
-      blackboxIdCounter = 1;
+      lock(Instance)
+      {
+        analyses.Clear();
+        blackboxes.Clear();
+        toRemove.Clear();
+        blackboxIdCounter = 1;
+      }
     }
   }
 

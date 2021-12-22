@@ -107,7 +107,12 @@ namespace DysonSphereProgram.Modding.Blackbox
   {
     public static void GameTick_AfterPowerConsumerComponents(PlanetFactory factory)
     {
-      var benchmarks = BlackboxManager.Instance.analyses.OfType<BlackboxBenchmark>();
+      var benchmarks =
+        from x in BlackboxManager.Instance.analyses.OfType<BlackboxBenchmark>()
+        where !(x is BlackboxBenchmarkV3)
+        select x
+        ;
+
       foreach (var benchmark in benchmarks)
       {
         if (benchmark.status == BlackboxStatus.Profiling && benchmark.Factory == factory)
@@ -122,7 +127,11 @@ namespace DysonSphereProgram.Modding.Blackbox
 
     public static void GameTick_AfterFactorySystem(PlanetFactory factory)
     {
-      var benchmarks = BlackboxManager.Instance.analyses.OfType<BlackboxBenchmark>();
+      var benchmarks =
+        from x in BlackboxManager.Instance.analyses.OfType<BlackboxBenchmark>()
+        where !(x is BlackboxBenchmarkV3)
+        select x
+        ;
       foreach (var benchmark in benchmarks)
       {
         if (benchmark.status == BlackboxStatus.Profiling && benchmark.Factory == factory)
@@ -141,7 +150,11 @@ namespace DysonSphereProgram.Modding.Blackbox
 
     public static void GameTick_AfterStationBeltOutput(PlanetFactory factory)
     {
-      var benchmarks = BlackboxManager.Instance.analyses.OfType<BlackboxBenchmark>();
+      var benchmarks =
+        from x in BlackboxManager.Instance.analyses.OfType<BlackboxBenchmark>()
+        where !(x is BlackboxBenchmarkV3)
+        select x
+        ;
       foreach (var benchmark in benchmarks)
       {
         if (benchmark.status == BlackboxStatus.Profiling && benchmark.Factory == factory)
@@ -166,7 +179,11 @@ namespace DysonSphereProgram.Modding.Blackbox
 
     public static void GameTick_End()
     {
-      var benchmarks = BlackboxManager.Instance.analyses.OfType<BlackboxBenchmark>();
+      var benchmarks =
+        from x in BlackboxManager.Instance.analyses.OfType<BlackboxBenchmark>()
+        where !(x is BlackboxBenchmarkV3)
+        select x
+        ;
       foreach (var benchmark in benchmarks)
       {
         benchmark.EndGameTick();

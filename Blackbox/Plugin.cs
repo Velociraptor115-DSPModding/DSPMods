@@ -49,13 +49,13 @@ namespace DysonSphereProgram.Modding.Blackbox
       {
         if (!debounceControl && Input.GetKeyDown(KeyCode.B))
         {
-          BlackboxManager.Instance.AddAnalysis(new BlackboxBenchmarkV1(__instance.nearestFactory, __instance.controller.actionBuild.blueprintCopyTool.selectedObjIds));
+          BlackboxManager.Instance.AddAnalysis(new BlackboxBenchmarkV2(__instance.nearestFactory, __instance.controller.actionBuild.blueprintCopyTool.selectedObjIds));
           debounceControl = true;
         }
 
         if (!debounceControl && Input.GetKeyDown(KeyCode.N))
         {
-          BlackboxManager.Instance.AddAnalysis(new BlackboxBenchmarkV2(__instance.nearestFactory, __instance.controller.actionBuild.blueprintCopyTool.selectedObjIds));
+          BlackboxManager.Instance.AddAnalysis(new BlackboxBenchmarkV3(__instance.nearestFactory, __instance.controller.actionBuild.blueprintCopyTool.selectedObjIds));
           debounceControl = true;
         }
       }
