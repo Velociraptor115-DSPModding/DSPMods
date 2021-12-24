@@ -195,6 +195,10 @@ namespace DysonSphereProgram.Modding.Blackbox
           var inserterId = benchmark.inserterIds[i];
           ref var inserter = ref factory.factorySystem.inserterPool[inserterId];
           inserter.InternalUpdateNoAnim(factory, factory.entityNeeds, 1);
+          if (BlackboxBenchmarkV3.adaptiveStacking)
+          {
+            DoAdaptiveStacking(ref inserter, factory);
+          }
         }
 
         // TODO: Cargo game tick
@@ -226,6 +230,59 @@ namespace DysonSphereProgram.Modding.Blackbox
         benchmark.LogInserter();
 
         benchmark.EndGameTick();
+      }
+    }
+
+    public static void DoAdaptiveStacking(ref InserterComponent inserter, PlanetFactory factory)
+    {
+      if (inserter.careNeeds && inserter.stage == EInserterStage.Picking && inserter.itemId > 0)
+      {
+        var needs = factory.entityNeeds[inserter.insertTarget];
+        var needIdx = 0;
+
+        //inserter.idleTick = 0;
+
+        for (int i = 0; i < needs.Length; i++)
+        {
+          if (needs[i] == inserter.itemId)
+          {
+            needIdx = i;
+            break;
+          }  
+        }
+
+        ref var insertEntity = ref factory.entityPool[inserter.insertTarget];
+        var max = 1;
+        var served = 0;
+        if (insertEntity.assemblerId > 0)
+        {
+          ref var assembler = ref factory.factorySystem.assemblerPool[insertEntity.assemblerId];
+          max = assembler.requireCounts[needIdx] * 3;
+          served = assembler.served[needIdx];
+        }
+        else if (insertEntity.labId > 0)
+        {
+          ref var lab = ref factory.factorySystem.labPool[insertEntity.labId];
+          max = 4;
+          served = lab.served[needIdx];
+
+          while (lab.nextLabId > 0)
+          {
+            lab = ref factory.factorySystem.labPool[lab.nextLabId];
+            max += 4;
+            served += lab.served[needIdx];
+          }
+        }
+        else
+        {
+          return;
+        }
+
+        if (inserter.stackCount >= max - served)
+        {
+          inserter.time = inserter.speed;
+          inserter.stage = EInserterStage.Sending;
+        }
       }
     }
   }

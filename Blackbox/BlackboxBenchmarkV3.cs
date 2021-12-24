@@ -28,7 +28,8 @@ namespace DysonSphereProgram.Modding.Blackbox
     const bool logProfiledData = false;
     const bool analyzeInserterStackEffect = false;
     const bool forceNoStacking = false;
-    
+    public static bool adaptiveStacking = true;
+
     const bool continuousLogging = false;
     StreamWriter continuousLogger;
 
@@ -610,6 +611,15 @@ namespace DysonSphereProgram.Modding.Blackbox
           for (int i = this.statsDiffOffset; i < this.statsDiffOffset + this.statsDiffSize; i++)
             if (span1[i] != span2[i])
               return false;
+
+          for (int i = this.statsOffset; i < this.statsOffset + this.statsSize; i++)
+            if (span1[i] != span2[i])
+              return false;
+
+          for (int i = this.stationOffset; i < this.stationOffset + this.stationSize; i++)
+            if (span1[i] != span2[i])
+              return false;
+
           return true;
         });
 
@@ -633,6 +643,15 @@ namespace DysonSphereProgram.Modding.Blackbox
           for (int i = this.statsDiffOffset; i < this.statsDiffOffset + this.statsDiffSize; i++)
             if (span1Summary[i] != span2Summary[i])
               return false;
+
+          for (int i = this.statsOffset; i < this.statsOffset + this.statsSize; i++)
+            if (span1Summary[i] != span2Summary[i])
+              return false;
+
+          for (int i = this.stationOffset; i < this.stationOffset + this.stationSize; i++)
+            if (span1Summary[i] != span2Summary[i])
+              return false;
+
           return true;
         });
 

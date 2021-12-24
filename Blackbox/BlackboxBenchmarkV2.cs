@@ -923,6 +923,15 @@ namespace DysonSphereProgram.Modding.Blackbox
 
     public override void LogInserter()
     {
+      if (BlackboxBenchmarkV3.adaptiveStacking)
+      {
+        for (int i = 0; i < inserterIds.Length; i++)
+        {
+          ref var inserter = ref factory.factorySystem.inserterPool[inserterIds[i]];
+          PlanetFactorySimulation.DoAdaptiveStacking(ref inserter, factory);
+        }
+      }
+
       if (profileInserters)
       {
         var profilingData = profilingTsData.LevelEntryOffset(0, profilingTick).Slice(inserterOffset, inserterSize);
