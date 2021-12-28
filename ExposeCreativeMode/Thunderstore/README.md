@@ -6,14 +6,15 @@ to upload to the Milky Way.
 ## How to use this mod
 * First install the mod, and reboot the game.
 * Press Shift + F4 to toggle creative mode  
-  (**NEW**: Enabling creative mode will now auto-enable Infinite Inventory and Instant Build)
+  (**Note**: Enabling creative mode will auto-enable Infinite Inventory, Instant Build and Instant Research)
 * When in creative mode
   * Ctrl + T : Unlocks all techs
   * Numpad 3 : Covers the current planet in foundation entirely
-  * Numpad 6 : Immediately researches the current queued tech
+  * Ctrl + Numpad 6 : Toggles Instant Research mode (Immediately researches queued tech)
+    (**NEW**: Instant Research is now a toggle)
   * Ctrl + Numpad 2 : Toggles Instant Build mode
   * Ctrl + Numpad 1 : Toggles infinite inventory mode  
-    (**NEW**: Infinite Inventory is skipped when saving game data, so you will have your previous inventory when you load it the next time)
+    (**Note**: Infinite Inventory is skipped when saving game data, so you will have your previous inventory when you load it the next time)
   * Ctrl + Numpad 0 : Toggles infinite station mode  
   (**WARNING**: This probably does not do what you think it does. Read the description carefully before trying it out)
 
@@ -39,6 +40,12 @@ Or you can create an issue on [GitHub](https://github.com/Velociraptor115/DSPMod
 \- Raptor#4825
 
 ## Changelog
+
+### [v0.0.7](https://dsp.thunderstore.io/package/Raptor/ExposeCreativeMode/0.0.7/)
+
+* Fixed an [issue](https://github.com/Velociraptor115/DSPMods/issues/4) with Creative Mode not detecting inputs properly
+* Fixed (hopefully) an [issue](https://github.com/Velociraptor115/DSPMods/issues/5) with Instant Build using up too much CPU after building big blueprints
+* Changed "Instant Research" into a toggle
 
 ### [v0.0.6](https://dsp.thunderstore.io/package/Raptor/ExposeCreativeMode/0.0.6/)
 
