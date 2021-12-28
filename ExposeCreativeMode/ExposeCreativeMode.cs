@@ -31,6 +31,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       _harmony.PatchAll(typeof(PlayerController__Init));
       _harmony.PatchAll(typeof(CreativeModeFunctions));
       _harmony.PatchAll(typeof(InfiniteInventoryPatch));
+      _harmony.PatchAll(typeof(InputHandlerPatch));
       KeyBinds.RegisterKeyBinds();
       Logger.LogInfo("ExposeCreativeMode Awake() called");
     }
@@ -67,6 +68,19 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
       Debug.Log("Creative Mode Postfix patch applied");
     }
+  }
+
+  public delegate void InputUpdateHandler();
+
+  [HarmonyPatch(typeof(VFInput), nameof(VFInput.OnUpdate))]
+  class InputHandlerPatch
+  {
+    static void Postfix()
+    {
+      Update?.Invoke();
+    }
+
+    public static event InputUpdateHandler Update;
   }
 
   [HarmonyPatch(typeof(PlayerAction_Test), nameof(PlayerAction_Test.Update))]

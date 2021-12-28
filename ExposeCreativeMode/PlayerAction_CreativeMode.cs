@@ -33,6 +33,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       if (isInstantBuildActive)
         ToggleInstantBuild();
       OnActiveChange(false);
+      InputHandlerPatch.Update -= OnInputUpdate;
       InfiniteInventoryPatch.Unregister(this);
       base.Free();
     }
@@ -41,11 +42,11 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     {
       base.Init(_player);
       InfiniteInventoryPatch.Register(this);
+      InputHandlerPatch.Update += OnInputUpdate;
     }
 
-    public override void GameTick(long timei)
+    private void OnInputUpdate()
     {
-
       if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleCreativeMode).keyValue)
       {
         active = !active;
@@ -86,7 +87,10 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleInstantBuild).keyValue)
           ToggleInstantBuild();
       }
+    }
 
+    public override void GameTick(long timei)
+    {
       if (isInfiniteInventoryActive)
       {
         var inventory = this.player.package.grids;
