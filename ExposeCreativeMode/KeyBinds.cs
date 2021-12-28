@@ -12,7 +12,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     public const string ToggleInstantBuild = nameof(ToggleInstantBuild);
     public const string CoverPlanetInFoundation = nameof(CoverPlanetInFoundation);
     public const string UnlockAllPublishedTech = nameof(UnlockAllPublishedTech);
-    public const string ResearchCurrentTechInstantly = nameof(ResearchCurrentTechInstantly);
+    public const string ToggleInstantResearch = nameof(ToggleInstantResearch);
 
     private static List<string> keyBinds = new List<string>
     {
@@ -22,7 +22,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       ToggleInstantBuild,
       CoverPlanetInFoundation,
       UnlockAllPublishedTech,
-      ResearchCurrentTechInstantly
+      ToggleInstantResearch
     };
 
     private static List<CombineKey> defaultBindings = new List<CombineKey>
@@ -33,7 +33,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       new CombineKey((int)KeyCode.Keypad2, CombineKey.CTRL_COMB, ECombineKeyAction.OnceClick, false),
       new CombineKey((int)KeyCode.Keypad3, 0, ECombineKeyAction.OnceClick, false),
       new CombineKey((int)KeyCode.T, CombineKey.CTRL_COMB, ECombineKeyAction.OnceClick, false),
-      new CombineKey((int)KeyCode.Keypad6, 0, ECombineKeyAction.OnceClick, false),
+      new CombineKey((int)KeyCode.Keypad6, CombineKey.CTRL_COMB, ECombineKeyAction.OnceClick, false),
     };
 
     private static List<string> keyBindDescriptions = new List<string>
@@ -44,7 +44,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       "(Creative Mode) Toggle Instant Build",
       "(Creative Mode) Cover Planet in foundation",
       "(Creative Mode) Unlock all Tech",
-      "(Creative Mode) Research current Tech instantly",
+      "(Creative Mode) Toggle Instant Research",
     };
 
     private static int keyBindId(string keyBind) => keyBinds.IndexOf(keyBind) + 200;

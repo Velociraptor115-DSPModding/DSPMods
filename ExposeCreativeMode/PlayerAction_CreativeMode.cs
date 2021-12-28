@@ -16,6 +16,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     bool isInfiniteInventoryActive = false;
     bool isInfiniteStationActive = false;
     bool isInstantBuildActive = false;
+    bool isInstantResearchActive = false;
     StorageComponent infiniteInventoryRestore;
     StorageComponent infiniteInventory;
 
@@ -32,6 +33,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
         ToggleInfiniteStation();
       if (isInstantBuildActive)
         ToggleInstantBuild();
+      if (isInstantResearchActive)
+        ToggleInstantResearch();
       OnActiveChange(false);
       InputHandlerPatch.Update -= OnInputUpdate;
       InfiniteInventoryPatch.Unregister(this);
@@ -59,6 +62,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
             ToggleInfiniteInventory();
           if (!isInstantBuildActive)
             ToggleInstantBuild();
+          if (!isInstantResearchActive)
+            ToggleInstantResearch();
         }
         else
         {
@@ -69,6 +74,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
             ToggleInfiniteStation();
           if (isInstantBuildActive)
             ToggleInstantBuild();
+          if (isInstantResearchActive)
+            ToggleInstantResearch();
         }
       }
 
@@ -78,8 +85,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
           CreativeModeFunctions.UnlockAllPublishedTech(this);
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.CoverPlanetInFoundation).keyValue)
           CreativeModeFunctions.CoverPlanetInFoundation(this);
-        if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ResearchCurrentTechInstantly).keyValue)
-          CreativeModeFunctions.ResearchCurrentTechInstantly(this);
+        if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleInstantResearch).keyValue)
+          ToggleInstantResearch();
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleInfiniteInventory).keyValue)
           ToggleInfiniteInventory();
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleInfiniteStation).keyValue)
@@ -179,6 +186,11 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
           }
         }
       }
+
+      if (isInstantResearchActive)
+      {
+        CreativeModeFunctions.ResearchCurrentTechInstantly(this);
+      }
     }
 
     public void ToggleInfiniteStation()
@@ -204,6 +216,19 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       else
       {
         Debug.Log("Instant Build Disabled");
+      }
+    }
+
+    public void ToggleInstantResearch()
+    {
+      isInstantResearchActive = !isInstantResearchActive;
+      if (isInstantResearchActive)
+      {
+        Debug.Log("Instant Research Enabled");
+      }
+      else
+      {
+        Debug.Log("Instant Research Disabled");
       }
     }
 
