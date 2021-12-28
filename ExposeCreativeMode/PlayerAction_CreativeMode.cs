@@ -141,23 +141,41 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
       if (isInstantBuildActive)
       {
-        if (player.factory != null)
+        if (player.factory != null && player.factory.prebuildCount > 0)
         {
-          for (int i = 0; i < player.factory.prebuildPool.Length; i++)
+          void BuildInstantly(int prebuildIdx)
           {
-            ref var prebuild = ref player.factory.prebuildPool[i];
+            ref var prebuild = ref player.factory.prebuildPool[prebuildIdx];
+            if (prebuild.id != prebuildIdx)
+              return;
             if (prebuild.itemRequired > 0)
             {
               int protoId = prebuild.protoId;
               int itemRequired = prebuild.itemRequired;
               player.package.TakeTailItems(ref protoId, ref itemRequired, false);
               prebuild.itemRequired -= itemRequired;
-              player.factory.AlterPrebuildModelState(i);
+              player.factory.AlterPrebuildModelState(prebuildIdx);
             }
             if (prebuild.itemRequired <= 0)
             {
               player.factory.BuildFinally(player, prebuild.id);
             }
+          }
+
+          if (player.factory.prebuildRecycleCursor > 0)
+          {
+            // This means that we can probably get away with just looking at the recycle instances
+            for (int i = player.factory.prebuildRecycleCursor; i < player.factory.prebuildCursor; i++)
+              BuildInstantly(player.factory.prebuildRecycle[i]);
+          }
+          else
+          {
+            // Highly probable that a prebuildPool resize took place this tick.
+            // Better to go over the entire array
+
+            // Don't ask me why the loop starts from 1. I'm merely following `MechaDroneLogic.UpdateTargets()`
+            for (int i = 1; i < player.factory.prebuildCursor; i++)
+              BuildInstantly(i);
           }
         }
       }
