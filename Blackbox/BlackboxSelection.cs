@@ -242,5 +242,30 @@ namespace DysonSphereProgram.Modding.Blackbox
 
       return true;
     }
+
+    const int saveLogicVersion = 1;
+
+    public void Export(BinaryWriter w)
+    {
+      w.Write(saveLogicVersion);
+      w.Write(factoryIndex);
+      w.Write(entityIds.Count);
+      for (int i = 0; i < entityIds.Count; i++)
+        w.Write(entityIds[i]);
+    }
+
+    public static BlackboxSelection Import(BinaryReader r)
+    {
+      var saveLogicVersion = r.ReadInt32();
+      var factoryIndex = r.ReadInt32();
+      var entityIdsCount = r.ReadInt32();
+      var entityIds = new int[entityIdsCount];
+      for (int i = 0; i < entityIdsCount; i++)
+      {
+        entityIds[i] = r.ReadInt32();
+      }
+      var factory = GameMain.data.factories[factoryIndex];
+      return BlackboxSelection.CreateFrom(factory, entityIds);
+    }
   }
 }

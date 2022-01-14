@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 
 namespace DysonSphereProgram.Modding.Blackbox
@@ -84,6 +85,27 @@ namespace DysonSphereProgram.Modding.Blackbox
         || status == BlackboxStatus.AnalysisFailed
         || status == BlackboxStatus.Blackboxed
       );
+    }
+
+    const int saveLogicVersion = 1;
+
+    public void Export(BinaryWriter w)
+    {
+      w.Write(saveLogicVersion);
+      w.Write(isActive);
+      w.Write(currentBlackboxId);
+      w.Write(currentFactoryIdx);
+      w.Write(currentStationIdx);
+    }
+
+    public void Import(BinaryReader r)
+    {
+      var saveLogicVersion = r.ReadInt32();
+      isActive = r.ReadBoolean();
+      currentBlackboxId = r.ReadInt32();
+      currentFactoryIdx = r.ReadInt32();
+      currentStationIdx = r.ReadInt32();
+      debounceControl = 0;
     }
   }
 }

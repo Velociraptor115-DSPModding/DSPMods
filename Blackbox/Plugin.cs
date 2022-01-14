@@ -1,21 +1,21 @@
 using System;
 using System.IO;
-using System.Collections.Generic;
-using System.Reflection.Emit;
 using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
 using UnityEngine;
+using crecheng.DSPModSave;
 
 namespace DysonSphereProgram.Modding.Blackbox
 {
   [BepInPlugin(GUID, NAME, VERSION)]
   [BepInProcess("DSPGAME.exe")]
-  public class Plugin : BaseUnityPlugin
+  [BepInDependency(DSPModSavePlugin.MODGUID)]
+  public class Plugin : BaseUnityPlugin, IModCanSave
   {
     public const string GUID = "dev.raptor.dsp.Blackbox";
     public const string NAME = "Blackbox";
-    public const string VERSION = "0.0.1";
+    public const string VERSION = "0.0.3";
 
     private Harmony _harmony;
     internal static ManualLogSource Log;
@@ -28,6 +28,7 @@ namespace DysonSphereProgram.Modding.Blackbox
       _harmony = new Harmony(GUID);
       _harmony.PatchAll(typeof(BlackboxBenchmarkPatch));
       _harmony.PatchAll(typeof(BlackboxPatch));
+      _harmony.PatchAll(typeof(VanillaSavePreservationPatch));
       _harmony.PatchAll(typeof(InputUpdatePatch));
       Logger.LogInfo("Blackbox Awake() called");
     }
@@ -38,6 +39,21 @@ namespace DysonSphereProgram.Modding.Blackbox
       _harmony?.UnpatchSelf();
       Plugin.Log = null;
       Plugin.Path = null;
+    }
+
+    public void Export(BinaryWriter w)
+    {
+      BlackboxManager.Instance.Export(w);
+    }
+
+    public void Import(BinaryReader r)
+    {
+      BlackboxManager.Instance.Import(r);
+    }
+
+    public void IntoOtherSave()
+    {
+      
     }
   }
 
@@ -56,6 +72,22 @@ namespace DysonSphereProgram.Modding.Blackbox
           BlackboxManager.Instance.CreateForSelection(selection);
         }
       }
+    }
+  }
+
+  [HarmonyPatch(typeof(GameSave), nameof(GameSave.SaveCurrentGame))]
+  class VanillaSavePreservationPatch
+  {
+    [HarmonyPrefix]
+    static void Prefix()
+    {
+      BlackboxManager.Instance.PreserveVanillaSaveBefore();
+    }
+
+    [HarmonyPostfix]
+    static void Postfix()
+    {
+      BlackboxManager.Instance.PreserveVanillaSaveAfter();
     }
   }
 }

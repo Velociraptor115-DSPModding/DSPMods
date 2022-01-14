@@ -371,5 +371,39 @@ namespace DysonSphereProgram.Modding.Blackbox
 
       timeIdx = (timeIdx + 1) % Recipe.timeSpend;
     }
+
+    const int saveLogicVersion = 1;
+
+    public void PreserveVanillaSaveBefore()
+    {
+      var wasBlackboxSimulating = isBlackboxSimulating;
+      PauseBlackboxing();
+      isBlackboxSimulating = wasBlackboxSimulating;
+    }
+
+    public void PreserveVanillaSaveAfter()
+    {
+      if (isBlackboxSimulating)
+      {
+        ResumeBlackboxing();
+      }
+    }
+
+    public void Export(BinaryWriter w)
+    {
+      w.Write(saveLogicVersion);
+      w.Write(isBlackboxSimulating);
+      w.Write(timeIdx);
+      w.Write(isWorking);
+    }
+
+    public void Import(BinaryReader r)
+    {
+      var saveLogicVersion = r.ReadInt32();
+      isBlackboxSimulating = r.ReadBoolean();
+      timeIdx = r.ReadInt32();
+      isWorking = r.ReadBoolean();
+      PreserveVanillaSaveAfter();
+    }
   }
 }

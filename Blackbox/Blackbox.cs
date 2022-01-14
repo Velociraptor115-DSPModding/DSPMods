@@ -10,15 +10,15 @@ namespace DysonSphereProgram.Modding.Blackbox
 {
   public enum BlackboxStatus
   {
-    Initialized,
-    SelectionExpanding,
-    SelectionFinalized,
-    Fingerprinted,
-    Invalid,
-    InAnalysis,
-    AnalysisFailed,
-    RecipeObtained,
-    Blackboxed
+    Initialized = 0,
+    SelectionExpanding = 1,
+    SelectionFinalized = 2,
+    Fingerprinted = 3,
+    Invalid = 4,
+    InAnalysis = 5,
+    AnalysisFailed = 6,
+    RecipeObtained = 7,
+    Blackboxed = 8
   }
 
   public class Blackbox
@@ -111,6 +111,80 @@ namespace DysonSphereProgram.Modding.Blackbox
           }
           break;
       }
+    }
+
+    const int saveLogicVersion = 1;
+
+    public void PreserveVanillaSaveBefore()
+    {
+      Simulation?.PreserveVanillaSaveBefore();
+    }
+
+    public void PreserveVanillaSaveAfter()
+    {
+      Simulation?.PreserveVanillaSaveAfter();
+    }
+
+    public void Export(BinaryWriter w)
+    {
+      w.Write(saveLogicVersion);
+      w.Write(Id);
+      Selection.Export(w);
+      w.Write(Name);
+      w.Write(analyseInBackground);
+
+      var status = Status;
+      if (status == BlackboxStatus.InAnalysis)
+        status = BlackboxStatus.Fingerprinted;
+
+      w.Write((int)status);
+
+      var isFingerprinted = Fingerprint != null;
+      w.Write(isFingerprinted);
+
+      var isRecipeObtained = Recipe != null;
+      w.Write(isRecipeObtained);
+      if (isRecipeObtained)
+      {
+        Recipe.Export(w);
+      }
+
+      var isSimulationPresent = Simulation != null;
+      w.Write(isSimulationPresent);
+      if (isSimulationPresent)
+      {
+        Simulation.Export(w);
+      }
+    }
+
+    public static Blackbox Import(BinaryReader r)
+    {
+      var saveLogicVersion = r.ReadInt32();
+      var id = r.ReadInt32();
+      var selection = BlackboxSelection.Import(r);
+      var blackbox = new Blackbox(id, selection);
+      blackbox.Name = r.ReadString();
+      blackbox.analyseInBackground = r.ReadBoolean();
+
+      blackbox.Status = (BlackboxStatus)r.ReadInt32();
+
+      var isFingerprinted = r.ReadBoolean();
+      if (isFingerprinted)
+        blackbox.Fingerprint = BlackboxFingerprint.CreateFrom(blackbox.Selection);
+
+      var isRecipeObtained = r.ReadBoolean();
+      if (isRecipeObtained)
+        blackbox.Recipe = BlackboxRecipe.Import(r);
+
+      var isSimulationPresent = r.ReadBoolean();
+      if (isSimulationPresent)
+      {
+        blackbox.Simulation = new BlackboxSimulation(blackbox);
+        blackbox.Simulation.CreateBlackboxingResources();
+        blackbox.Simulation.Import(r);
+      }
+
+      return blackbox;
     }
   }
 }

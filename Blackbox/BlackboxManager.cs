@@ -86,6 +86,70 @@ namespace DysonSphereProgram.Modding.Blackbox
       autoBlackbox.isActive = false;
       highlight.ClearHighlight();
     }
+
+    const int saveLogicVersion = 1;
+
+    public void PreserveVanillaSaveBefore()
+    {
+      RemoveMarkedBlackboxes();
+      highlight.PreserveVanillaSaveBefore();
+      for (int i = 0; i < blackboxes.Count; i++)
+      {
+        blackboxes[i].PreserveVanillaSaveBefore();
+      }
+    }
+
+    public void PreserveVanillaSaveAfter()
+    {
+      highlight.PreserveVanillaSaveAfter();
+      for (int i = 0; i < blackboxes.Count; i++)
+      {
+        blackboxes[i].PreserveVanillaSaveAfter();
+      }
+    }
+
+    public void Export(BinaryWriter w)
+    {
+      w.Write(saveLogicVersion);
+      w.Write(blackboxIdCounter);
+      w.Write(blackboxes.Count);
+      for (int i = 0; i < blackboxes.Count; i++)
+      {
+        blackboxes[i].Export(w);
+      }
+      w.Write(blackboxesMarkedForRemoval.Count);
+      for (int i = 0; i < blackboxesMarkedForRemoval.Count; i++)
+      {
+        w.Write(blackboxesMarkedForRemoval[i].Id);
+      }
+      autoBlackbox.Export(w);
+      highlight.Export(w);
+    }
+
+    public void Import(BinaryReader r)
+    {
+      var saveLogicVersion = r.ReadInt32();
+      blackboxIdCounter = r.ReadInt32();
+      var blackboxesCount = r.ReadInt32();
+      blackboxes.Clear();
+      blackboxes.Capacity = blackboxesCount;
+      for (int i = 0; i < blackboxesCount; i++)
+      {
+        blackboxes.Add(Blackbox.Import(r));
+      }
+
+      var blackboxesMarkedForRemovalCount = r.ReadInt32();
+      blackboxesMarkedForRemoval.Clear();
+      blackboxesMarkedForRemoval.Capacity = blackboxesMarkedForRemovalCount;
+      for (int i = 0; i < blackboxesMarkedForRemovalCount; i++)
+      {
+        var id = r.ReadInt32();
+        var blackbox = blackboxes.Find(b => b.Id == id);
+        blackboxesMarkedForRemoval.Add(blackbox);
+      }
+      autoBlackbox.Import(r);
+      highlight.Import(r);
+    }
   }
 
   class BlackboxPatch
