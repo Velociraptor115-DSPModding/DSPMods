@@ -6,6 +6,57 @@ using UnityEngine.Events;
 
 namespace DysonSphereProgram.Modding.Blackbox.UI
 { 
+  public class UIProgressBar: MonoBehaviour
+  {
+    public Text title { get; private set; }
+    public Text progressText { get; private set; }
+
+    public RectTransform progressPointRect { get; private set; }
+    public Image progressImage { get; private set; }
+
+    private float _progress;
+    public float progress
+    {
+      get => _progress;
+      set
+      {
+        if (_progress != value)
+        {
+          _progress = value;
+          progressImage.fillAmount = value;
+          progressPointRect.anchoredPosition = new Vector2(progressImage.rectTransform.rect.width * value, 0f);
+        }
+      }
+    }
+
+    public void Awake()
+    {
+      title =
+        gameObject
+          .SelectChild("title")
+          .GetComponent<Text>()
+          ;
+
+      progressText =
+        gameObject
+          .SelectChild("progress-text")
+          .GetComponent<Text>()
+          ;
+
+      progressPointRect =
+        gameObject
+          .SelectDescendant("bar-group", "bar-fg", "point")
+          .GetComponent<RectTransform>()
+          ;
+
+      progressImage =
+        gameObject
+          .SelectDescendant("bar-group", "bar-fg")
+          .GetComponent<Image>()
+          ;
+    }
+  }
+
   public class UIBlackboxEntry: ManualBehaviour
   {
     public RectTransform rectTransform;
@@ -19,6 +70,8 @@ namespace DysonSphereProgram.Modding.Blackbox.UI
     public UIButton pauseResumeBtn;
     public UIButton highlightBtn;
     public UIButton deleteBtn;
+
+    public UIProgressBar progressBar;
 
     public int index;
 
@@ -83,6 +136,12 @@ namespace DysonSphereProgram.Modding.Blackbox.UI
           .SelectDescendant("delete-btn")
           .GetComponent<UIButton>()
           ;
+
+      progressBar =
+        gameObject
+          .SelectDescendant("progress-bar")
+          .GetOrCreateComponent<UIProgressBar>()
+          ;
     }
 
     public override void _OnDestroy()
@@ -142,18 +201,29 @@ namespace DysonSphereProgram.Modding.Blackbox.UI
           break;
       }
 
+      progressBar.gameObject.SetActive(false);
+      pauseResumeBtn.gameObject.SetActive(false);
 
-      if (entryData.Simulation == null)
-      {
-        pauseResumeBtn.gameObject.SetActive(false);
-      }
-      else
+      if (entryData.Simulation != null)
       {
         pauseResumeBtn.gameObject.SetActive(true);
         if (entryData.Simulation.isBlackboxSimulating)
           pauseResumeBtnText.text = "Pause";
         else
           pauseResumeBtnText.text = "Resume";
+
+        progressBar.gameObject.SetActive(true);
+        progressBar.title.text = "";
+        progressBar.progress = entryData.Simulation.CycleProgress;
+        progressBar.progressText.text = entryData.Simulation.CycleProgressText;
+      }
+
+      if (entryData.Analysis != null)
+      {
+        progressBar.gameObject.SetActive(true);
+        progressBar.title.text = "";
+        progressBar.progress = entryData.Analysis.Progress;
+        progressBar.progressText.text = entryData.Analysis.ProgressText;
       }
 
       if (entryData.Id == BlackboxManager.Instance.highlight.blackboxId)

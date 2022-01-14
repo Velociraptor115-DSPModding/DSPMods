@@ -325,6 +325,7 @@ namespace DysonSphereProgram.Modding.Blackbox.UI
 
       var progressBarPrefab = Object.Instantiate(progressBar, contentBgPrefab.transform);
       progressBarPrefab.name = "progress-bar-prefab";
+      progressBarPrefab.SelectChild("title").DestroyComponent<Localizer>();
       progressBarPrefab.SetActive(false);
 
       var blackboxEntryPrefab =
@@ -393,6 +394,7 @@ namespace DysonSphereProgram.Modding.Blackbox.UI
 
       var blackboxProgressBar = Object.Instantiate(progressBarPrefab, blackboxEntryPrefab.transform);
       blackboxProgressBar.name = "progress-bar";
+      blackboxProgressBar.SelectChild("title").DestroyComponent<Localizer>();
       blackboxProgressBar.SetActive(true);
 
       {

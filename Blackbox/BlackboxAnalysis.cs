@@ -19,5 +19,8 @@ namespace DysonSphereProgram.Modding.Blackbox
     public abstract BlackboxRecipe EffectiveRecipe { get; } 
     public abstract void Begin();
     public abstract void Free();
+
+    public abstract float Progress { get; }
+    public abstract string ProgressText { get; }
   }
 }

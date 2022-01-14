@@ -1052,5 +1052,8 @@ namespace DysonSphereProgram.Modding.Blackbox
         }
       }
     }
+
+    public override float Progress => this.profilingTick / (float)(profilingTickCount * 40);
+    public override string ProgressText => $"{profilingTick} / {profilingTickCount * 40}";
   }
 }

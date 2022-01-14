@@ -32,7 +32,8 @@ namespace DysonSphereProgram.Modding.Blackbox
 
     const bool continuousStats = true;
 
-    public float CycleProgress { get { return timeIdx / (float)(blackbox.Recipe.timeSpend - 1); } }
+    public float CycleProgress => timeIdx / (float)(blackbox.Recipe.timeSpend - 1);
+    public string CycleProgressText => $"{timeIdx} / {blackbox.Recipe.timeSpend}";
 
     public void CreateBlackboxingResources()
     {
