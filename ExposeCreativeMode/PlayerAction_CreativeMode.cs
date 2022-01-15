@@ -123,9 +123,14 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     {
       if (isInfiniteInventoryActive)
       {
-        var inventory = this.player.package.grids;
-
         var items = LDB.items.dataArray;
+        var requiredSize = InfiniteInventory.GetRequiredSize();
+        if (this.player.package.size != requiredSize)
+        {
+          infiniteInventoryRestore.SetSize(this.player.package.size);
+          this.player.package.SetSize(requiredSize);
+        }
+        var inventory = this.player.package.grids;
         for (int i = 0; i < items.Length; ++i)
         {
           var item = items[i];

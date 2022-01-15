@@ -13,14 +13,20 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 {
   public static class InfiniteInventory
   {
-    public static StorageComponent Create()
+    public static int GetRequiredSize()
     {
       var items = LDB.items.dataArray;
       var itemCount = items.Length;
       var colCount = UIRoot.instance.uiGame.inventory.colCount;
       // We need to set extra size, otherwise the UI bugs out when dropping items on the extra space
       // by throwing an IndexOutOfRange exception
-      var size = itemCount + (itemCount % colCount > 0 ? colCount - (itemCount % colCount) : 0);
+      return itemCount + (itemCount % colCount > 0 ? colCount - (itemCount % colCount) : 0);
+    }
+
+    public static StorageComponent Create()
+    {
+      var items = LDB.items.dataArray;
+      var size = GetRequiredSize();
       var storage = new StorageComponent(size);
       storage.type = EStorageType.Filtered;
       for (int i = 0; i < items.Length; ++i)
