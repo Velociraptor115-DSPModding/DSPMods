@@ -117,6 +117,28 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       }
     }
 
+    static IEnumerable<CodeInstruction> ReplaceFoundationBrushColor(IEnumerable<CodeInstruction> code, ILGenerator generator)
+    {
+      try
+      {
+        var matcher = new CodeMatcher(code, generator);
+        matcher.MatchForward(
+          false
+          , new CodeMatch(OpCodes.Ldc_I4_1)
+          , new CodeMatch(OpCodes.Callvirt, AccessTools.Method(typeof(PlatformSystem), nameof(PlatformSystem.SetReformType)))
+        );
+
+        matcher.Set(OpCodes.Ldc_I4_7, null);
+        return matcher.InstructionEnumeration();
+      }
+      catch (Exception e)
+      {
+        Plugin.Log.LogError(e);
+        successfulPatch = false;
+        return code;
+      }
+    }
+
     [HarmonyReversePatch]
     public static void UnlockAllPublishedTech(PlayerAction instance)
     {
@@ -133,14 +155,16 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     }
 
     [HarmonyReversePatch]
-    public static void CoverPlanetInFoundation(PlayerAction instance)
+    public static void FlattenPlanet(PlayerAction instance)
     {
       IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> code, ILGenerator generator)
       {
-        return TryExtractWithinIfBlock(code, generator
+        var extractedCode = TryExtractWithinIfBlock(code, generator
           , new CodeMatch(OpCodes.Ldc_I4, (int)KeyCode.Keypad3)
           , new CodeMatch(OpCodes.Call, AccessTools.Method(typeof(Input), nameof(Input.GetKeyDown), new[] { typeof(KeyCode) }))
           , new CodeMatch(OpCodes.Brfalse));
+
+        return ReplaceFoundationBrushColor(extractedCode, generator);
       }
 
       _ = Transpiler(null, null);
@@ -160,6 +184,25 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
       _ = Transpiler(null, null);
       throw new NotImplementedException("Stub");
+    }
+    
+    public static void ModifyAllVeinsHeight(PlayerAction instance, bool bury)
+    {
+      var planetData = instance.player.planetData;
+      var factory = instance.player.factory;
+      var physics = planetData.physics;
+      var veinPool = factory.veinPool;
+      for (int i = 1; i < factory.veinCursor; i++)
+      {
+        var veinPoolPos = veinPool[i].pos;
+        var veinColliderId = veinPool[i].colliderId;
+        var heightToSet = bury ? planetData.realRadius - 50f : planetData.data.QueryModifiedHeight(veinPool[i].pos) - 0.13f;
+        physics.colChunks[veinColliderId >> 20].colliderPool[veinColliderId & 1048575].pos = physics.GetColliderData(veinColliderId).pos.normalized * (heightToSet + 0.4f);
+        veinPool[i].pos = veinPoolPos.normalized * heightToSet;
+        physics.SetPlanetPhysicsColliderDirty();
+        GameMain.gpuiManager.AlterModel(veinPool[i].modelIndex, veinPool[i].modelId, i, veinPool[i].pos, false);
+      }
+      GameMain.gpuiManager.SyncAllGPUBuffer();
     }
   }
 }

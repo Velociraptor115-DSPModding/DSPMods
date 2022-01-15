@@ -18,6 +18,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     bool isInstantBuildActive = false;
     bool isInstantResearchActive = false;
     bool isInfiniteReachActive = false;
+    bool veinsBury = false;
     StorageComponent infiniteInventoryRestore;
     StorageComponent infiniteInventory;
     float buildAreaRestore;
@@ -97,8 +98,16 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       {
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.UnlockAllPublishedTech).keyValue)
           CreativeModeFunctions.UnlockAllPublishedTech(this);
-        if (CustomKeyBindSystem.GetKeyBind(KeyBinds.CoverPlanetInFoundation).keyValue)
-          CreativeModeFunctions.CoverPlanetInFoundation(this);
+        if (CustomKeyBindSystem.GetKeyBind(KeyBinds.FlattenPlanet).keyValue)
+        {
+          CreativeModeFunctions.FlattenPlanet(this);
+          veinsBury = true;
+        }
+        if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleAllVeinsOnPlanet).keyValue)
+        {
+          veinsBury = !veinsBury;
+          CreativeModeFunctions.ModifyAllVeinsHeight(this, veinsBury);
+        }
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleInstantResearch).keyValue)
           ToggleInstantResearch();
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleInfiniteInventory).keyValue)
