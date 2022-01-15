@@ -31,6 +31,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       _harmony.PatchAll(typeof(PlayerController__Init));
       _harmony.PatchAll(typeof(CreativeModeFunctions));
       _harmony.PatchAll(typeof(InfiniteInventoryPatch));
+      _harmony.PatchAll(typeof(InfinitePowerPatch));
       _harmony.PatchAll(typeof(InputHandlerPatch));
       KeyBinds.RegisterKeyBinds();
       Logger.LogInfo("ExposeCreativeMode Awake() called");
