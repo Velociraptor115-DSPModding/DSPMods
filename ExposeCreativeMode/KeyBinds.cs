@@ -14,6 +14,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     public const string UnlockAllPublishedTech = nameof(UnlockAllPublishedTech);
     public const string ToggleInstantResearch = nameof(ToggleInstantResearch);
     public const string ToggleAllVeinsOnPlanet = nameof(ToggleAllVeinsOnPlanet);
+    public const string HoldLockResearch = nameof(HoldLockResearch);
 
     private static List<string> keyBinds = new List<string>
     {
@@ -25,6 +26,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       UnlockAllPublishedTech,
       ToggleInstantResearch,
       ToggleAllVeinsOnPlanet,
+      HoldLockResearch,
     };
 
     private static List<CombineKey> defaultBindings = new List<CombineKey>
@@ -37,6 +39,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       new CombineKey((int)KeyCode.T, CombineKey.CTRL_COMB, ECombineKeyAction.OnceClick, false),
       new CombineKey((int)KeyCode.Keypad6, CombineKey.CTRL_COMB, ECombineKeyAction.OnceClick, false),
       new CombineKey((int)KeyCode.Keypad4, 0, ECombineKeyAction.OnceClick, false),
+      new CombineKey((int)KeyCode.L, 8, ECombineKeyAction.LongPress, false),
     };
 
     private static List<string> keyBindDescriptions = new List<string>
@@ -49,6 +52,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       "(Creative Mode) Unlock all Tech",
       "(Creative Mode) Toggle Instant Research",
       "(Creative Mode) Toggle All Veins on Planet",
+      "(Creative Mode) Lock Research",
     };
 
     private static int keyBindId(string keyBind) => keyBinds.IndexOf(keyBind) + 200;
@@ -59,7 +63,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       {
         if (!CustomKeyBindSystem.HasKeyBind(keyBind))
         {
-          CustomKeyBindSystem.RegisterKeyBind<PressKeyBind>(new BuiltinKey
+          var builtinKey = new BuiltinKey
           {
             name = keyBind,
             id = keyBindId(keyBind),
@@ -67,7 +71,11 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
             canOverride = true,
             conflictGroup = 4095 // I have no idea what this is, but to be on the safer side
                                  // I'm going to make it conflict with everything that isn't a mouse key
-          });
+          };
+          if (builtinKey.key.action == ECombineKeyAction.LongPress)
+            CustomKeyBindSystem.RegisterKeyBind<HoldKeyBind>(builtinKey);
+          else
+            CustomKeyBindSystem.RegisterKeyBind<PressKeyBind>(builtinKey);
           ProtoRegistry.RegisterString("KEY" + keyBind, keyBindDescriptions[keyBinds.IndexOf(keyBind)]);
         }
       }

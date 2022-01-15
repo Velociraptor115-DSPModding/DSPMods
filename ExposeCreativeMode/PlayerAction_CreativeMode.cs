@@ -4,7 +4,7 @@ using CommonAPI.Systems;
 
 namespace DysonSphereProgram.Modding.ExposeCreativeMode
 {
-  public class PlayerAction_CreativeMode : PlayerAction, IInfiniteInventoryProvider, IInfinitePowerProvider, IInfiniteReachProvider
+  public class PlayerAction_CreativeMode : PlayerAction, IInfiniteInventoryProvider, IInfinitePowerProvider, IInfiniteReachProvider, IInfiniteResearchProvider
   {
     const string uiCreativeModeContainerPath = "UI Root/Overlay Canvas/In Game";
     const string uiCreativeModeTextName = "creative-mode-text";
@@ -32,6 +32,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
     bool IInfiniteReachProvider.IsEnabled => isInfiniteReachActive;
 
+    bool IInfiniteResearchProvider.IsEnabled => isInstantResearchActive;
+
     public override void Free()
     {
       if (isInfiniteInventoryActive)
@@ -44,6 +46,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
         ToggleInstantResearch();
       OnActiveChange(false);
       InputHandlerPatch.Update -= OnInputUpdate;
+      InfiniteResearchPatch.Unregister(this);
       InfiniteReachPatch.Unregister(this);
       InfinitePowerPatch.Unregister(this);
       InfiniteInventoryPatch.Unregister(this);
@@ -56,7 +59,9 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       InfiniteInventoryPatch.Register(this);
       InfinitePowerPatch.Register(this);
       InfiniteReachPatch.Register(this);
+      InfiniteResearchPatch.Register(this);
       InputHandlerPatch.Update += OnInputUpdate;
+      InfiniteResearchHelper.EnsureInitialized();
     }
 
     private void OnInputUpdate()
