@@ -140,6 +140,38 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       }
     }
 
+    static IEnumerable<CodeInstruction> ReplaceModValue(IEnumerable<CodeInstruction> code, ILGenerator generator, sbyte modValue)
+    {
+      try
+      {
+        var matcher = new CodeMatcher(code, generator);
+        matcher.MatchForward(
+          false
+          , new CodeMatch(OpCodes.Ldc_I4_S, (sbyte)51)
+          , new CodeMatch(OpCodes.Stelem_I1)
+        );
+
+        matcher.Set(OpCodes.Ldc_I4_S, modValue);
+        return matcher.InstructionEnumeration();
+      }
+      catch (Exception e)
+      {
+        Plugin.Log.LogError(e);
+        successfulPatch = false;
+        return code;
+      }
+    }
+
+    static IEnumerable<CodeInstruction> ExtractFlattenPlanetCode(IEnumerable<CodeInstruction> code, ILGenerator generator)
+    {
+      var extractedCode = TryExtractWithinIfBlock(code, generator
+          , new CodeMatch(OpCodes.Ldc_I4, (int)KeyCode.Keypad3)
+          , new CodeMatch(OpCodes.Call, AccessTools.Method(typeof(Input), nameof(Input.GetKeyDown), new[] { typeof(KeyCode) }))
+          , new CodeMatch(OpCodes.Brfalse));
+
+      return ReplaceFoundationBrushColor(extractedCode, generator);
+    }
+
     [HarmonyReversePatch]
     public static void UnlockAllPublishedTech(PlayerAction instance)
     {
@@ -160,12 +192,47 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     {
       IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> code, ILGenerator generator)
       {
-        var extractedCode = TryExtractWithinIfBlock(code, generator
-          , new CodeMatch(OpCodes.Ldc_I4, (int)KeyCode.Keypad3)
-          , new CodeMatch(OpCodes.Call, AccessTools.Method(typeof(Input), nameof(Input.GetKeyDown), new[] { typeof(KeyCode) }))
-          , new CodeMatch(OpCodes.Brfalse));
+        var extractedCode = ExtractFlattenPlanetCode(code, generator);
+        return extractedCode;
+      }
 
-        return ReplaceFoundationBrushColor(extractedCode, generator);
+      _ = Transpiler(null, null);
+      throw new NotImplementedException("Stub");
+    }
+
+    [HarmonyReversePatch]
+    public static void FlattenPlanetM1(PlayerAction instance)
+    {
+      IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> code, ILGenerator generator)
+      {
+        var extractedCode = ExtractFlattenPlanetCode(code, generator);
+        return ReplaceModValue(extractedCode, generator, 34);
+      }
+
+      _ = Transpiler(null, null);
+      throw new NotImplementedException("Stub");
+    }
+
+    [HarmonyReversePatch]
+    public static void FlattenPlanetM2(PlayerAction instance)
+    {
+      IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> code, ILGenerator generator)
+      {
+        var extractedCode = ExtractFlattenPlanetCode(code, generator);
+        return ReplaceModValue(extractedCode, generator, 17);
+      }
+
+      _ = Transpiler(null, null);
+      throw new NotImplementedException("Stub");
+    }
+
+    [HarmonyReversePatch]
+    public static void FlattenPlanetM3(PlayerAction instance)
+    {
+      IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> code, ILGenerator generator)
+      {
+        var extractedCode = ExtractFlattenPlanetCode(code, generator);
+        return ReplaceModValue(extractedCode, generator, 0);
       }
 
       _ = Transpiler(null, null);

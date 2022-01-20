@@ -105,7 +105,29 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
           CreativeModeFunctions.UnlockAllPublishedTech(this);
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.FlattenPlanet).keyValue)
         {
+          Plugin.Log.LogDebug("Flatten Keybind pressed");
+          var ctrlHeld = (CombineKey.currModifier & 2) == 2;
+          var shiftHeld = (CombineKey.currModifier & 1) == 1;
+          if (ctrlHeld && shiftHeld)
+          {
+            Plugin.Log.LogDebug("Flatten M3");
+            CreativeModeFunctions.FlattenPlanetM3(this);
+          }
+          else if (shiftHeld)
+          {
+            Plugin.Log.LogDebug("Flatten M2");
+            CreativeModeFunctions.FlattenPlanetM2(this);
+          }
+          else if (ctrlHeld)
+          {
+            Plugin.Log.LogDebug("Flatten M1");
+            CreativeModeFunctions.FlattenPlanetM1(this);
+          }
+          else
+          {
+            Plugin.Log.LogDebug("Flatten");
           CreativeModeFunctions.FlattenPlanet(this);
+          }
           veinsBury = true;
         }
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleAllVeinsOnPlanet).keyValue)
