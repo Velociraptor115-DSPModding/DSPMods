@@ -19,7 +19,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
   {
     public const string GUID = "dev.raptor.dsp.ExposeCreativeMode";
     public const string NAME = "ExposeCreativeMode";
-    public const string VERSION = "0.0.9";
+    public const string VERSION = "0.0.10";
 
     private Harmony _harmony;
     internal static ManualLogSource Log;

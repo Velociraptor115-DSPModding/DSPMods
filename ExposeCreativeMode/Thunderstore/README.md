@@ -10,9 +10,14 @@ to upload to the Milky Way.
 * When in creative mode
   * Ctrl + T : Unlocks all techs
   * Numpad 3 : Flattens the entire planet using the planet's default colors  
+    (**NEW**) Now you can set the foundation "level" of the planet  
+    Hold the Ctrl and Shift keys while pressing this keybind to undo the foundation effect  
+    None - Default effect of flattening planet  
+    Ctrl - Restore shallow oceans  
+    Shift - Restore mid-level oceans  
+    Ctrl + Shift - Restore deep oceans  
   * Numpad 4 : Toggles bury/raise all veins on the planet
-  * Ctrl + Numpad 6 : Toggles Instant Research mode  
-    (**NEW**) You can now lock / unlock specific tech in the tech tree screen and also increase / decrease the research level of infinite research.  
+  * Ctrl + Numpad 6 : Toggles Instant Research mode. You can lock / unlock specific tech in the tech tree screen and also increase / decrease the research level of infinite research.  
     Hold the "Lock Research" keybind (default: L) to lock / decrease research.  
     You can also use the Ctrl and Shift keys to modify the number of levels to increase / decrease.  
     None - 1, Ctrl - 10, Shift - 100, Ctrl + Shift - 1000  
@@ -52,6 +57,11 @@ Or you can create an issue on [GitHub](https://github.com/Velociraptor115/DSPMod
 \- Raptor#4825
 
 ## Changelog
+
+### [v0.0.10](https://dsp.thunderstore.io/package/Raptor/ExposeCreativeMode/0.0.9/)
+
+* Updated code for game version 0.9.24.11182
+* Added ability to set the foundation "level" of the planet
 
 ### [v0.0.9](https://dsp.thunderstore.io/package/Raptor/ExposeCreativeMode/0.0.9/)
 
