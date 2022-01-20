@@ -192,7 +192,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
             {
               int protoId = prebuild.protoId;
               int itemRequired = prebuild.itemRequired;
-              player.package.TakeTailItems(ref protoId, ref itemRequired, false);
+              player.package.TakeTailItems(ref protoId, ref itemRequired, out _, false);
               prebuild.itemRequired -= itemRequired;
               player.factory.AlterPrebuildModelState(prebuildIdx);
             }
