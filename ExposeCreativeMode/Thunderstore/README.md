@@ -7,35 +7,46 @@ to upload to the Milky Way.
 * First install the mod, and reboot the game.
 * Press Shift + F4 to toggle creative mode  
   (**Note**: Enabling creative mode will auto-enable Infinite Inventory, Instant Build and Instant Research)
-* When in creative mode
-  * Ctrl + T : Unlocks all techs
-  * Numpad 3 : Flattens the entire planet using the planet's default colors  
-    (**NEW**) Now you can set the foundation "level" of the planet  
-    Hold the Ctrl and Shift keys while pressing this keybind to undo the foundation effect  
-    None - Default effect of flattening planet  
-    Ctrl - Restore shallow oceans  
-    Shift - Restore mid-level oceans  
-    Ctrl + Shift - Restore deep oceans  
-  * Numpad 4 : Toggles bury/raise all veins on the planet
-  * Ctrl + Numpad 6 : Toggles Instant Research mode. You can lock / unlock specific tech in the tech tree screen and also increase / decrease the research level of infinite research.  
-    Hold the "Lock Research" keybind (default: L) to lock / decrease research.  
-    You can also use the Ctrl and Shift keys to modify the number of levels to increase / decrease.  
-    None - 1, Ctrl - 10, Shift - 100, Ctrl + Shift - 1000  
-  * Ctrl + Numpad 2 : Toggles Instant Build mode
-  * Ctrl + Numpad 1 : Toggles infinite inventory mode  
-    (**Note**: Infinite Inventory is skipped when saving game data, so you will have your previous inventory when you load it the next time)
-  * Ctrl + Numpad 0 : Toggles infinite station mode  
-  (**WARNING**: This probably does not do what you think it does. Read the description carefully before trying it out)
-  * Infinite Power, Infinite Reach - passive enhancements that are automatically enabled when in creative mode
+* You need to be in creative mode to use the rest of the functions below
 
-All controls are rebindable. I have removed a few redundant options from the previous versions. I will be adding a few extra options as well in the future.  
-In case you were using a particular option that I have removed and you would like it back, please contact me on Discord or raise an issue on GitHub. In the meantime, you can go back to [version 0.0.3](https://dsp.thunderstore.io/package/Raptor/ExposeCreativeMode/0.0.3/) which has the most options, but no rebindability. 
+## Functions
 
+All controls are rebindable. Detailed explanation of functions are given further below.  
+
+| Function                          | Default Keybind                | Description |
+| --------------------------------- | ------------------------------ | ----------- |
+| Infinite&nbsp;Inventory           | Ctrl&nbsp;+&nbsp;Numpad&nbsp;1 | Toggles Infinite Inventory mode |
+| Instant&nbsp;Build                | Ctrl&nbsp;+&nbsp;Numpad&nbsp;2 | Toggles Instant Build mode |
+| Instant&nbsp;Research             | Ctrl&nbsp;+&nbsp;Numpad&nbsp;6 | Toggles Instant Research mode |
+| Lock&nbsp;Research                | L                              | While Instant Research mode is active, hold this keybind to toggle locking tech |
+| Infinite&nbsp;Power               | -                              | Auto-enabled when in creative mode  |
+| Infinite&nbsp;Reach               | -                              | Auto-enabled when in creative mode |
+| Unlock&nbsp;all&nbsp;tech         | Ctrl&nbsp;+&nbsp;T             | Press keybind to unlock all tech<br>5 levels of each infinite tech will be unlocked |
+| Flatten&nbsp;Terrain              | Numpad&nbsp;3                  | Foundations entire planet with the "no decoration" option |
+| Restore&nbsp;Terrain              | -                              | Hold a combination of the Ctrl and Shift keys while pressing the "Flatten Terrain" keybind to restore terrain<br><br>Ctrl - Restore shallow oceans<br>Shift - Restore mid-level oceans<br>Ctrl + Shift - Restore deep oceans |
+| Bury&nbsp;/&nbsp;Raise&nbsp;Veins | Numpad&nbsp;4                  | Toggles bury/raise all veins on the planet |
+| Infinite&nbsp;Station             | Ctrl&nbsp;+&nbsp;Numpad&nbsp;0 | Toggles Infinite Station mode |
+
+<a name="infinite-inventory-mode"></a>
 ### Infinite Inventory mode
 
 * Makes the player inventory have all items present in the game
 * All items are reset to 9999, with the stack size being 30000 every frame
-* Because the stack is greater, items which go into the inventory are effectively "deleted"
+* Because the stack is greater, items which go into the inventory are effectively "deleted"  
+
+(**Note**: Infinite Inventory is skipped when saving game data, so you will have your previous inventory when you load it the next time)
+
+### Instant Research mode
+
+* You can lock / unlock specific tech in the tech tree screen and also increase / decrease the research level of infinite research.  
+* Hold the "Lock Research" keybind to lock / decrease research.  
+* You can also use the Ctrl and Shift keys to modify the number of levels to increase / decrease.  
+  | Modifier     | Lv.  |
+  | ------------ | ---- |
+  | None         |    1 |
+  | Ctrl         |   10 |
+  | Shift        |  100 |
+  | Ctrl + Shift | 1000 |  
 
 ### Infinite Station mode
 
@@ -58,7 +69,12 @@ Or you can create an issue on [GitHub](https://github.com/Velociraptor115/DSPMod
 
 ## Changelog
 
-### [v0.0.10](https://dsp.thunderstore.io/package/Raptor/ExposeCreativeMode/0.0.9/)
+### [v0.0.11](https://dsp.thunderstore.io/package/Raptor/ExposeCreativeMode/0.0.11/)
+* Fix InfinitePower for Spray Coaters, Pilers and Traffic Monitors
+* Fix InfiniteResearch for the new tech from the recent update. The extra storage space for logistics stations should get properly applied now
+* InfiniteInventory now gives infinite soil as well
+
+### [v0.0.10](https://dsp.thunderstore.io/package/Raptor/ExposeCreativeMode/0.0.10/)
 
 * Updated code for game version 0.9.24.11182
 * Added ability to set the foundation "level" of the planet
