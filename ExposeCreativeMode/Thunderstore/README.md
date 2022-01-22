@@ -69,6 +69,9 @@ Or you can create an issue on [GitHub](https://github.com/Velociraptor115/DSPMod
 
 ## Changelog
 
+### [v0.0.12](https://dsp.thunderstore.io/package/Raptor/ExposeCreativeMode/0.0.12/)
+* Fix compatibility issue between BetterMachines and UnlockAllTech / InfiniteResearch
+
 ### [v0.0.11](https://dsp.thunderstore.io/package/Raptor/ExposeCreativeMode/0.0.11/)
 * Fix InfinitePower for Spray Coaters, Pilers and Traffic Monitors
 * Fix InfiniteResearch for the new tech from the recent update. The extra storage space for logistics stations should get properly applied now

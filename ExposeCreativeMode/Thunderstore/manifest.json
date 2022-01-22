@@ -1,6 +1,6 @@
 {
   "name": "ExposeCreativeMode",
-  "version_number": "0.0.11",
+  "version_number": "0.0.12",
   "website_url": "https://github.com/Velociraptor115/DSPMods",
   "description": "Allows you to enable \"Creative Mode\" to play without limitations",
   "dependencies": [ "xiaoye97-BepInEx-5.4.11", "CommonAPI-CommonAPI-1.2.0" ]
