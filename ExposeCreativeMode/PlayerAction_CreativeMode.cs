@@ -102,7 +102,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       if (active)
       {
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.UnlockAllPublishedTech).keyValue)
-          CreativeModeFunctions.UnlockAllPublishedTech(this);
+          InfiniteResearchHelper.UnlockAllTech();
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.FlattenPlanet).keyValue)
         {
           Plugin.Log.LogDebug("Flatten Keybind pressed");

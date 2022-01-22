@@ -236,6 +236,26 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       initialized = true;
     }
 
+    public static void UnlockAllTech()
+    {
+      var history = GameMain.history;
+      var limit = 10;
+      while (history.currentTech != 0 && limit-- > 0)
+        history.RemoveTechInQueue(0);
+
+      for (int i = 0; i < LDB.techs.dataArray.Length; i++)
+      {
+        var techProto = LDB.techs.dataArray[i];
+        if (techProto.Published && !GameMain.history.TechUnlocked(techProto.ID))
+        {
+          if (techProto.MaxLevel == techProto.Level)
+            UnlockTech(techProto.ID);
+          else
+            UnlockTech(techProto.ID, techProto.Level + 5);
+        }
+      }
+    }
+
     static void NotifyTechUnlocked(int techId, int level)
     {
       UIRoot.instance.uiGame.replicator.OnTechUnlocked(techId, level);

@@ -173,21 +173,6 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     }
 
     [HarmonyReversePatch]
-    public static void UnlockAllPublishedTech(PlayerAction instance)
-    {
-      IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> code, ILGenerator generator)
-      {
-        return TryExtractWithinIfBlock(code, generator
-          , new CodeMatch(OpCodes.Ldc_I4_S, (sbyte)KeyCode.T)
-          , new CodeMatch(OpCodes.Call, AccessTools.Method(typeof(Input), nameof(Input.GetKeyDown), new[] { typeof(KeyCode) }))
-          , new CodeMatch(OpCodes.Brfalse));
-      }
-
-      _ = Transpiler(null, null);
-      throw new NotImplementedException("Stub");
-    }
-
-    [HarmonyReversePatch]
     public static void FlattenPlanet(PlayerAction instance)
     {
       IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> code, ILGenerator generator)
