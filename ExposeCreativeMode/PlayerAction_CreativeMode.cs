@@ -21,6 +21,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     bool veinsBury = false;
     StorageComponent infiniteInventoryRestore;
     StorageComponent infiniteInventory;
+    int? sandRestore;
     float buildAreaRestore;
 
     bool active = false;
@@ -166,6 +167,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
           inventory[i].stackSize = 30000;
           inventory[i].count = 9999;
         }
+
+        player.SetSandCount(999999);
       }
 
       if (isInfiniteStationActive)
@@ -292,6 +295,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       isInfiniteInventoryActive = !isInfiniteInventoryActive;
       if (isInfiniteInventoryActive)
       {
+        sandRestore = this.player.sandCount;
         infiniteInventoryRestore = this.player.package;
         UIRoot.instance?.uiGame.TogglePlayerInventory();
         // Force the UI to recalculate stuff
@@ -314,6 +318,9 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
           UIRoot.instance?.uiGame.TogglePlayerInventory();
         }
         this.infiniteInventory = null;
+        if (sandRestore.HasValue)
+          this.player.SetSandCount(sandRestore.Value);
+        sandRestore = null;
         Debug.Log("Infinite Inventory Disabled");
       }
 
