@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExposeCreativeMode", "ExposeCreativeMode\ExposeCreativeMode.csproj", "{0A07911A-7DDB-4539-8105-E7F3A827881E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExposeCreativeMode", "ExposeCreativeMode\ExposeCreativeMode.csproj", "{0A07911A-7DDB-4539-8105-E7F3A827881E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UncoverFoundationedOceans", "UncoverFoundationedOceans\UncoverFoundationedOceans.csproj", "{CDCAB875-2C46-4C23-8570-C551FE7150ED}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortraitResolutions", "PortraitResolutions\PortraitResolutions.csproj", "{150DE0B3-5E41-4246-95A9-FD63465DE24B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{0A07911A-7DDB-4539-8105-E7F3A827881E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A07911A-7DDB-4539-8105-E7F3A827881E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A07911A-7DDB-4539-8105-E7F3A827881E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDCAB875-2C46-4C23-8570-C551FE7150ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDCAB875-2C46-4C23-8570-C551FE7150ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDCAB875-2C46-4C23-8570-C551FE7150ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDCAB875-2C46-4C23-8570-C551FE7150ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{150DE0B3-5E41-4246-95A9-FD63465DE24B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{150DE0B3-5E41-4246-95A9-FD63465DE24B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{150DE0B3-5E41-4246-95A9-FD63465DE24B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{150DE0B3-5E41-4246-95A9-FD63465DE24B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
