@@ -62,7 +62,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       InfiniteReachPatch.Register(this);
       InfiniteResearchPatch.Register(this);
       InputHandlerPatch.Update += OnInputUpdate;
-      InfiniteResearchHelper.EnsureInitialized();
+      InfiniteResearchHelper.Reinitialize();
     }
 
     private void OnInputUpdate()

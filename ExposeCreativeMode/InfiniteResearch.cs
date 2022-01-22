@@ -180,6 +180,10 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
     static void Initialize()
     {
+      preTechs.Clear();
+      postTechs.Clear();
+      techFunctionLevelDetails.Clear();
+
       for (int i = 0; i < LDB.techs.dataArray.Length; i++)
       {
         var techProto = LDB.techs.dataArray[i];
@@ -571,6 +575,12 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       if (initialized)
         return;
       
+      Initialize();
+    }
+
+    public static void Reinitialize()
+    {
+      initialized = false;
       Initialize();
     }
   }
