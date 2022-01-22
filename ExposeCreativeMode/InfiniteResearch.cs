@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Reflection.Emit;
@@ -513,9 +513,56 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
         case 28:
           history.blueprintLimit = MaxLevelValueInt(freeMode.blueprintLimit, levelDetails, level);
           break;
+        case 29:
+          history.stationPilerLevel = SumLevelValuesInt(1, levelDetails, level);
+          break;
+        case 30:
+          {
+            var valueBefore = history.localStationExtraStorage;
+            var valueAfter = SumLevelValuesInt(0, levelDetails, level);
+            history.localStationExtraStorage = valueAfter;
+            UpdateLocalStationExtraStorage(valueBefore, valueAfter, isLocalStation);
+          }
+          break;
+        case 31:
+          {
+            var valueBefore = history.remoteStationExtraStorage;
+            var valueAfter = SumLevelValuesInt(0, levelDetails, level);
+            history.remoteStationExtraStorage = valueAfter;
+            UpdateLocalStationExtraStorage(valueBefore, valueAfter, isRemoteStation);
+          }
+          break;
         case 99:
           history.missionAccomplished = level >= 0;
           break;
+      }
+    }
+
+    private static Predicate<StationComponent> isLocalStation = station => !station.isStellar || station.isCollector || station.isVeinCollector;
+    private static Predicate<StationComponent> isRemoteStation = station => station.isStellar && !station.isCollector && !station.isVeinCollector;
+
+    public static void UpdateLocalStationExtraStorage(int prevExtraStorage, int curExtraStorage, Predicate<StationComponent> stationSelector)
+    {
+      for (int i = 0; i < GameMain.data.factoryCount; i++)
+      {
+        var factory = GameMain.data.factories[i];
+        var transport = factory.transport;
+        for (int j = 1; j < transport.stationCursor; j++)
+        {
+          var station = transport.stationPool[j];
+          if (station != null && station.id == j && stationSelector(station))
+          {
+            var modelIndex = factory.entityPool[transport.stationPool[j].entityId].modelIndex;
+            var stationMaxItemCount = LDB.models.Select(modelIndex).prefabDesc.stationMaxItemCount;
+            var prevMax = stationMaxItemCount + prevExtraStorage;
+            var newMax = stationMaxItemCount + curExtraStorage;
+            var storage = transport.stationPool[j].storage;
+            for (int k = 0; k < storage.Length; k++)
+            {
+              storage[k].max = (storage[k].max == prevMax) ? newMax : Math.Min(storage[k].max, newMax);
+            }
+          }
+        }
       }
     }
 
