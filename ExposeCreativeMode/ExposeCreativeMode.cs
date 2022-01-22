@@ -53,6 +53,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     [HarmonyPostfix]
     static void Postfix(PlayerController __instance)
     {
+      if (DSPGame.IsMenuDemo)
+        return;
       // We do a bit of extra stuff because when using it with ScriptEngine from
       // BepInEx.Debug, we might end up patching the method multiple times
 
