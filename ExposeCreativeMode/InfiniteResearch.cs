@@ -236,6 +236,12 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       initialized = true;
     }
 
+    static void NotifyTechUnlocked(int techId, int level)
+    {
+      UIRoot.instance.uiGame.replicator.OnTechUnlocked(techId, level);
+      UIRoot.instance.uiGame.techTree.OnTechUnlocked(techId, level);
+    }
+
     public static void LockTech(int techId)
     {
       var history = GameMain.history;
@@ -265,27 +271,11 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
             SetTechFunctionLevel(techProto.UnlockFunctions[j], techProto.Level - 1);
           }
         }
-        UIRoot.instance.uiGame.replicator.OnTechUnlocked(techId, techState.curLevel);
-        UIRoot.instance.uiGame.techTree.OnTechUnlocked(techId, techState.curLevel);
+        NotifyTechUnlocked(techId, techState.curLevel);
       }
     }
 
-    public static void UnlockTech(int techId)
-    {
-      var history = GameMain.history;
-      foreach (var preTechId in preTechs[techId])
-      {
-        if (!history.techStates[preTechId].unlocked)
-          UnlockTech(preTechId);
-      }
-      if (history.techStates.ContainsKey(techId))
-      {
-        var techState = history.techStates[techId];
-        SetTechLevelForUnlock(techId, techState.maxLevel);
-      }
-    }
-
-    public static void UnlockTech(int techId, int level)
+    public static void UnlockTech(int techId, int? levelToUnlock = null)
     {
       var history = GameMain.history;
       foreach (var pretechId in preTechs[techId])
@@ -296,16 +286,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       if (history.techStates.ContainsKey(techId))
       {
         var techState = history.techStates[techId];
-        SetTechLevelForUnlock(techId, level);
-      }
-    }
-
-    static void SetTechLevelForUnlock(int techId, int level)
-    {
-      var history = GameMain.history;
-      if (history.techStates.ContainsKey(techId))
-      {
-        var techState = history.techStates[techId];
+        var level = levelToUnlock ?? techState.maxLevel;
         var techProto = LDB.techs.Select(techId);
         level = level < techProto.Level ? techProto.Level : level;
         if (level >= techState.maxLevel)
@@ -333,8 +314,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
             SetTechFunctionLevel(techProto.UnlockFunctions[j], techState.curLevel);
           }
         }
-        UIRoot.instance.uiGame.replicator.OnTechUnlocked(techId, techState.curLevel);
-        UIRoot.instance.uiGame.techTree.OnTechUnlocked(techId, techState.curLevel);
+        NotifyTechUnlocked(techId, techState.curLevel);
       }
     }
 
