@@ -1,0 +1,7 @@
+{
+  "name": "DontPauseInMechaEditor",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/Velociraptor115/DSPMods",
+  "description": "Allows the game to run while in mecha customization screen",
+  "dependencies": [ "xiaoye97-BepInEx-5.4.11" ]
+}
