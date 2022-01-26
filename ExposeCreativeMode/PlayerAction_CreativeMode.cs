@@ -75,6 +75,9 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
         // Auto-enable commonly used creative mode functions
         if (active)
         {
+          // Disable achievements for the save
+          controller.gameData.gameDesc.achievementEnable = false;
+
           if (!isInfiniteInventoryActive)
             ToggleInfiniteInventory();
           if (!isInstantBuildActive)
