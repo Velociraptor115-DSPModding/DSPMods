@@ -1,7 +1,6 @@
 # ExposeCreativeMode Mod
 This mod allows you to enable "Creative Mode" and play without limitations (Well, atleast without a few limitations)  
-Note that this most of the functionality in this mod will tip off abnormality detection in-game, so do not use it on a save which you want
-to upload to the Milky Way.
+Enabling "Creative Mode" will disable achievements for the save, so keep a separate save to use it on.
 
 ## How to use this mod
 * First install the mod, and reboot the game.
@@ -23,11 +22,10 @@ All controls are rebindable. Detailed explanation of functions are given further
 | Infinite&nbsp;Reach               | -                              | Auto-enabled when in creative mode |
 | Unlock&nbsp;all&nbsp;tech         | Ctrl&nbsp;+&nbsp;T             | Press keybind to unlock all tech<br>5 levels of each infinite tech will be unlocked |
 | Flatten&nbsp;Terrain              | Numpad&nbsp;3                  | Foundations entire planet with the "no decoration" option |
-| Restore&nbsp;Terrain              | -                              | Hold a combination of the Ctrl and Shift keys while pressing the "Flatten Terrain" keybind to restore terrain<br><br>Ctrl - Restore shallow oceans<br>Shift - Restore mid-level oceans<br>Ctrl + Shift - Restore deep oceans |
+| Restore&nbsp;Terrain              | -                              | Hold a combination of the Ctrl and Shift keys while pressing the "Flatten Terrain" keybind to restore terrain<br><br>Ctrl - Restore shallow oceans<br>Shift - Restore mid-level oceans<br>Ctrl + Shift - Restore deep oceans<br><br>You will not be able to apply foundation over restored terrain using the foundation tool, unless you also install the [UncoverFoundationedOceans](https://dsp.thunderstore.io/package/Raptor/UncoverFoundationedOceans/) mod.<br> I recommend to install that mod also so that you can partially flatten an area after restoring terrain, otherwise you will have to "Flatten Terrain" again to be able to build on ocean level area |
 | Bury&nbsp;/&nbsp;Raise&nbsp;Veins | Numpad&nbsp;4                  | Toggles bury/raise all veins on the planet |
 | Infinite&nbsp;Station             | Ctrl&nbsp;+&nbsp;Numpad&nbsp;0 | Toggles Infinite Station mode |
 
-<a name="infinite-inventory-mode"></a>
 ### Infinite Inventory mode
 
 * Makes the player inventory have all items present in the game
@@ -68,6 +66,10 @@ Or you can create an issue on [GitHub](https://github.com/Velociraptor115/DSPMod
 \- Raptor#4825
 
 ## Changelog
+
+### [v0.0.13](https://dsp.thunderstore.io/package/Raptor/ExposeCreativeMode/0.0.13/)
+* Disable achievements for the save when enabling creative mode
+* Add notes about [UncoverFoundationedOceans](https://dsp.thunderstore.io/package/Raptor/UncoverFoundationedOceans/) in the "Restore Terrain" section
 
 ### [v0.0.12](https://dsp.thunderstore.io/package/Raptor/ExposeCreativeMode/0.0.12/)
 * Fix compatibility issue between BetterMachines and UnlockAllTech / InfiniteResearch
