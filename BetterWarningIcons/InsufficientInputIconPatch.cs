@@ -40,9 +40,9 @@ namespace DysonSphereProgram.Modding.BetterWarningIcons
 
       insufficientInputTex = new Texture2D(1, 1, TextureFormat.RGBA32, true);
       insufficientInputTexSmall = new Texture2D(1, 1, TextureFormat.RGBA32, true);
-      var data = File.ReadAllBytes(Path.Combine(Path.GetDirectoryName(Plugin.Path), "Assets", "InsufficientInputIcon.png"));
+      var data = File.ReadAllBytes(Path.Combine(Path.GetDirectoryName(Plugin.Path), "InsufficientInputIcon.png"));
       insufficientInputTex.LoadImage(data);
-      var dataSmall = File.ReadAllBytes(Path.Combine(Path.GetDirectoryName(Plugin.Path), "Assets", "InsufficientInputIconSmall.png"));
+      var dataSmall = File.ReadAllBytes(Path.Combine(Path.GetDirectoryName(Plugin.Path), "InsufficientInputIconSmall.png"));
       insufficientInputTexSmall.LoadImage(dataSmall);
       iconSprite = Sprite.Create(insufficientInputTexSmall, new Rect(0, 0, 80, 80), new Vector2(0.5f, 0.5f));
 
