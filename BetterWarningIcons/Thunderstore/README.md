@@ -14,7 +14,7 @@ This icon is used to indicate when the recipe is set and the building does not h
 
 **IMPORTANT NOTE**:  
 Ensure you also enable the warning mask for the icon in settings as it is a new warning icon
-![InsufficientInputWarnMaskGameSettings](https://github.com/Velociraptor115/DSPMods/blob/main/BetterWarningIcons/Thunderstore/Docs/InsufficientInputWarnMaskGameSettings.png)
+![InsufficientInputWarnMaskGameSettings](https://github.com/Velociraptor115/DSPMods/blob/main/BetterWarningIcons/Thunderstore/Docs/InsufficientInputWarnMaskGameSettings.png?raw=true)
 
 ### Vein Depletion Warning
 You can use the config to specify:
@@ -29,9 +29,11 @@ Or you can create an issue on [GitHub](https://github.com/Velociraptor115/DSPMod
 
 ## Changelog
 
+### [v0.0.3](https://dsp.thunderstore.io/package/Raptor/BetterWarningIcons/0.0.1/)
+* Fix links to images in the README
+
 ### [v0.0.2](https://dsp.thunderstore.io/package/Raptor/BetterWarningIcons/0.0.1/)
 * Fix the asset load path due to how Thunderstore installs mods
-* Fix links to images in the README
 
 ### [v0.0.1](https://dsp.thunderstore.io/package/Raptor/BetterWarningIcons/0.0.1/)
 
