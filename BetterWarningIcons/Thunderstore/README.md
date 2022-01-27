@@ -4,7 +4,7 @@ This mod enhances the in-game warning icons, by adding new icons, modifying logi
 ## How to use this mod
 * Install the mod, and reboot the game.
 * (Optional) Modify configs using the mod manager or directly in the BepInEx\config\dev.raptor.dsp.BetterWarningIcons.cfg file
-![BepinConfigEditorLocation](Docs/BepinConfigEditorLocation.png)
+![BepinConfigEditorLocation](https://github.com/Velociraptor115/DSPMods/blob/main/BetterWarningIcons/Thunderstore/Docs/BepinConfigEditorLocation.png?raw=true)
 
 ## Warnings Added / Modified
 
@@ -14,7 +14,7 @@ This icon is used to indicate when the recipe is set and the building does not h
 
 **IMPORTANT NOTE**:  
 Ensure you also enable the warning mask for the icon in settings as it is a new warning icon
-![InsufficientInputWarnMaskGameSettings](Docs/InsufficientInputWarnMaskGameSettings.png)
+![InsufficientInputWarnMaskGameSettings](https://github.com/Velociraptor115/DSPMods/blob/main/BetterWarningIcons/Thunderstore/Docs/InsufficientInputWarnMaskGameSettings.png)
 
 ### Vein Depletion Warning
 You can use the config to specify:
@@ -28,6 +28,10 @@ Or you can create an issue on [GitHub](https://github.com/Velociraptor115/DSPMod
 \- Raptor#4825
 
 ## Changelog
+
+### [v0.0.2](https://dsp.thunderstore.io/package/Raptor/BetterWarningIcons/0.0.1/)
+* Fix the asset load path due to how Thunderstore installs mods
+* Fix links to images in the README
 
 ### [v0.0.1](https://dsp.thunderstore.io/package/Raptor/BetterWarningIcons/0.0.1/)
 
