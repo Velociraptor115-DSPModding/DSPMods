@@ -35,13 +35,14 @@ namespace DysonSphereProgram.Modding.UncoverFoundationedOceans
     }
   }
 
-
   [HarmonyPatch]
   class ExposeOceansPatch
   {
     static Dictionary<int, int> previousModLevel = new Dictionary<int, int>();
     static Dictionary<int, int> newModLevel = new Dictionary<int, int>();
     static bool toExpose;
+    static int[] cursorIndicesRestore = new int[100];
+    static int cursorPointCountRestore;
 
 
     [HarmonyPrefix]
@@ -139,17 +140,63 @@ namespace DysonSphereProgram.Modding.UncoverFoundationedOceans
 
       return matcher.InstructionEnumeration();
     }
-
-
+    
     [HarmonyPrefix]
-    [HarmonyPatch(typeof(PlanetFactory), nameof(PlanetFactory.ComputeFlattenTerrainReform))]
-    static void PreCompute()
+    [HarmonyPatch(typeof(BuildTool_Reform), nameof(BuildTool_Reform.ReformAction))]
+    static void PreReformAction(ref BuildTool_Reform __instance)
     {
       toExpose = (CombineKey.currModifier & CombineKey.CTRL_COMB) == CombineKey.CTRL_COMB;
+      
+      // Adjust Foundation Usage
+      cursorPointCountRestore = __instance.cursorPointCount;
+      if (toExpose)
+        Array.Copy(__instance.cursorIndices, cursorIndicesRestore, cursorIndicesRestore.Length);
+      var countToCover = __instance.brushSize * __instance.brushSize;
+      var platformSystem = __instance.factory.platformSystem;
+      for (var i = 0; i < countToCover; i++)
+      {
+        var reformIndex = __instance.cursorIndices[i];
+        if (reformIndex >= 0)
+        {
+          var reformType = platformSystem.GetReformType(reformIndex);
+          var isReformed = platformSystem.IsTerrainReformed(reformType);
+          if (toExpose)
+          {
+            if (isReformed && __instance.drawing)
+            {
+              platformSystem.SetReformType(reformIndex, 7);
+              platformSystem.SetReformColor(reformIndex, 0); 
+            }
+            __instance.cursorIndices[i] = -1;
+            __instance.cursorPointCount--;
+          }
+          else if (isReformed)
+          {
+            // __instance.cursorIndices[i] = -1;
+            __instance.cursorPointCount--;
+          }
+        }
+      }
+      
+      Plugin.Log.LogDebug($"{cursorPointCountRestore} - {__instance.cursorPointCount}");
+    }
+    
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(BuildTool_Reform), nameof(BuildTool_Reform.ReformAction))]
+    static void PostReformAction(ref BuildTool_Reform __instance)
+    {
+      if (toExpose)
+        Array.Copy(cursorIndicesRestore, __instance.cursorIndices, cursorIndicesRestore.Length);
+    }
+    
+    [HarmonyPrefix]
+    [HarmonyPatch(typeof(PlanetFactory), nameof(PlanetFactory.ComputeFlattenTerrainReform))]
+    static void PreCompute(ref int pointsCount)
+    {
+      pointsCount = cursorPointCountRestore;
       previousModLevel.Clear();
       newModLevel.Clear();
     }
-
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(PlanetFactory), nameof(PlanetFactory.ComputeFlattenTerrainReform))]
