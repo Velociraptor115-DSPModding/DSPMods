@@ -174,8 +174,8 @@ namespace DysonSphereProgram.Modding.UncoverFoundationedOceans
           if (modDiff > 0)
           {
             var heightDiff = realRadius + 0.2f - (heightData[index] * 0.01f);
-            //if (heightDiff < 0f)
-            //  heightDiff *= 2f;
+            if (heightDiff < 0f)
+              heightDiff *= 2f;
             soilRequired += UnityEngine.Mathf.FloorToInt(100f * modDiff * heightDiff * 0.3333333f);
             effectiveCount++;
           }
@@ -185,9 +185,9 @@ namespace DysonSphereProgram.Modding.UncoverFoundationedOceans
           if (modDiff < 0)
           {
             var heightDiff = realRadius + 0.2f - (heightData[index] * 0.01f);
-            //if (heightDiff < 0f)
-            //  heightDiff *= 2f;
-            soilRequired += UnityEngine.Mathf.FloorToInt(100f * modDiff * heightDiff * 0.3333333f);
+            if (heightDiff < 0f)
+              heightDiff *= 2f;
+            soilRequired -= UnityEngine.Mathf.FloorToInt(100f * -modDiff * heightDiff * 0.3333333f);
             effectiveCount++;
           }
         }
