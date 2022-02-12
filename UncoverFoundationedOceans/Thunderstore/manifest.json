@@ -1,6 +1,6 @@
 {
   "name": "UncoverFoundationedOceans",
-  "version_number": "0.0.1",
+  "version_number": "0.0.2",
   "website_url": "https://github.com/Velociraptor115/DSPMods",
   "description": "Allows you to uncover oceans that you have paved over",
   "dependencies": [ "xiaoye97-BepInEx-5.4.11" ]
