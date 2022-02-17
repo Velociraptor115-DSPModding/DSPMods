@@ -29,7 +29,6 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       Plugin.Log = Logger;
       _harmony = new Harmony(GUID);
       _harmony.PatchAll(typeof(PlayerController__Init));
-      _harmony.PatchAll(typeof(CreativeModeFunctions));
       _harmony.PatchAll(typeof(InfiniteInventoryPatch));
       _harmony.PatchAll(typeof(InfinitePowerPatch));
       _harmony.PatchAll(typeof(InfiniteReachPatch));
@@ -87,172 +86,73 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
     public static event InputUpdateHandler Update;
   }
-
-  [HarmonyPatch(typeof(PlayerAction_Test), nameof(PlayerAction_Test.Update))]
+  
   public class CreativeModeFunctions
   {
-    static bool successfulPatch = true;
-
-    static IEnumerable<CodeInstruction> TryExtractWithinIfBlock(IEnumerable<CodeInstruction> code, ILGenerator generator, params CodeMatch[] condition)
+    public static void FlattenPlanet(PlanetFactory factory, bool bury, int modLevel)
     {
-      try
+      var planet = factory.planet;
+      if (planet == null || planet.type == EPlanetType.Gas)
+        return;
+      
+      // var platformSystem = factory.platformSystem;
+      // platformSystem.EnsureReformData();
+      // for (int i = 0; i < platformSystem.maxReformCount; i++)
+      //   if (!platformSystem.IsTerrainReformed(platformSystem.GetReformType(i)))
+      //     platformSystem.SetReformType(i, 1);
+      
+      var modData = planet.data.modData;
+      for (int i = 0; i < modData.Length; i++)
+        modData[i] = (byte)((modLevel & 3) | ((modLevel & 3) << 4));
+      
+      var dirtyFlags = planet.dirtyFlags;
+      for (int i = 0; i < dirtyFlags.Length; i++)
+        dirtyFlags[i] = true;
+      planet.landPercentDirty = true;
+      
+      if (planet.UpdateDirtyMeshes())
+        factory.RenderLocalPlanetHeightmap();
+      
+      var vegePool = factory.vegePool;
+      float groundLevel = planet.realRadius + 0.2f;
+      var isFlattened = (modLevel & 3) == 3;
+      for (int n = 1; n < factory.vegeCursor; n++)
       {
-        var matcher = new CodeMatcher(code, generator);
-        matcher.MatchForward(true, condition);
-
-        var ifBlockExitLabel = (Label)matcher.Operand;
-        
-        matcher.Advance(1);
-        var startPos = matcher.Pos;
-
-        while (!matcher.Labels.Contains(ifBlockExitLabel))
-          matcher.Advance(1);
-        var endPos = matcher.Pos;
-
-        matcher.Set(OpCodes.Ret, null);
-        return matcher.InstructionsInRange(startPos, endPos);
+        var currentPos = vegePool[n].pos;
+        var vegeGroundLevel =
+          isFlattened ?
+            groundLevel :
+            planet.data.QueryModifiedHeight(currentPos) - 0.13f;
+        vegePool[n].pos = currentPos.normalized * vegeGroundLevel;
+        GameMain.gpuiManager.AlterModel((int)vegePool[n].modelIndex, vegePool[n].modelId, n, vegePool[n].pos,
+          vegePool[n].rot, false);
       }
-      catch (Exception e)
-      {
-        Plugin.Log.LogError(e);
-        successfulPatch = false;
-        return code;
-      }
-    }
-
-    static IEnumerable<CodeInstruction> ReplaceFoundationBrushColor(IEnumerable<CodeInstruction> code, ILGenerator generator)
-    {
-      try
-      {
-        var matcher = new CodeMatcher(code, generator);
-        matcher.MatchForward(
-          false
-          , new CodeMatch(OpCodes.Ldc_I4_1)
-          , new CodeMatch(OpCodes.Callvirt, AccessTools.Method(typeof(PlatformSystem), nameof(PlatformSystem.SetReformType)))
-        );
-
-        matcher.Set(OpCodes.Ldc_I4_7, null);
-        return matcher.InstructionEnumeration();
-      }
-      catch (Exception e)
-      {
-        Plugin.Log.LogError(e);
-        successfulPatch = false;
-        return code;
-      }
-    }
-
-    static IEnumerable<CodeInstruction> ReplaceModValue(IEnumerable<CodeInstruction> code, ILGenerator generator, sbyte modValue)
-    {
-      try
-      {
-        var matcher = new CodeMatcher(code, generator);
-        matcher.MatchForward(
-          false
-          , new CodeMatch(OpCodes.Ldc_I4_S, (sbyte)51)
-          , new CodeMatch(OpCodes.Stelem_I1)
-        );
-
-        matcher.Set(OpCodes.Ldc_I4_S, modValue);
-        return matcher.InstructionEnumeration();
-      }
-      catch (Exception e)
-      {
-        Plugin.Log.LogError(e);
-        successfulPatch = false;
-        return code;
-      }
-    }
-
-    static IEnumerable<CodeInstruction> ExtractFlattenPlanetCode(IEnumerable<CodeInstruction> code, ILGenerator generator)
-    {
-      var extractedCode = TryExtractWithinIfBlock(code, generator
-          , new CodeMatch(OpCodes.Ldc_I4, (int)KeyCode.Keypad3)
-          , new CodeMatch(OpCodes.Call, AccessTools.Method(typeof(Input), nameof(Input.GetKeyDown), new[] { typeof(KeyCode) }))
-          , new CodeMatch(OpCodes.Brfalse));
-
-      return ReplaceFoundationBrushColor(extractedCode, generator);
-    }
-
-    [HarmonyReversePatch]
-    public static void FlattenPlanet(PlayerAction instance)
-    {
-      IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> code, ILGenerator generator)
-      {
-        var extractedCode = ExtractFlattenPlanetCode(code, generator);
-        return extractedCode;
-      }
-
-      _ = Transpiler(null, null);
-      throw new NotImplementedException("Stub");
-    }
-
-    [HarmonyReversePatch]
-    public static void FlattenPlanetM1(PlayerAction instance)
-    {
-      IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> code, ILGenerator generator)
-      {
-        var extractedCode = ExtractFlattenPlanetCode(code, generator);
-        return ReplaceModValue(extractedCode, generator, 34);
-      }
-
-      _ = Transpiler(null, null);
-      throw new NotImplementedException("Stub");
-    }
-
-    [HarmonyReversePatch]
-    public static void FlattenPlanetM2(PlayerAction instance)
-    {
-      IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> code, ILGenerator generator)
-      {
-        var extractedCode = ExtractFlattenPlanetCode(code, generator);
-        return ReplaceModValue(extractedCode, generator, 17);
-      }
-
-      _ = Transpiler(null, null);
-      throw new NotImplementedException("Stub");
-    }
-
-    [HarmonyReversePatch]
-    public static void FlattenPlanetM3(PlayerAction instance)
-    {
-      IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> code, ILGenerator generator)
-      {
-        var extractedCode = ExtractFlattenPlanetCode(code, generator);
-        return ReplaceModValue(extractedCode, generator, 0);
-      }
-
-      _ = Transpiler(null, null);
-      throw new NotImplementedException("Stub");
-    }
-
-    [HarmonyReversePatch]
-    public static void ResearchCurrentTechInstantly(PlayerAction instance)
-    {
-      IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> code, ILGenerator generator)
-      {
-        return TryExtractWithinIfBlock(code, generator
-          , new CodeMatch(OpCodes.Ldc_I4, (int)KeyCode.Keypad6)
-          , new CodeMatch(OpCodes.Call, AccessTools.Method(typeof(Input), nameof(Input.GetKeyDown), new[] { typeof(KeyCode) }))
-          , new CodeMatch(OpCodes.Brfalse));
-      }
-
-      _ = Transpiler(null, null);
-      throw new NotImplementedException("Stub");
+      
+      ModifyAllVeinsHeight(factory, bury);
     }
     
-    public static void ModifyAllVeinsHeight(PlayerAction instance, bool bury)
+    public static void ResearchCurrentTechInstantly()
     {
-      var planetData = instance.player.planetData;
-      var factory = instance.player.factory;
-      var physics = planetData.physics;
+      var history = GameMain.history;
+      if (history.currentTech > 0)
+      {
+        var techState = history.TechState(history.currentTech);
+        var hashNeeded = techState.hashNeeded - techState.hashUploaded;
+        history.AddTechHash(hashNeeded);
+      }
+    }
+    
+    public static void ModifyAllVeinsHeight(PlanetFactory factory, bool bury)
+    {
+      var planet = factory.planet;
+      var physics = planet.physics;
       var veinPool = factory.veinPool;
       for (int i = 1; i < factory.veinCursor; i++)
       {
         var veinPoolPos = veinPool[i].pos;
         var veinColliderId = veinPool[i].colliderId;
-        var heightToSet = bury ? planetData.realRadius - 50f : planetData.data.QueryModifiedHeight(veinPool[i].pos) - 0.13f;
-        physics.colChunks[veinColliderId >> 20].colliderPool[veinColliderId & 1048575].pos = physics.GetColliderData(veinColliderId).pos.normalized * (heightToSet + 0.4f);
+        var heightToSet = bury ? planet.realRadius - 50f : planet.data.QueryModifiedHeight(veinPool[i].pos) - 0.13f;
+        physics.colChunks[veinColliderId >> 20].colliderPool[veinColliderId & 0xFFFFF].pos = physics.GetColliderData(veinColliderId).pos.normalized * (heightToSet + 0.4f);
         veinPool[i].pos = veinPoolPos.normalized * heightToSet;
         physics.SetPlanetPhysicsColliderDirty();
         GameMain.gpuiManager.AlterModel(veinPool[i].modelIndex, veinPool[i].modelId, i, veinPool[i].pos, false);

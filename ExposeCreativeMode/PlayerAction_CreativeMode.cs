@@ -107,37 +107,24 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       {
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.UnlockAllPublishedTech).keyValue)
           InfiniteResearchHelper.UnlockAllTech();
-        if (CustomKeyBindSystem.GetKeyBind(KeyBinds.FlattenPlanet).keyValue)
+        if (CustomKeyBindSystem.GetKeyBind(KeyBinds.FlattenPlanet).keyValue && player.factory != null)
         {
           Plugin.Log.LogDebug("Flatten Keybind pressed");
           var ctrlHeld = (CombineKey.currModifier & 2) == 2;
           var shiftHeld = (CombineKey.currModifier & 1) == 1;
-          if (ctrlHeld && shiftHeld)
+          var modLevel = (shiftHeld, ctrlHeld) switch
           {
-            Plugin.Log.LogDebug("Flatten M3");
-            CreativeModeFunctions.FlattenPlanetM3(this);
-          }
-          else if (shiftHeld)
-          {
-            Plugin.Log.LogDebug("Flatten M2");
-            CreativeModeFunctions.FlattenPlanetM2(this);
-          }
-          else if (ctrlHeld)
-          {
-            Plugin.Log.LogDebug("Flatten M1");
-            CreativeModeFunctions.FlattenPlanetM1(this);
-          }
-          else
-          {
-            Plugin.Log.LogDebug("Flatten");
-          CreativeModeFunctions.FlattenPlanet(this);
-          }
-          veinsBury = true;
+            (true, true) => 0,
+            (true, false) => 1,
+            (false, true) => 2,
+            (false, false) => 3
+          };
+          CreativeModeFunctions.FlattenPlanet(player.factory, veinsBury, modLevel);
         }
-        if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleAllVeinsOnPlanet).keyValue)
+        if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleAllVeinsOnPlanet).keyValue && player.factory != null)
         {
           veinsBury = !veinsBury;
-          CreativeModeFunctions.ModifyAllVeinsHeight(this, veinsBury);
+          CreativeModeFunctions.ModifyAllVeinsHeight(player.factory, veinsBury);
         }
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleInstantResearch).keyValue)
           ToggleInstantResearch();
@@ -250,7 +237,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
       if (isInstantResearchActive)
       {
-        CreativeModeFunctions.ResearchCurrentTechInstantly(this);
+        CreativeModeFunctions.ResearchCurrentTechInstantly();
       }
     }
 
