@@ -32,7 +32,6 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       _harmony.PatchAll(typeof(InfinitePowerPatch));
       _harmony.PatchAll(typeof(InfiniteReachPatch));
       _harmony.PatchAll(typeof(InfiniteResearchPatch));
-      _harmony.PatchAll(typeof(InputHandlerPatch));
       CreativeModeLifecyclePatches.ApplyPatch(_harmony);
       KeyBinds.RegisterKeyBinds();
       Logger.LogInfo("ExposeCreativeMode Awake() called");
@@ -85,6 +84,13 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     {
       instance?.GameTick();
     }
+    
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(VFInput), nameof(VFInput.OnUpdate))]
+    static void InputUpdate()
+    {
+      instance?.OnInputUpdate();
+    }
 
     [HarmonyPrefix]
     [HarmonyPatch(typeof(Player), nameof(Player.Free))]
@@ -98,19 +104,6 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     }
   }
 
-  public delegate void InputUpdateHandler();
-
-  [HarmonyPatch(typeof(VFInput), nameof(VFInput.OnUpdate))]
-  class InputHandlerPatch
-  {
-    static void Postfix()
-    {
-      Update?.Invoke();
-    }
-
-    public static event InputUpdateHandler Update;
-  }
-  
   public class CreativeModeFunctions
   {
     public static void FlattenPlanet(PlanetFactory factory, bool bury, int modLevel)

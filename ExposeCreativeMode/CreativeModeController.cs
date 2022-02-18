@@ -48,7 +48,6 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       if (isInstantResearchActive)
         ToggleInstantResearch();
       OnActiveChange(false);
-      InputHandlerPatch.Update -= OnInputUpdate;
       InfiniteResearchPatch.Unregister(this);
       InfiniteReachPatch.Unregister(this);
       InfinitePowerPatch.Unregister(this);
@@ -63,11 +62,10 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       InfinitePowerPatch.Register(this);
       InfiniteReachPatch.Register(this);
       InfiniteResearchPatch.Register(this);
-      InputHandlerPatch.Update += OnInputUpdate;
       InfiniteResearchHelper.Reinitialize();
     }
 
-    private void OnInputUpdate()
+    public void OnInputUpdate()
     {
       if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleCreativeMode).keyValue)
       {
