@@ -24,6 +24,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     InfinitePower infinitePower;
     InstantResearch instantResearch;
     InstantBuild instantBuild;
+    InstantReplicate instantReplicate;
 
     public void Free()
     {
@@ -38,6 +39,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       if (infiniteReach.IsEnabled)
         infiniteReach.Disable();
       OnActiveChange(false);
+      InstantReplicatePatch.Unregister(instantReplicate);
       InstantResearchPatch.Unregister(instantResearch);
       InfiniteReachPatch.Unregister(infiniteReach);
       InfinitePowerPatch.Unregister(infinitePower);
@@ -55,6 +57,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       InfiniteResearchHelper.Reinitialize();
       infiniteStation = new InfiniteStation();
       instantBuild = new InstantBuild(player);
+      InstantReplicatePatch.Register(instantReplicate = new InstantReplicate());
     }
 
     public void OnInputUpdate()
@@ -80,6 +83,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
             infiniteReach.Enable();
           if (!infinitePower.IsEnabled)
             infinitePower.Enable();
+          if (!instantReplicate.IsEnabled)
+            instantReplicate.Enable();
         }
         else
         {
@@ -96,6 +101,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
             infiniteReach.Disable();
           if (infinitePower.IsEnabled)
             infinitePower.Disable();
+          if (instantReplicate.IsEnabled)
+            instantReplicate.Disable();
         }
       }
 

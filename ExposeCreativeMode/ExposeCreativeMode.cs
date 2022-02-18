@@ -32,6 +32,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       _harmony.PatchAll(typeof(InfinitePowerPatch));
       _harmony.PatchAll(typeof(InfiniteReachPatch));
       _harmony.PatchAll(typeof(InstantResearchPatch));
+      _harmony.PatchAll(typeof(InstantReplicatePatch));
       CreativeModeLifecyclePatches.ApplyPatch(_harmony);
       KeyBinds.RegisterKeyBinds();
       Logger.LogInfo("ExposeCreativeMode Awake() called");
