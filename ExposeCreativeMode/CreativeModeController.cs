@@ -4,7 +4,7 @@ using CommonAPI.Systems;
 
 namespace DysonSphereProgram.Modding.ExposeCreativeMode
 {
-  public class CreativeModeController : IInfinitePowerProvider, IInfiniteResearchProvider
+  public class CreativeModeController : IInfiniteResearchProvider
   {
     const string uiCreativeModeContainerPath = "UI Root/Overlay Canvas/In Game";
     const string uiCreativeModeTextName = "creative-mode-text";
@@ -23,8 +23,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     Player player;
     InfiniteInventory infiniteInventory;
     InfiniteReach infiniteReach;
-
-    bool IInfinitePowerProvider.IsEnabled => active;
+    InfinitePower infinitePower;
 
     bool IInfiniteResearchProvider.IsEnabled => isInstantResearchActive;
 
@@ -43,7 +42,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       OnActiveChange(false);
       InfiniteResearchPatch.Unregister(this);
       InfiniteReachPatch.Unregister(infiniteReach);
-      InfinitePowerPatch.Unregister(this);
+      InfinitePowerPatch.Unregister(infinitePower);
       InfiniteInventoryPatch.Unregister(infiniteInventory);
       player = null;
     }
@@ -52,7 +51,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     {
       player = _player;
       InfiniteInventoryPatch.Register(infiniteInventory = new InfiniteInventory(player));
-      InfinitePowerPatch.Register(this);
+      InfinitePowerPatch.Register(infinitePower = new InfinitePower());
       InfiniteReachPatch.Register(infiniteReach = new InfiniteReach(player));
       InfiniteResearchPatch.Register(this);
       InfiniteResearchHelper.Reinitialize();
@@ -79,6 +78,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
             ToggleInstantResearch();
           if (!infiniteReach.IsEnabled)
             infiniteReach.Enable();
+          if (!infinitePower.IsEnabled)
+            infinitePower.Enable();
         }
         else
         {
@@ -93,6 +94,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
             ToggleInstantResearch();
           if (infiniteReach.IsEnabled)
             infiniteReach.Disable();
+          if (infinitePower.IsEnabled)
+            infinitePower.Disable();
         }
       }
 

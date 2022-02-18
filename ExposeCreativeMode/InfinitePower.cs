@@ -12,32 +12,52 @@ using CommonAPI.Systems;
 
 namespace DysonSphereProgram.Modding.ExposeCreativeMode
 {
-  public interface IInfinitePowerProvider
+  public class InfinitePower
   {
-    bool IsEnabled { get; }
+    public bool IsEnabled;
+
+    public void Enable()
+    {
+      IsEnabled = true;
+      Plugin.Log.LogDebug("Infinite Power Enabled");
+    }
+
+    public void Disable()
+    {
+      IsEnabled = false;
+      Plugin.Log.LogDebug("Infinite Power Disabled");
+    }
+
+    public void Toggle()
+    {
+      if (!IsEnabled)
+        Enable();
+      else
+        Disable();
+    }
   }
 
   [HarmonyPatch]
   public static class InfinitePowerPatch
   {
-    private static IInfinitePowerProvider provider;
+    private static InfinitePower infinitePower;
 
-    public static void Register(IInfinitePowerProvider p)
+    public static void Register(InfinitePower instance)
     {
-      provider = p;
+      infinitePower = instance;
     }
 
-    public static void Unregister(IInfinitePowerProvider p)
+    public static void Unregister(InfinitePower instance)
     {
-      if (provider == p)
-        provider = null;
+      if (infinitePower == instance)
+        infinitePower = null;
     }
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(PowerSystem), nameof(PowerSystem.GameTick))]
     static void PatchNetworkServes(PowerSystem __instance, bool isActive)
     {
-      var isInfinitePowerEnabled = provider?.IsEnabled ?? false;
+      var isInfinitePowerEnabled = infinitePower?.IsEnabled ?? false;
       if (!isInfinitePowerEnabled)
         return;
 
