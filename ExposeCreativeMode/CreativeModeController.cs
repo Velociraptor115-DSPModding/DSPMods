@@ -4,7 +4,7 @@ using CommonAPI.Systems;
 
 namespace DysonSphereProgram.Modding.ExposeCreativeMode
 {
-  public class CreativeModeController : IInfiniteInventoryProvider, IInfinitePowerProvider, IInfiniteReachProvider, IInfiniteResearchProvider
+  public class CreativeModeController : IInfinitePowerProvider, IInfiniteReachProvider, IInfiniteResearchProvider
   {
     const string uiCreativeModeContainerPath = "UI Root/Overlay Canvas/In Game";
     const string uiCreativeModeTextName = "creative-mode-text";
@@ -13,23 +13,17 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     const string uiVersionTextPath = uiCreativeModeContainerPath + "/" + uiVersionTextName;
     const float uiCreativeModeTextOffset = 0.55f;
 
-    bool isInfiniteInventoryActive = false;
     bool isInfiniteStationActive = false;
     bool isInstantBuildActive = false;
     bool isInstantResearchActive = false;
     bool isInfiniteReachActive = false;
     bool veinsBury = false;
-    StorageComponent infiniteInventoryRestore;
-    StorageComponent infiniteInventory;
-    int? sandRestore;
     float buildAreaRestore;
 
     bool active = false;
 
     Player player;
-
-    StorageComponent IInfiniteInventoryProvider.Storage => infiniteInventory;
-    bool IInfiniteInventoryProvider.IsEnabled => isInfiniteInventoryActive;
+    InfiniteInventory infiniteInventory;
 
     bool IInfinitePowerProvider.IsEnabled => active;
 
@@ -39,8 +33,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
     public void Free()
     {
-      if (isInfiniteInventoryActive)
-        ToggleInfiniteInventory();
+      if (infiniteInventory.IsEnabled)
+        infiniteInventory.Disable();
       if (isInfiniteStationActive)
         ToggleInfiniteStation();
       if (isInstantBuildActive)
@@ -51,14 +45,14 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       InfiniteResearchPatch.Unregister(this);
       InfiniteReachPatch.Unregister(this);
       InfinitePowerPatch.Unregister(this);
-      InfiniteInventoryPatch.Unregister(this);
+      InfiniteInventoryPatch.Unregister(infiniteInventory);
       player = null;
     }
 
     public void Init(Player _player)
     {
       player = _player;
-      InfiniteInventoryPatch.Register(this);
+      InfiniteInventoryPatch.Register(infiniteInventory = new InfiniteInventory(player));
       InfinitePowerPatch.Register(this);
       InfiniteReachPatch.Register(this);
       InfiniteResearchPatch.Register(this);
@@ -78,8 +72,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
           // Disable achievements for the save
           player.controller.gameData.gameDesc.achievementEnable = false;
 
-          if (!isInfiniteInventoryActive)
-            ToggleInfiniteInventory();
+          if (!infiniteInventory.IsEnabled)
+            infiniteInventory.Enable();
           if (!isInstantBuildActive)
             ToggleInstantBuild();
           if (!isInstantResearchActive)
@@ -90,8 +84,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
         else
         {
           // Disable all creative mode functions when creative mode is disabled
-          if (isInfiniteInventoryActive)
-            ToggleInfiniteInventory();
+          if (infiniteInventory.IsEnabled)
+            infiniteInventory.Disable();
           if (isInfiniteStationActive)
             ToggleInfiniteStation();
           if (isInstantBuildActive)
@@ -129,7 +123,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleInstantResearch).keyValue)
           ToggleInstantResearch();
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleInfiniteInventory).keyValue)
-          ToggleInfiniteInventory();
+          infiniteInventory.Toggle();
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleInfiniteStation).keyValue)
           ToggleInfiniteStation();
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleInstantBuild).keyValue)
@@ -139,27 +133,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
     public void GameTick()
     {
-      if (isInfiniteInventoryActive)
-      {
-        var items = LDB.items.dataArray;
-        var requiredSize = InfiniteInventory.GetRequiredSize();
-        if (this.player.package.size != requiredSize)
-        {
-          infiniteInventoryRestore.SetSize(this.player.package.size);
-          this.player.package.SetSize(requiredSize);
-        }
-        var inventory = this.player.package.grids;
-        for (int i = 0; i < items.Length; ++i)
-        {
-          var item = items[i];
-          inventory[i].itemId = item.ID;
-          inventory[i].filter = item.ID;
-          inventory[i].stackSize = 30000;
-          inventory[i].count = 9999;
-        }
-
-        player.SetSandCount(999999);
-      }
+      infiniteInventory.GameTick();
 
       if (isInfiniteStationActive)
       {
@@ -280,52 +254,6 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       }
     }
 
-    public void ToggleInfiniteInventory()
-    {
-      isInfiniteInventoryActive = !isInfiniteInventoryActive;
-      if (isInfiniteInventoryActive)
-      {
-        sandRestore = this.player.sandCount;
-        infiniteInventoryRestore = this.player.package;
-        UIRoot.instance?.uiGame.TogglePlayerInventory();
-        // Force the UI to recalculate stuff
-        // Because we change the storage component itself, the UI will not know the
-        // underlying object has changed entirely and will continue to display
-        // the old storage component till we close and reopen it. Hence the TogglePlayerInventory()
-        this.infiniteInventory = InfiniteInventory.Create();
-        this.player.package = infiniteInventory;
-        UIRoot.instance?.uiGame.TogglePlayerInventory();
-
-        Debug.Log("Infinite Inventory Enabled");
-      }
-      else
-      {
-        if (infiniteInventoryRestore != null)
-        {
-          UIRoot.instance?.uiGame.TogglePlayerInventory();
-          this.player.package = infiniteInventoryRestore;
-          infiniteInventoryRestore = null;
-          UIRoot.instance?.uiGame.TogglePlayerInventory();
-        }
-        this.infiniteInventory = null;
-        if (sandRestore.HasValue)
-          this.player.SetSandCount(sandRestore.Value);
-        sandRestore = null;
-        Debug.Log("Infinite Inventory Disabled");
-      }
-
-      var inventoryWindowTitle = GameObject.Find("UI Root/Overlay Canvas/In Game/Windows/Player Inventory/panel-bg/title-text");
-      var title = inventoryWindowTitle?.GetComponent<UnityEngine.UI.Text>();
-
-      if (title != null)
-      {
-        if (isInfiniteInventoryActive)
-          title.text = title.text.Replace("(Infinite)", "").Trim() + " (Infinite)";
-        else
-          title.text = title.text.Replace("(Infinite)", "").Trim();
-      }
-    }
-
     void OnActiveChange(bool active)
     {
       var creativeModeText = GameObject.Find(uiCreativeModeTextPath);
@@ -353,18 +281,6 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       // So we set it's index next to the version-text
       creativeModeText.transform.SetSiblingIndex(versionText.transform.GetSiblingIndex() + 1);
       return creativeModeText;
-    }
-
-    void IInfiniteInventoryProvider.Enable()
-    {
-      if (!isInfiniteInventoryActive)
-        ToggleInfiniteInventory();
-    }
-
-    void IInfiniteInventoryProvider.Disable()
-    {
-      if (isInfiniteInventoryActive)
-        ToggleInfiniteInventory();
     }
 
     public void ToggleInfiniteReach()

@@ -11,25 +11,121 @@ using CommonAPI.Systems;
 
 namespace DysonSphereProgram.Modding.ExposeCreativeMode
 {
-  public static class InfiniteInventory
+  public class InfiniteInventory
   {
-    public static int GetRequiredSize()
+    private readonly Player player;
+    private int? sandRestore;
+    StorageComponent infiniteInventoryRestore;
+    StorageComponent infiniteInventory;
+
+    public bool IsEnabled;
+    public StorageComponent storage => infiniteInventory;
+
+    public InfiniteInventory(Player player)
     {
+      this.player = player;
+    }
+
+    public void Enable()
+    {
+      sandRestore = player.sandCount;
+      infiniteInventoryRestore = player.package;
+      UIRoot.instance?.uiGame.TogglePlayerInventory();
+      // Force the UI to recalculate stuff
+      // Because we change the storage component itself, the UI will not know the
+      // underlying object has changed entirely and will continue to display
+      // the old storage component till we close and reopen it. Hence the TogglePlayerInventory()
+      infiniteInventory = Create(LDB.items.dataArray);
+      player.package = infiniteInventory;
+      UIRoot.instance?.uiGame.TogglePlayerInventory();
+      UpdateUI();
+
+      IsEnabled = true;
+      Plugin.Log.LogDebug("Infinite Inventory Enabled");
+    }
+
+    public void Disable()
+    {
+      if (infiniteInventoryRestore != null)
+      {
+        UIRoot.instance?.uiGame.TogglePlayerInventory();
+        player.package = infiniteInventoryRestore;
+        infiniteInventoryRestore = null;
+        UIRoot.instance?.uiGame.TogglePlayerInventory();
+      }
+      infiniteInventory = null;
+      if (sandRestore.HasValue)
+        player.sandCount = sandRestore.Value;
+      sandRestore = null;
+      UpdateUI();
+
+      IsEnabled = false;
+      Plugin.Log.LogDebug("Infinite Inventory Disabled");
+    }
+
+    public void Toggle()
+    {
+      if (!IsEnabled)
+        Enable();
+      else
+        Disable();
+    }
+
+    private void UpdateUI()
+    {
+      var inventoryWindowTitle =
+        GameObject.Find("UI Root/Overlay Canvas/In Game/Windows/Player Inventory/panel-bg/title-text");
+      var title = inventoryWindowTitle?.GetComponent<UnityEngine.UI.Text>();
+
+      if (title != null)
+      {
+        if (IsEnabled)
+          title.text = title.text.Replace("(Infinite)", "").Trim() + " (Infinite)";
+        else
+          title.text = title.text.Replace("(Infinite)", "").Trim();
+      }
+    }
+
+    public void GameTick()
+    {
+      if (!IsEnabled)
+        return;
+
       var items = LDB.items.dataArray;
-      var itemCount = items.Length;
+      var requiredSize = GetRequiredSize(items);
+      if (this.player.package.size != requiredSize)
+      {
+        infiniteInventoryRestore.SetSize(this.player.package.size);
+        this.player.package.SetSize(requiredSize);
+      }
+      var inventory = this.player.package.grids;
+      for (int i = 0; i < items.Length; ++i)
+      {
+        var item = items[i];
+        inventory[i].itemId = item.ID;
+        inventory[i].filter = item.ID;
+        inventory[i].stackSize = 30000;
+        inventory[i].count = 9999;
+      }
+
+      player.sandCount = 999999;
+    }
+
+    private static int GetRequiredSize(ICollection<ItemProto> items)
+    {
+      var itemCount = items.Count;
       var colCount = UIRoot.instance.uiGame.inventory.colCount;
       // We need to set extra size, otherwise the UI bugs out when dropping items on the extra space
       // by throwing an IndexOutOfRange exception
       return itemCount + (itemCount % colCount > 0 ? colCount - (itemCount % colCount) : 0);
     }
 
-    public static StorageComponent Create()
+    private static StorageComponent Create(IList<ItemProto> items)
     {
-      var items = LDB.items.dataArray;
-      var size = GetRequiredSize();
+      var size = GetRequiredSize(items);
       var storage = new StorageComponent(size);
       storage.type = EStorageType.Filtered;
-      for (int i = 0; i < items.Length; ++i)
+      for (int i = 0; i < items.Count; ++i)
       {
         var item = items[i];
         storage.grids[i].itemId = item.ID;
@@ -37,7 +133,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
         storage.grids[i].stackSize = 30000;
         storage.grids[i].count = 9999;
       }
-      for (int i = items.Length; i < size; i++)
+      for (int i = items.Count; i < size; i++)
       {
         storage.grids[i].itemId = 0;
         // We need to do this, because filter <= 0 is considered fair game by the UI
@@ -50,37 +146,27 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     }
   }
 
-  public interface IInfiniteInventoryProvider
-  {
-    StorageComponent Storage { get; }
-    bool IsEnabled { get; }
-
-    void Enable();
-    void Disable();
-  }
-
   [HarmonyPatch]
   public static class InfiniteInventoryPatch
   {
-    private static IInfiniteInventoryProvider provider;
+    private static InfiniteInventory infiniteInventory;
 
-    public static void Register(IInfiniteInventoryProvider p)
+    public static void Register(InfiniteInventory instance)
     {
-      provider = p;
+      infiniteInventory = instance;
     }
 
-    public static void Unregister(IInfiniteInventoryProvider p)
+    public static void Unregister(InfiniteInventory instance)
     {
-      if (provider == p)
-        provider = null;
+      if (infiniteInventory == instance)
+        infiniteInventory = null;
     }
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(UIStorageGrid), nameof(UIStorageGrid.OnStorageContentChanged))]
     static void EnsureThatInfiniteInventoryHasProperTextColors(UIStorageGrid __instance)
     {
-      var infiniteInventory = provider?.Storage;
-      if (infiniteInventory == null || __instance.storage != infiniteInventory)
+      if (infiniteInventory == null || __instance.storage != infiniteInventory.storage)
         return;
 
       for (int i = 0; i < __instance.numTexts.Length; i++)
@@ -95,10 +181,10 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     static void BeforeSaveCurrentGame(ref bool __state)
     {
       __state = false;
-      if (provider != null && provider.IsEnabled)
+      if (infiniteInventory != null && infiniteInventory.IsEnabled)
       {
         __state = true;
-        provider.Disable();
+        infiniteInventory.Disable();
       }
     }
 
@@ -106,9 +192,9 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     [HarmonyPatch(typeof(GameSave), nameof(GameSave.SaveCurrentGame))]
     static void AfterSaveCurrentGame(ref bool __state)
     {
-      if (__state && provider != null)
+      if (__state && infiniteInventory != null)
       {
-        provider.Enable();
+        infiniteInventory.Enable();
       }
     }
   }
