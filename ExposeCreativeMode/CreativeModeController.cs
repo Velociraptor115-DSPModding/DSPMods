@@ -13,7 +13,6 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     const string uiVersionTextPath = uiCreativeModeContainerPath + "/" + uiVersionTextName;
     const float uiCreativeModeTextOffset = 0.55f;
 
-    bool isInstantBuildActive = false;
     bool veinsBury = false;
 
     bool active = false;
@@ -24,6 +23,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     InfiniteReach infiniteReach;
     InfinitePower infinitePower;
     InstantResearch instantResearch;
+    InstantBuild instantBuild;
 
     public void Free()
     {
@@ -31,8 +31,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
         infiniteInventory.Disable();
       if (infiniteStation.IsEnabled)
         infiniteStation.Disable();
-      if (isInstantBuildActive)
-        ToggleInstantBuild();
+      if (instantBuild.IsEnabled)
+        instantBuild.Disable();
       if (instantResearch.IsEnabled)
         instantResearch.Disable();
       if (infiniteReach.IsEnabled)
@@ -54,6 +54,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       InstantResearchPatch.Register(instantResearch = new InstantResearch());
       InfiniteResearchHelper.Reinitialize();
       infiniteStation = new InfiniteStation();
+      instantBuild = new InstantBuild(player);
     }
 
     public void OnInputUpdate()
@@ -71,8 +72,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
           if (!infiniteInventory.IsEnabled)
             infiniteInventory.Enable();
-          if (!isInstantBuildActive)
-            ToggleInstantBuild();
+          if (!instantBuild.IsEnabled)
+            instantBuild.Enable();
           if (!instantResearch.IsEnabled)
             instantResearch.Enable();
           if (!infiniteReach.IsEnabled)
@@ -87,8 +88,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
             infiniteInventory.Disable();
           if (infiniteStation.IsEnabled)
             infiniteStation.Disable();
-          if (isInstantBuildActive)
-            ToggleInstantBuild();
+          if (instantBuild.IsEnabled)
+            instantBuild.Disable();
           if (instantResearch.IsEnabled)
             instantResearch.Disable();
           if (infiniteReach.IsEnabled)
@@ -128,7 +129,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleInfiniteStation).keyValue)
           infiniteStation.Toggle();
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleInstantBuild).keyValue)
-          ToggleInstantBuild();
+          instantBuild.Toggle();
       }
     }
 
@@ -136,62 +137,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     {
       infiniteInventory.GameTick();
       infiniteStation.GameTick();
-
-      if (isInstantBuildActive)
-      {
-        if (player.factory != null && player.factory.prebuildCount > 0)
-        {
-          void BuildInstantly(int prebuildIdx)
-          {
-            ref var prebuild = ref player.factory.prebuildPool[prebuildIdx];
-            if (prebuild.id != prebuildIdx)
-              return;
-            if (prebuild.itemRequired > 0)
-            {
-              int protoId = prebuild.protoId;
-              int itemRequired = prebuild.itemRequired;
-              player.package.TakeTailItems(ref protoId, ref itemRequired, out _, false);
-              prebuild.itemRequired -= itemRequired;
-              player.factory.AlterPrebuildModelState(prebuildIdx);
-            }
-            if (prebuild.itemRequired <= 0)
-            {
-              player.factory.BuildFinally(player, prebuild.id);
-            }
-          }
-
-          if (player.factory.prebuildRecycleCursor > 0)
-          {
-            // This means that we can probably get away with just looking at the recycle instances
-            for (int i = player.factory.prebuildRecycleCursor; i < player.factory.prebuildCursor; i++)
-              BuildInstantly(player.factory.prebuildRecycle[i]);
-          }
-          else
-          {
-            // Highly probable that a prebuildPool resize took place this tick.
-            // Better to go over the entire array
-
-            // Don't ask me why the loop starts from 1. I'm merely following `MechaDroneLogic.UpdateTargets()`
-            for (int i = 1; i < player.factory.prebuildCursor; i++)
-              BuildInstantly(i);
-          }
-        }
-      }
-
       instantResearch.GameTick();
-    }
-
-    public void ToggleInstantBuild()
-    {
-      isInstantBuildActive = !isInstantBuildActive;
-      if (isInstantBuildActive)
-      {
-        Debug.Log("Instant Build Enabled");
-      }
-      else
-      {
-        Debug.Log("Instant Build Disabled");
-      }
+      instantBuild.GameTick();
     }
 
     void OnActiveChange(bool active)
