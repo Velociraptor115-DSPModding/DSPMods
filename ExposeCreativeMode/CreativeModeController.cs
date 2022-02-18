@@ -4,7 +4,7 @@ using CommonAPI.Systems;
 
 namespace DysonSphereProgram.Modding.ExposeCreativeMode
 {
-  public class PlayerAction_CreativeMode : PlayerAction, IInfiniteInventoryProvider, IInfinitePowerProvider, IInfiniteReachProvider, IInfiniteResearchProvider
+  public class CreativeModeController : IInfiniteInventoryProvider, IInfinitePowerProvider, IInfiniteReachProvider, IInfiniteResearchProvider
   {
     const string uiCreativeModeContainerPath = "UI Root/Overlay Canvas/In Game";
     const string uiCreativeModeTextName = "creative-mode-text";
@@ -26,6 +26,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
     bool active = false;
 
+    Player player;
+
     StorageComponent IInfiniteInventoryProvider.Storage => infiniteInventory;
     bool IInfiniteInventoryProvider.IsEnabled => isInfiniteInventoryActive;
 
@@ -35,7 +37,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
     bool IInfiniteResearchProvider.IsEnabled => isInstantResearchActive;
 
-    public override void Free()
+    public void Free()
     {
       if (isInfiniteInventoryActive)
         ToggleInfiniteInventory();
@@ -51,12 +53,12 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       InfiniteReachPatch.Unregister(this);
       InfinitePowerPatch.Unregister(this);
       InfiniteInventoryPatch.Unregister(this);
-      base.Free();
+      player = null;
     }
 
-    public override void Init(Player _player)
+    public void Init(Player _player)
     {
-      base.Init(_player);
+      player = _player;
       InfiniteInventoryPatch.Register(this);
       InfinitePowerPatch.Register(this);
       InfiniteReachPatch.Register(this);
@@ -76,7 +78,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
         if (active)
         {
           // Disable achievements for the save
-          controller.gameData.gameDesc.achievementEnable = false;
+          player.controller.gameData.gameDesc.achievementEnable = false;
 
           if (!isInfiniteInventoryActive)
             ToggleInfiniteInventory();
@@ -137,7 +139,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       }
     }
 
-    public override void GameTick(long timei)
+    public void GameTick()
     {
       if (isInfiniteInventoryActive)
       {

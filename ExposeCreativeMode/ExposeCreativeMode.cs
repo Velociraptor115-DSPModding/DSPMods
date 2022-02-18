@@ -28,12 +28,12 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     {
       Plugin.Log = Logger;
       _harmony = new Harmony(GUID);
-      _harmony.PatchAll(typeof(PlayerController__Init));
       _harmony.PatchAll(typeof(InfiniteInventoryPatch));
       _harmony.PatchAll(typeof(InfinitePowerPatch));
       _harmony.PatchAll(typeof(InfiniteReachPatch));
       _harmony.PatchAll(typeof(InfiniteResearchPatch));
       _harmony.PatchAll(typeof(InputHandlerPatch));
+      CreativeModeLifecyclePatches.ApplyPatch(_harmony);
       KeyBinds.RegisterKeyBinds();
       Logger.LogInfo("ExposeCreativeMode Awake() called");
     }
@@ -41,36 +41,60 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     private void OnDestroy()
     {
       Logger.LogInfo("ExposeCreativeMode OnDestroy() called");
+      CreativeModeLifecyclePatches.DestroyPatch();
       _harmony?.UnpatchSelf();
       Plugin.Log = null;
     }
   }
-
-  [HarmonyPatch(typeof(PlayerController), nameof(PlayerController.Init))]
-  class PlayerController__Init
+  
+  [HarmonyPatch]
+  public static class CreativeModeLifecyclePatches
   {
+    private static CreativeModeController instance;
+
+    public static void ApplyPatch(Harmony harmony)
+    {
+      harmony.PatchAll(typeof(CreativeModeLifecyclePatches));
+      var player = GameMain.mainPlayer;
+      if (player != null)
+        Create(ref player);
+    }
+
+    public static void DestroyPatch()
+    {
+      instance.Free();
+    }
+    
     [HarmonyPostfix]
-    static void Postfix(PlayerController __instance)
+    [HarmonyPatch(typeof(Player), nameof(Player.Create))]
+    static void Create(ref Player __result)
     {
       if (DSPGame.IsMenuDemo)
         return;
-      // We do a bit of extra stuff because when using it with ScriptEngine from
-      // BepInEx.Debug, we might end up patching the method multiple times
+      
+      if (instance != null)
+        instance.Free();
 
-      // If the last entry in the actions array isn't an instance of creative mode's base class, allocate space for it
-      if (!(__instance.actions[__instance.actions.Length - 1] is PlayerAction_CreativeMode))
-      {
-        var newActions = new PlayerAction[__instance.actions.Length + 1];
-        __instance.actions.CopyTo(newActions, 0);
-        __instance.actions = newActions;
-      }
+      instance = new CreativeModeController();
+      instance.Init(__result);
+    }
 
-      // Overwrite the last action with the latest creative mode code
-      var creativeMode = new PlayerAction_CreativeMode();
-      creativeMode.Init(__instance.player);
-      __instance.actions[__instance.actions.Length - 1] = creativeMode;
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(PlayerController), nameof(PlayerController.GameTick))]
+    static void GameTick()
+    {
+      instance?.GameTick();
+    }
 
-      Debug.Log("Creative Mode Postfix patch applied");
+    [HarmonyPrefix]
+    [HarmonyPatch(typeof(Player), nameof(Player.Free))]
+    static void Free()
+    {
+      if (instance == null)
+        return;
+      
+      instance.Free();
+      instance = null;
     }
   }
 
