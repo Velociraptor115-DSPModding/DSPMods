@@ -4,7 +4,7 @@ using CommonAPI.Systems;
 
 namespace DysonSphereProgram.Modding.ExposeCreativeMode
 {
-  public class CreativeModeController : IInfiniteResearchProvider
+  public class CreativeModeController
   {
     const string uiCreativeModeContainerPath = "UI Root/Overlay Canvas/In Game";
     const string uiCreativeModeTextName = "creative-mode-text";
@@ -15,7 +15,6 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
     bool isInfiniteStationActive = false;
     bool isInstantBuildActive = false;
-    bool isInstantResearchActive = false;
     bool veinsBury = false;
 
     bool active = false;
@@ -24,8 +23,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     InfiniteInventory infiniteInventory;
     InfiniteReach infiniteReach;
     InfinitePower infinitePower;
-
-    bool IInfiniteResearchProvider.IsEnabled => isInstantResearchActive;
+    InfiniteResearch infiniteResearch;
 
     public void Free()
     {
@@ -35,12 +33,12 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
         ToggleInfiniteStation();
       if (isInstantBuildActive)
         ToggleInstantBuild();
-      if (isInstantResearchActive)
-        ToggleInstantResearch();
+      if (infiniteResearch.IsEnabled)
+        infiniteResearch.Disable();
       if (infiniteReach.IsEnabled)
         infiniteReach.Disable();
       OnActiveChange(false);
-      InfiniteResearchPatch.Unregister(this);
+      InfiniteResearchPatch.Unregister(infiniteResearch);
       InfiniteReachPatch.Unregister(infiniteReach);
       InfinitePowerPatch.Unregister(infinitePower);
       InfiniteInventoryPatch.Unregister(infiniteInventory);
@@ -53,7 +51,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       InfiniteInventoryPatch.Register(infiniteInventory = new InfiniteInventory(player));
       InfinitePowerPatch.Register(infinitePower = new InfinitePower());
       InfiniteReachPatch.Register(infiniteReach = new InfiniteReach(player));
-      InfiniteResearchPatch.Register(this);
+      InfiniteResearchPatch.Register(infiniteResearch = new InfiniteResearch());
       InfiniteResearchHelper.Reinitialize();
     }
 
@@ -74,8 +72,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
             infiniteInventory.Enable();
           if (!isInstantBuildActive)
             ToggleInstantBuild();
-          if (!isInstantResearchActive)
-            ToggleInstantResearch();
+          if (!infiniteResearch.IsEnabled)
+            infiniteResearch.Enable();
           if (!infiniteReach.IsEnabled)
             infiniteReach.Enable();
           if (!infinitePower.IsEnabled)
@@ -90,8 +88,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
             ToggleInfiniteStation();
           if (isInstantBuildActive)
             ToggleInstantBuild();
-          if (isInstantResearchActive)
-            ToggleInstantResearch();
+          if (infiniteResearch.IsEnabled)
+            infiniteResearch.Disable();
           if (infiniteReach.IsEnabled)
             infiniteReach.Disable();
           if (infinitePower.IsEnabled)
@@ -123,7 +121,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
           CreativeModeFunctions.ModifyAllVeinsHeight(player.factory, veinsBury);
         }
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleInstantResearch).keyValue)
-          ToggleInstantResearch();
+          infiniteResearch.Toggle();
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleInfiniteInventory).keyValue)
           infiniteInventory.Toggle();
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleInfiniteStation).keyValue)
@@ -211,10 +209,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
         }
       }
 
-      if (isInstantResearchActive)
-      {
-        CreativeModeFunctions.ResearchCurrentTechInstantly();
-      }
+      infiniteResearch.GameTick();
     }
 
     public void ToggleInfiniteStation()
@@ -240,19 +235,6 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       else
       {
         Debug.Log("Instant Build Disabled");
-      }
-    }
-
-    public void ToggleInstantResearch()
-    {
-      isInstantResearchActive = !isInstantResearchActive;
-      if (isInstantResearchActive)
-      {
-        Debug.Log("Instant Research Enabled");
-      }
-      else
-      {
-        Debug.Log("Instant Research Disabled");
       }
     }
 

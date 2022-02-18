@@ -147,18 +147,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       
       ModifyAllVeinsHeight(factory, bury);
     }
-    
-    public static void ResearchCurrentTechInstantly()
-    {
-      var history = GameMain.history;
-      if (history.currentTech > 0)
-      {
-        var techState = history.TechState(history.currentTech);
-        var hashNeeded = techState.hashNeeded - techState.hashUploaded;
-        history.AddTechHash(hashNeeded);
-      }
-    }
-    
+
     public static void ModifyAllVeinsHeight(PlanetFactory factory, bool bury)
     {
       var planet = factory.planet;

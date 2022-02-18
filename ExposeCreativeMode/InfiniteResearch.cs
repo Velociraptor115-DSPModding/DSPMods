@@ -11,25 +11,63 @@ using CommonAPI.Systems;
 
 namespace DysonSphereProgram.Modding.ExposeCreativeMode
 {
-  public interface IInfiniteResearchProvider
+  public class InfiniteResearch
   {
-    bool IsEnabled { get; }
+    public bool IsEnabled;
+
+    public void Enable()
+    {
+      IsEnabled = true;
+      Plugin.Log.LogDebug("Infinite Research Enabled");
+    }
+
+    public void Disable()
+    {
+      IsEnabled = false;
+      Plugin.Log.LogDebug("Infinite Research Disabled");
+    }
+
+    public void Toggle()
+    {
+      if (!IsEnabled)
+        Enable();
+      else
+        Disable();
+    }
+
+    public void GameTick()
+    {
+      if (!IsEnabled)
+        return;
+      ResearchCurrentTechInstantly();
+    }
+    
+    private static void ResearchCurrentTechInstantly()
+    {
+      var history = GameMain.history;
+      if (history.currentTech > 0)
+      {
+        var techState = history.TechState(history.currentTech);
+        var hashNeeded = techState.hashNeeded - techState.hashUploaded;
+        history.AddTechHash(hashNeeded);
+      }
+    }
   }
 
   [HarmonyPatch]
   public static class InfiniteResearchPatch
   {
-    private static IInfiniteResearchProvider provider;
+    private static InfiniteResearch infiniteResearch;
 
-    public static void Register(IInfiniteResearchProvider p)
+    public static void Register(InfiniteResearch instance)
     {
-      provider = p;
+      infiniteResearch = instance;
     }
 
-    public static void Unregister(IInfiniteResearchProvider p)
+    public static void Unregister(InfiniteResearch instance)
     {
-      if (provider == p)
-        provider = null;
+      if (infiniteResearch == instance)
+        infiniteResearch = null;
     }
 
     private static int _ModifierAmount()
@@ -48,7 +86,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     [HarmonyPatch(typeof(UITechNode), nameof(UITechNode.UpdateInfoDynamic))]
     static void UpdateInfoPatch(UITechNode __instance)
     {
-      var isEnabled = provider?.IsEnabled ?? false;
+      var isEnabled = infiniteResearch?.IsEnabled ?? false;
       if (!isEnabled)
         return;
 
@@ -109,7 +147,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     [HarmonyPatch(typeof(UITechNode), nameof(UITechNode.OnStartButtonClick))]
     static void StartButtonClickPatch(UITechNode __instance, ref bool __runOriginal)
     {
-      var isEnabled = provider?.IsEnabled ?? false;
+      var isEnabled = infiniteResearch?.IsEnabled ?? false;
       if (!isEnabled)
         return;
 
@@ -542,8 +580,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       }
     }
 
-    private static Predicate<StationComponent> isLocalStation = station => !station.isStellar || station.isCollector || station.isVeinCollector;
-    private static Predicate<StationComponent> isRemoteStation = station => station.isStellar && !station.isCollector && !station.isVeinCollector;
+    private static readonly Predicate<StationComponent> isLocalStation = station => !station.isStellar || station.isCollector || station.isVeinCollector;
+    private static readonly Predicate<StationComponent> isRemoteStation = station => station.isStellar && !station.isCollector && !station.isVeinCollector;
 
     public static void UpdateLocalStationExtraStorage(int prevExtraStorage, int curExtraStorage, Predicate<StationComponent> stationSelector)
     {
