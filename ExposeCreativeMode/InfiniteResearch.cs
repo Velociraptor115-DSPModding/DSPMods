@@ -100,46 +100,44 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       var isUnlocked = history.TechUnlocked(__instance.techProto.ID);
       var lockingMode = CustomKeyBindSystem.GetKeyBind(KeyBinds.HoldLockResearch).keyValue;
       var ts = history.TechState(__instance.techProto.ID);
-      var isResearched = ts.curLevel != __instance.techProto.Level;
+      var intermediateLevelResearched = ts.curLevel != __instance.techProto.Level;
 
-      if ((lockingMode && (isUnlocked || isResearched)) || (!lockingMode && !isUnlocked))
+      static void SetStartButtonState(UITechNode node, bool interactable)
       {
-        __instance.startButton.gameObject.SetActive(true);
-        if (__instance.startButton.button.interactable != true)
+        node.startButton.gameObject.SetActive(true);
+        if (node.startButton.button.interactable != interactable)
         {
-          __instance.startButton.button.interactable = true;
-          __instance.startButton.LateUpdate();
-        }
-
-        var isMultipleLevelEntry = __instance.techProto.Level < __instance.techProto.MaxLevel;
-
-        if (isMultipleLevelEntry)
-        {
-          var modifierAmount = _ModifierAmount();
-
-          var effectiveLevel = lockingMode ? ts.curLevel - modifierAmount : ts.curLevel + modifierAmount;
-          effectiveLevel = effectiveLevel >= __instance.techProto.MaxLevel ? __instance.techProto.MaxLevel : effectiveLevel;
-          var willBeLocked = effectiveLevel < __instance.techProto.Level;
-
-          var buttonText = willBeLocked ? "Lock" : "Set to Lv " + effectiveLevel;
-          __instance.startButtonText.text = buttonText;
-        }
-        else
-        {
-          __instance.startButtonText.text = lockingMode ? "Lock" : "Unlock";
+          node.startButton.button.interactable = interactable;
+          node.startButton.LateUpdate();
         }
       }
 
-      if (lockingMode && !isUnlocked && !isResearched)
+      switch (lockingMode, isUnlocked, intermediateLevelResearched)
       {
-        __instance.startButton.gameObject.SetActive(true);
-        if (__instance.startButton.button.interactable != false)
-        {
-          __instance.startButton.button.interactable = false;
-          __instance.startButton.LateUpdate();
-        }
-
-        __instance.startButtonText.text = "Already Locked";
+        // If we're trying to lock a research that was never researched
+        case (true, false, false):
+          SetStartButtonState(__instance, false);
+          __instance.startButtonText.text = "Already Locked";  
+          break;
+        // If we're not in locking mode and the research is fully completed, do nothing
+        case (false, true, _):
+          break;
+        // Otherwise it's a valid operation
+        default:
+          SetStartButtonState(__instance, true);
+          var isMultipleLevelEntry = __instance.techProto.Level < __instance.techProto.MaxLevel;
+          if (isMultipleLevelEntry)
+          {
+            var modifierAmount = _ModifierAmount(); ;
+            var suffix = modifierAmount + (modifierAmount > 1 ? " levels" : " level");
+            var buttonText = (lockingMode ? "Lock " : "Unlock ") + suffix;
+            __instance.startButtonText.text = buttonText;
+          }
+          else
+          {
+            __instance.startButtonText.text = lockingMode ? "Lock" : "Unlock";
+          }  
+          break;
       }
     }
 
@@ -161,39 +159,35 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       var isUnlocked = history.TechUnlocked(__instance.techProto.ID);
       var lockingMode = CustomKeyBindSystem.GetKeyBind(KeyBinds.HoldLockResearch).keyValue;
       var ts = history.TechState(__instance.techProto.ID);
-      var isResearched = ts.curLevel != __instance.techProto.Level;
-
-      if ((lockingMode && (isUnlocked || isResearched)) || (!lockingMode && !isUnlocked))
+      var intermediateLevelResearched = ts.curLevel != __instance.techProto.Level;
+      
+      switch (lockingMode, isUnlocked, intermediateLevelResearched)
       {
-        var isMultipleLevelEntry = __instance.techProto.Level < __instance.techProto.MaxLevel;
-        if (isMultipleLevelEntry)
-        {
-          var modifierAmount = _ModifierAmount();
-
-          var effectiveLevel = lockingMode ? ts.curLevel - modifierAmount : ts.curLevel + modifierAmount;
-          effectiveLevel = effectiveLevel >= __instance.techProto.MaxLevel ? __instance.techProto.MaxLevel : effectiveLevel;
-          var willBeLocked = effectiveLevel < __instance.techProto.Level;
-
-          if (willBeLocked)
+        case (true, false, false):
+        case (false, true, _):
+          break;
+        default:
+          var isMultipleLevelEntry = __instance.techProto.Level < __instance.techProto.MaxLevel;
+          if (isMultipleLevelEntry)
           {
-            InfiniteResearchHelper.LockTech(__instance.techProto.ID);
+            var modifierAmount = _ModifierAmount();
+            var effectiveLevel = lockingMode ? ts.curLevel - modifierAmount : ts.curLevel + modifierAmount;
+            effectiveLevel = effectiveLevel >= __instance.techProto.MaxLevel ? __instance.techProto.MaxLevel : effectiveLevel;
+            var willBeLocked = effectiveLevel < __instance.techProto.Level;
+
+            if (willBeLocked)
+              InfiniteResearchHelper.LockTech(__instance.techProto.ID);
+            else
+              InfiniteResearchHelper.UnlockTech(__instance.techProto.ID, effectiveLevel);
           }
           else
           {
-            InfiniteResearchHelper.UnlockTech(__instance.techProto.ID, effectiveLevel);
+            if (lockingMode)
+              InfiniteResearchHelper.LockTech(__instance.techProto.ID);
+            else
+              InfiniteResearchHelper.UnlockTech(__instance.techProto.ID);
           }
-        }
-        else
-        {
-          if (lockingMode)
-          {
-            InfiniteResearchHelper.LockTech(__instance.techProto.ID);
-          }
-          else
-          {
-            InfiniteResearchHelper.UnlockTech(__instance.techProto.ID);
-          }
-        }
+          break;
       }
 
       __runOriginal = false;
