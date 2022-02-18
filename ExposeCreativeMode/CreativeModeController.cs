@@ -23,7 +23,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     InfiniteInventory infiniteInventory;
     InfiniteReach infiniteReach;
     InfinitePower infinitePower;
-    InfiniteResearch infiniteResearch;
+    InstantResearch instantResearch;
 
     public void Free()
     {
@@ -33,12 +33,12 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
         ToggleInfiniteStation();
       if (isInstantBuildActive)
         ToggleInstantBuild();
-      if (infiniteResearch.IsEnabled)
-        infiniteResearch.Disable();
+      if (instantResearch.IsEnabled)
+        instantResearch.Disable();
       if (infiniteReach.IsEnabled)
         infiniteReach.Disable();
       OnActiveChange(false);
-      InfiniteResearchPatch.Unregister(infiniteResearch);
+      InstantResearchPatch.Unregister(instantResearch);
       InfiniteReachPatch.Unregister(infiniteReach);
       InfinitePowerPatch.Unregister(infinitePower);
       InfiniteInventoryPatch.Unregister(infiniteInventory);
@@ -51,7 +51,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       InfiniteInventoryPatch.Register(infiniteInventory = new InfiniteInventory(player));
       InfinitePowerPatch.Register(infinitePower = new InfinitePower());
       InfiniteReachPatch.Register(infiniteReach = new InfiniteReach(player));
-      InfiniteResearchPatch.Register(infiniteResearch = new InfiniteResearch());
+      InstantResearchPatch.Register(instantResearch = new InstantResearch());
       InfiniteResearchHelper.Reinitialize();
     }
 
@@ -72,8 +72,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
             infiniteInventory.Enable();
           if (!isInstantBuildActive)
             ToggleInstantBuild();
-          if (!infiniteResearch.IsEnabled)
-            infiniteResearch.Enable();
+          if (!instantResearch.IsEnabled)
+            instantResearch.Enable();
           if (!infiniteReach.IsEnabled)
             infiniteReach.Enable();
           if (!infinitePower.IsEnabled)
@@ -88,8 +88,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
             ToggleInfiniteStation();
           if (isInstantBuildActive)
             ToggleInstantBuild();
-          if (infiniteResearch.IsEnabled)
-            infiniteResearch.Disable();
+          if (instantResearch.IsEnabled)
+            instantResearch.Disable();
           if (infiniteReach.IsEnabled)
             infiniteReach.Disable();
           if (infinitePower.IsEnabled)
@@ -121,7 +121,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
           CreativeModeFunctions.ModifyAllVeinsHeight(player.factory, veinsBury);
         }
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleInstantResearch).keyValue)
-          infiniteResearch.Toggle();
+          instantResearch.Toggle();
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleInfiniteInventory).keyValue)
           infiniteInventory.Toggle();
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleInfiniteStation).keyValue)
@@ -209,7 +209,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
         }
       }
 
-      infiniteResearch.GameTick();
+      instantResearch.GameTick();
     }
 
     public void ToggleInfiniteStation()

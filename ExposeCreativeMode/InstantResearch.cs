@@ -11,20 +11,20 @@ using CommonAPI.Systems;
 
 namespace DysonSphereProgram.Modding.ExposeCreativeMode
 {
-  public class InfiniteResearch
+  public class InstantResearch
   {
     public bool IsEnabled;
 
     public void Enable()
     {
       IsEnabled = true;
-      Plugin.Log.LogDebug("Infinite Research Enabled");
+      Plugin.Log.LogDebug("Instant Research Enabled");
     }
 
     public void Disable()
     {
       IsEnabled = false;
-      Plugin.Log.LogDebug("Infinite Research Disabled");
+      Plugin.Log.LogDebug("Instant Research Disabled");
     }
 
     public void Toggle()
@@ -55,19 +55,19 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
   }
 
   [HarmonyPatch]
-  public static class InfiniteResearchPatch
+  public static class InstantResearchPatch
   {
-    private static InfiniteResearch infiniteResearch;
+    private static InstantResearch instantResearch;
 
-    public static void Register(InfiniteResearch instance)
+    public static void Register(InstantResearch instance)
     {
-      infiniteResearch = instance;
+      instantResearch = instance;
     }
 
-    public static void Unregister(InfiniteResearch instance)
+    public static void Unregister(InstantResearch instance)
     {
-      if (infiniteResearch == instance)
-        infiniteResearch = null;
+      if (instantResearch == instance)
+        instantResearch = null;
     }
 
     private static int _ModifierAmount()
@@ -86,7 +86,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     [HarmonyPatch(typeof(UITechNode), nameof(UITechNode.UpdateInfoDynamic))]
     static void UpdateInfoPatch(UITechNode __instance)
     {
-      var isEnabled = infiniteResearch?.IsEnabled ?? false;
+      var isEnabled = instantResearch?.IsEnabled ?? false;
       if (!isEnabled)
         return;
 
@@ -145,7 +145,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     [HarmonyPatch(typeof(UITechNode), nameof(UITechNode.OnStartButtonClick))]
     static void StartButtonClickPatch(UITechNode __instance, ref bool __runOriginal)
     {
-      var isEnabled = infiniteResearch?.IsEnabled ?? false;
+      var isEnabled = instantResearch?.IsEnabled ?? false;
       if (!isEnabled)
         return;
 
