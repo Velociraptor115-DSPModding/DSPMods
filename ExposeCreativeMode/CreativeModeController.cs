@@ -13,7 +13,6 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     const string uiVersionTextPath = uiCreativeModeContainerPath + "/" + uiVersionTextName;
     const float uiCreativeModeTextOffset = 0.55f;
 
-    bool isInfiniteStationActive = false;
     bool isInstantBuildActive = false;
     bool veinsBury = false;
 
@@ -21,6 +20,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
     Player player;
     InfiniteInventory infiniteInventory;
+    InfiniteStation infiniteStation;
     InfiniteReach infiniteReach;
     InfinitePower infinitePower;
     InstantResearch instantResearch;
@@ -29,8 +29,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     {
       if (infiniteInventory.IsEnabled)
         infiniteInventory.Disable();
-      if (isInfiniteStationActive)
-        ToggleInfiniteStation();
+      if (infiniteStation.IsEnabled)
+        infiniteStation.Disable();
       if (isInstantBuildActive)
         ToggleInstantBuild();
       if (instantResearch.IsEnabled)
@@ -53,6 +53,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       InfiniteReachPatch.Register(infiniteReach = new InfiniteReach(player));
       InstantResearchPatch.Register(instantResearch = new InstantResearch());
       InfiniteResearchHelper.Reinitialize();
+      infiniteStation = new InfiniteStation();
     }
 
     public void OnInputUpdate()
@@ -84,8 +85,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
           // Disable all creative mode functions when creative mode is disabled
           if (infiniteInventory.IsEnabled)
             infiniteInventory.Disable();
-          if (isInfiniteStationActive)
-            ToggleInfiniteStation();
+          if (infiniteStation.IsEnabled)
+            infiniteStation.Disable();
           if (isInstantBuildActive)
             ToggleInstantBuild();
           if (instantResearch.IsEnabled)
@@ -125,7 +126,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleInfiniteInventory).keyValue)
           infiniteInventory.Toggle();
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleInfiniteStation).keyValue)
-          ToggleInfiniteStation();
+          infiniteStation.Toggle();
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleInstantBuild).keyValue)
           ToggleInstantBuild();
       }
@@ -134,39 +135,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     public void GameTick()
     {
       infiniteInventory.GameTick();
-
-      if (isInfiniteStationActive)
-      {
-        for (int factoryIdx = 0; factoryIdx < GameMain.data.factoryCount; factoryIdx++)
-        {
-          PlanetTransport transport = GameMain.data.factories[factoryIdx].transport;
-          if (transport != null)
-          {
-            for (int stationIdx = 1; stationIdx < transport.stationCursor; stationIdx++)
-            {
-              if (transport.stationPool[stationIdx] != null && transport.stationPool[stationIdx].id == stationIdx)
-              {
-                var ss = transport.stationPool[stationIdx].storage;
-                for (int i = 0; i < ss.Length; i++)
-                {
-                  if (ss[i].itemId > 0)
-                  {
-                    var logic = ss[i].remoteLogic == ELogisticStorage.None ? ss[i].localLogic : ss[i].remoteLogic;
-                    if (logic == ELogisticStorage.Supply && ss[i].count > ss[i].max / 2)
-                    {
-                      ss[i].count = ss[i].max / 2;
-                    }
-                    else if (logic == ELogisticStorage.Demand && ss[i].count < ss[i].max / 2)
-                    {
-                      ss[i].count = ss[i].max / 2;
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+      infiniteStation.GameTick();
 
       if (isInstantBuildActive)
       {
@@ -210,19 +179,6 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       }
 
       instantResearch.GameTick();
-    }
-
-    public void ToggleInfiniteStation()
-    {
-      isInfiniteStationActive = !isInfiniteStationActive;
-      if (isInfiniteStationActive)
-      {
-        Debug.Log("Infinite Station Enabled");
-      }
-      else
-      {
-        Debug.Log("Infinite Station Disabled");
-      }
     }
 
     public void ToggleInstantBuild()
