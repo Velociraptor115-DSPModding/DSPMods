@@ -115,12 +115,12 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
             (false, true) => 2,
             (false, false) => 3
           };
-          CreativeModeFunctions.FlattenPlanet(player.factory, veinsBury, modLevel);
+          PlanetReform.SetPlanetModLevel(player.factory, veinsBury, modLevel);
         }
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleAllVeinsOnPlanet).keyValue && player.factory != null)
         {
           veinsBury = !veinsBury;
-          CreativeModeFunctions.ModifyAllVeinsHeight(player.factory, veinsBury);
+          PlanetReform.ModifyAllVeinsHeight(player.factory, veinsBury);
         }
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleInstantResearch).keyValue)
           instantResearch.Toggle();
