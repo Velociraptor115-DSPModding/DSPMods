@@ -4,7 +4,7 @@ using CommonAPI.Systems;
 
 namespace DysonSphereProgram.Modding.ExposeCreativeMode
 {
-  public class CreativeModeController : IInfinitePowerProvider, IInfiniteReachProvider, IInfiniteResearchProvider
+  public class CreativeModeController : IInfinitePowerProvider, IInfiniteResearchProvider
   {
     const string uiCreativeModeContainerPath = "UI Root/Overlay Canvas/In Game";
     const string uiCreativeModeTextName = "creative-mode-text";
@@ -16,18 +16,15 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     bool isInfiniteStationActive = false;
     bool isInstantBuildActive = false;
     bool isInstantResearchActive = false;
-    bool isInfiniteReachActive = false;
     bool veinsBury = false;
-    float buildAreaRestore;
 
     bool active = false;
 
     Player player;
     InfiniteInventory infiniteInventory;
+    InfiniteReach infiniteReach;
 
     bool IInfinitePowerProvider.IsEnabled => active;
-
-    bool IInfiniteReachProvider.IsEnabled => isInfiniteReachActive;
 
     bool IInfiniteResearchProvider.IsEnabled => isInstantResearchActive;
 
@@ -41,9 +38,11 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
         ToggleInstantBuild();
       if (isInstantResearchActive)
         ToggleInstantResearch();
+      if (infiniteReach.IsEnabled)
+        infiniteReach.Disable();
       OnActiveChange(false);
       InfiniteResearchPatch.Unregister(this);
-      InfiniteReachPatch.Unregister(this);
+      InfiniteReachPatch.Unregister(infiniteReach);
       InfinitePowerPatch.Unregister(this);
       InfiniteInventoryPatch.Unregister(infiniteInventory);
       player = null;
@@ -54,7 +53,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       player = _player;
       InfiniteInventoryPatch.Register(infiniteInventory = new InfiniteInventory(player));
       InfinitePowerPatch.Register(this);
-      InfiniteReachPatch.Register(this);
+      InfiniteReachPatch.Register(infiniteReach = new InfiniteReach(player));
       InfiniteResearchPatch.Register(this);
       InfiniteResearchHelper.Reinitialize();
     }
@@ -78,8 +77,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
             ToggleInstantBuild();
           if (!isInstantResearchActive)
             ToggleInstantResearch();
-          if (!isInfiniteReachActive)
-            ToggleInfiniteReach();
+          if (!infiniteReach.IsEnabled)
+            infiniteReach.Enable();
         }
         else
         {
@@ -92,8 +91,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
             ToggleInstantBuild();
           if (isInstantResearchActive)
             ToggleInstantResearch();
-          if (isInfiniteReachActive)
-            ToggleInfiniteReach();
+          if (infiniteReach.IsEnabled)
+            infiniteReach.Disable();
         }
       }
 
@@ -281,34 +280,6 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       // So we set it's index next to the version-text
       creativeModeText.transform.SetSiblingIndex(versionText.transform.GetSiblingIndex() + 1);
       return creativeModeText;
-    }
-
-    public void ToggleInfiniteReach()
-    {
-      isInfiniteReachActive = !isInfiniteReachActive;
-      if (isInfiniteReachActive)
-      {
-        buildAreaRestore = this.player.mecha.buildArea;
-        this.player.mecha.buildArea = 600;
-        Debug.Log("Instant Reach Enabled");
-      }
-      else
-      {
-        this.player.mecha.buildArea = buildAreaRestore;
-        Debug.Log("Instant Reach Disabled");
-      }
-    }
-
-    void IInfiniteReachProvider.Enable()
-    {
-      if (!isInfiniteReachActive)
-        ToggleInfiniteReach();
-    }
-
-    void IInfiniteReachProvider.Disable()
-    {
-      if (isInfiniteReachActive)
-        ToggleInfiniteReach();
     }
   }
 }

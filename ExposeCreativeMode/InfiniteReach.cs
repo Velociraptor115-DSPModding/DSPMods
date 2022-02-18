@@ -11,34 +11,66 @@ using CommonAPI.Systems;
 
 namespace DysonSphereProgram.Modding.ExposeCreativeMode
 {
-  public interface IInfiniteReachProvider
+  public class InfiniteReach
   {
-    bool IsEnabled { get; }
-    void Enable();
-    void Disable();
+    private readonly Player player;
+    private float? buildAreaRestore;
+    
+    public bool IsEnabled;
+
+    public InfiniteReach(Player player)
+    {
+      this.player = player;
+    }
+    
+    public void Enable()
+    {
+      buildAreaRestore = player.mecha.buildArea;
+      player.mecha.buildArea = 600;
+
+      IsEnabled = true;
+      Plugin.Log.LogDebug("Infinite Reach Enabled");
+    }
+
+    public void Disable()
+    {
+      player.mecha.buildArea = buildAreaRestore.GetValueOrDefault(Configs.freeMode.mechaBuildArea);
+
+      IsEnabled = false;
+      Plugin.Log.LogDebug("Infinite Reach Disabled");
+    }
+
+    public void Toggle()
+    {
+      if (!IsEnabled)
+        Enable();
+      else
+        Disable();
+    }
+    
   }
 
   [HarmonyPatch]
   public static class InfiniteReachPatch
   {
-    private static IInfiniteReachProvider provider;
+    private static InfiniteReach infiniteReach;
 
-    public static void Register(IInfiniteReachProvider p)
+    public static void Register(InfiniteReach instance)
     {
-      provider = p;
+      infiniteReach = instance;
     }
 
-    public static void Unregister(IInfiniteReachProvider p)
+    public static void Unregister(InfiniteReach instance)
     {
-      if (provider == p)
-        provider = null;
+      if (infiniteReach == instance)
+        infiniteReach = null;
     }
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(PlayerAction_Inspect), nameof(PlayerAction_Inspect.GetObjectSelectDistance))]
     static void PatchObjectSelectDistance(ref float __result, EObjectType objType, int objid)
     {
-      var isInfiniteReachActive = provider?.IsEnabled ?? false;
+      var isInfiniteReachActive = infiniteReach?.IsEnabled ?? false;
       if (!isInfiniteReachActive)
         return;
 
@@ -50,10 +82,10 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     static void BeforeSaveCurrentGame(ref bool __state)
     {
       __state = false;
-      if (provider != null && provider.IsEnabled)
+      if (infiniteReach != null && infiniteReach.IsEnabled)
       {
         __state = true;
-        provider.Disable();
+        infiniteReach.Disable();
       }
     }
 
@@ -61,9 +93,9 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     [HarmonyPatch(typeof(GameSave), nameof(GameSave.SaveCurrentGame))]
     static void AfterSaveCurrentGame(ref bool __state)
     {
-      if (__state && provider != null)
+      if (__state && infiniteReach != null)
       {
-        provider.Enable();
+        infiniteReach.Enable();
       }
     }
   }
