@@ -13,23 +13,33 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 {
   public class InstantResearch
   {
-    public bool IsEnabled;
+    private bool isEnabled;
+    public bool IsEnabled
+    {
+      get => isEnabled;
+      set
+      {
+        if (isEnabled == value)
+          return;
+        if (value) Enable(); else Disable();
+      }
+    }
 
     public void Enable()
     {
-      IsEnabled = true;
+      isEnabled = true;
       Plugin.Log.LogDebug("Instant Research Enabled");
     }
 
     public void Disable()
     {
-      IsEnabled = false;
+      isEnabled = false;
       Plugin.Log.LogDebug("Instant Research Disabled");
     }
 
     public void Toggle()
     {
-      if (!IsEnabled)
+      if (!isEnabled)
         Enable();
       else
         Disable();
@@ -37,7 +47,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
     public void GameTick()
     {
-      if (!IsEnabled)
+      if (!isEnabled)
         return;
       ResearchCurrentTechInstantly();
     }

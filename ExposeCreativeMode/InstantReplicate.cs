@@ -40,26 +40,37 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 {
   public class InstantReplicate
   {
-    public bool IsEnabled;
+    private bool isEnabled;
+    
+    public bool IsEnabled
+    {
+      get => isEnabled;
+      set
+      {
+        if (isEnabled == value)
+          return;
+        if (value) Enable(); else Disable();
+      }
+    }
     public bool IsInstant = true;
     public bool IsFree = true;
     public bool AllowAll = true;
     
     public void Enable()
     {
-      IsEnabled = true;
+      isEnabled = true;
       Plugin.Log.LogDebug("Instant Replicate Enabled");
     }
 
     public void Disable()
     {
-      IsEnabled = false;
+      isEnabled = false;
       Plugin.Log.LogDebug("Instant Replicate Disabled");
     }
 
     public void Toggle()
     {
-      if (!IsEnabled)
+      if (!isEnabled)
         Enable();
       else
         Disable();

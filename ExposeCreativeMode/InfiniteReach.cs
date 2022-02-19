@@ -16,7 +16,17 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     private readonly Player player;
     private float? buildAreaRestore;
     
-    public bool IsEnabled;
+    private bool isEnabled;
+    public bool IsEnabled
+    {
+      get => isEnabled;
+      set
+      {
+        if (isEnabled == value)
+          return;
+        if (value) Enable(); else Disable();
+      }
+    }
 
     public InfiniteReach(Player player)
     {
@@ -28,7 +38,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       buildAreaRestore = player.mecha.buildArea;
       player.mecha.buildArea = 600;
 
-      IsEnabled = true;
+      isEnabled = true;
       Plugin.Log.LogDebug("Infinite Reach Enabled");
     }
 
@@ -36,13 +46,13 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     {
       player.mecha.buildArea = buildAreaRestore.GetValueOrDefault(Configs.freeMode.mechaBuildArea);
 
-      IsEnabled = false;
+      isEnabled = false;
       Plugin.Log.LogDebug("Infinite Reach Disabled");
     }
 
     public void Toggle()
     {
-      if (!IsEnabled)
+      if (!isEnabled)
         Enable();
       else
         Disable();

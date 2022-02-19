@@ -14,23 +14,33 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 {
   public class InfinitePower
   {
-    public bool IsEnabled;
+    private bool isEnabled;
+    public bool IsEnabled
+    {
+      get => isEnabled;
+      set
+      {
+        if (isEnabled == value)
+          return;
+        if (value) Enable(); else Disable();
+      }
+    }
 
     public void Enable()
     {
-      IsEnabled = true;
+      isEnabled = true;
       Plugin.Log.LogDebug("Infinite Power Enabled");
     }
 
     public void Disable()
     {
-      IsEnabled = false;
+      isEnabled = false;
       Plugin.Log.LogDebug("Infinite Power Disabled");
     }
 
     public void Toggle()
     {
-      if (!IsEnabled)
+      if (!isEnabled)
         Enable();
       else
         Disable();

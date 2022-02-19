@@ -17,8 +17,19 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     private int prevInventorySize;
     private IList<int> cachedItemIds;
     private float cachedTime;
+    private bool isEnabled;
 
-    public bool IsEnabled;
+    public bool IsEnabled
+    {
+      get => isEnabled;
+      set
+      {
+        if (isEnabled == value)
+          return;
+        if (value) Enable(); else Disable();
+      }
+    }
+
     public bool IncludeLocked = true;
     public StorageComponent storage => infiniteInventory;
 
@@ -46,9 +57,9 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
         player.package = infiniteInventory;
         prevInventorySize = infiniteInventory.size;
       }
-      UpdateUI();
+      UpdateUI(true);
 
-      IsEnabled = true;
+      isEnabled = true;
       Plugin.Log.LogDebug("Infinite Inventory Enabled");
     }
 
@@ -63,21 +74,21 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       if (sandRestore.HasValue)
         player.sandCount = sandRestore.Value;
       sandRestore = null;
-      UpdateUI();
+      UpdateUI(false);
 
-      IsEnabled = false;
+      isEnabled = false;
       Plugin.Log.LogDebug("Infinite Inventory Disabled");
     }
 
     public void Toggle()
     {
-      if (!IsEnabled)
+      if (!isEnabled)
         Enable();
       else
         Disable();
     }
 
-    private void UpdateUI()
+    private void UpdateUI(bool enabled)
     {
       var inventoryWindowTitle =
         GameObject.Find("UI Root/Overlay Canvas/In Game/Windows/Player Inventory/panel-bg/title-text");
@@ -85,7 +96,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
       if (title != null)
       {
-        if (IsEnabled)
+        if (enabled)
           title.text = title.text.Replace("(Infinite)", "").Trim() + " (Infinite)";
         else
           title.text = title.text.Replace("(Infinite)", "").Trim();
@@ -94,7 +105,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
     public void GameTick()
     {
-      if (!IsEnabled)
+      if (!isEnabled)
         return;
 
       if (Time.time - cachedTime > 1f)
@@ -210,11 +221,11 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     static void BeforeSaveCurrentGame(ref bool __state)
     {
       __state = false;
-      if (infiniteInventory != null && infiniteInventory.IsEnabled)
-      {
-        __state = true;
-        infiniteInventory.Disable();
-      }
+      if (infiniteInventory is not { IsEnabled: true })
+        return;
+      
+      __state = true;
+      infiniteInventory.Disable();
     }
 
     [HarmonyPostfix]

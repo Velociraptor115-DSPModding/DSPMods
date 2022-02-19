@@ -14,23 +14,33 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 {
   public class InfiniteStation
   {
-    public bool IsEnabled;
+    private bool isEnabled;
+    public bool IsEnabled
+    {
+      get => isEnabled;
+      set
+      {
+        if (isEnabled == value)
+          return;
+        if (value) Enable(); else Disable();
+      }
+    }
 
     public void Enable()
     {
-      IsEnabled = true;
+      isEnabled = true;
       Plugin.Log.LogDebug("Infinite Station Enabled");
     }
 
     public void Disable()
     {
-      IsEnabled = false;
+      isEnabled = false;
       Plugin.Log.LogDebug("Infinite Station Disabled");
     }
 
     public void Toggle()
     {
-      if (!IsEnabled)
+      if (!isEnabled)
         Enable();
       else
         Disable();
@@ -38,7 +48,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
     public void GameTick()
     {
-      if (!IsEnabled)
+      if (!isEnabled)
         return;
       
       for (int factoryIdx = 0; factoryIdx < GameMain.data.factoryCount; factoryIdx++)

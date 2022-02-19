@@ -15,7 +15,13 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
     bool veinsBury = false;
 
-    bool active = false;
+    private bool active = false;
+
+    public bool Active
+    {
+      get => active;
+      set => SetActive(value);
+    }
 
     Player player;
     InfiniteInventory infiniteInventory;
@@ -28,22 +34,12 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
     public void Free()
     {
-      if (infiniteInventory.IsEnabled)
-        infiniteInventory.Disable();
-      if (infiniteStation.IsEnabled)
-        infiniteStation.Disable();
-      if (instantBuild.IsEnabled)
-        instantBuild.Disable();
-      if (instantResearch.IsEnabled)
-        instantResearch.Disable();
-      if (infiniteReach.IsEnabled)
-        infiniteReach.Disable();
-      OnActiveChange(false);
       InstantReplicatePatch.Unregister(instantReplicate);
       InstantResearchPatch.Unregister(instantResearch);
       InfiniteReachPatch.Unregister(infiniteReach);
       InfinitePowerPatch.Unregister(infinitePower);
       InfiniteInventoryPatch.Unregister(infiniteInventory);
+      Active = false;
       player = null;
     }
 
@@ -64,46 +60,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     {
       if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleCreativeMode).keyValue)
       {
-        active = !active;
-        OnActiveChange(active);
-
-        // Auto-enable commonly used creative mode functions
-        if (active)
-        {
-          // Disable achievements for the save
-          player.controller.gameData.gameDesc.achievementEnable = false;
-
-          if (!infiniteInventory.IsEnabled)
-            infiniteInventory.Enable();
-          if (!instantBuild.IsEnabled)
-            instantBuild.Enable();
-          if (!instantResearch.IsEnabled)
-            instantResearch.Enable();
-          if (!infiniteReach.IsEnabled)
-            infiniteReach.Enable();
-          if (!infinitePower.IsEnabled)
-            infinitePower.Enable();
-          if (!instantReplicate.IsEnabled)
-            instantReplicate.Enable();
-        }
-        else
-        {
-          // Disable all creative mode functions when creative mode is disabled
-          if (infiniteInventory.IsEnabled)
-            infiniteInventory.Disable();
-          if (infiniteStation.IsEnabled)
-            infiniteStation.Disable();
-          if (instantBuild.IsEnabled)
-            instantBuild.Disable();
-          if (instantResearch.IsEnabled)
-            instantResearch.Disable();
-          if (infiniteReach.IsEnabled)
-            infiniteReach.Disable();
-          if (infinitePower.IsEnabled)
-            infinitePower.Disable();
-          if (instantReplicate.IsEnabled)
-            instantReplicate.Disable();
-        }
+        Active = !Active;
       }
 
       if (active)
@@ -138,6 +95,45 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleInstantBuild).keyValue)
           instantBuild.Toggle();
       }
+    }
+
+    public void SetActive(bool value)
+    {
+      if (value == active)
+        return;
+      active = value;
+      
+      // Auto-enable commonly used creative mode functions
+      if (active)
+      {
+        // Disable achievements for the save
+        player.controller.gameData.gameDesc.achievementEnable = false;
+
+        if (CreativeModeConfig.autoEnableInfiniteInventory.Value)
+          infiniteInventory.IsEnabled = true;
+        if (CreativeModeConfig.autoEnableInstantBuild.Value)
+          instantBuild.IsEnabled = true;
+        if (CreativeModeConfig.autoEnableInstantResearch.Value)
+          instantResearch.IsEnabled = true;
+        if (CreativeModeConfig.autoEnableInfiniteReach.Value)
+          infiniteReach.IsEnabled = true;
+        if (CreativeModeConfig.autoEnableInfinitePower.Value)
+          infinitePower.IsEnabled = true;
+        if (CreativeModeConfig.autoEnableInstantReplicate.Value)
+          instantReplicate.IsEnabled = true;
+      }
+      else
+      {
+        // Disable all creative mode functions when creative mode is disabled
+        infiniteInventory.IsEnabled = false;
+        infiniteStation.IsEnabled = false;
+        instantBuild.IsEnabled = false;
+        instantResearch.IsEnabled = false;
+        infiniteReach.IsEnabled = false;
+        infinitePower.IsEnabled = false;
+        instantReplicate.IsEnabled = false;
+      }
+      OnActiveChange(active);
     }
 
     public void GameTick()

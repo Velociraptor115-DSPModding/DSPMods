@@ -28,6 +28,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     {
       Plugin.Log = Logger;
       _harmony = new Harmony(GUID);
+      CreativeModeConfig.Init(Config);
       _harmony.PatchAll(typeof(InfiniteInventoryPatch));
       _harmony.PatchAll(typeof(InfinitePowerPatch));
       _harmony.PatchAll(typeof(InfiniteReachPatch));
