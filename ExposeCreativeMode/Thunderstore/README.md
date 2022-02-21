@@ -2,11 +2,17 @@
 This mod allows you to enable "Creative Mode" and play without limitations (Well, atleast without a few limitations)  
 Enabling "Creative Mode" will disable achievements for the save, so keep a separate save to use it on.
 
+## What's new in this update?
+* Adapted Instant Handcraft and Free Handcraft from [DSPCheats](https://dsp.thunderstore.io/package/Windows10CE/DSPCheats/) by [Windows10CE](https://dsp.thunderstore.io/package/Windows10CE/) as Instant Replicate
+* Added save support, so you will now keep your creative mode settings from when you saved it. The mod continues to preserve vanilla save compatibility, so your creative saves can be loaded in vanilla or without the mod.
+* Added a settings UI, so it will be easier to figure out if a particular mode is active or not
+
 ## How to use this mod
 * First install the mod, and reboot the game.
-* Press Shift + F4 to toggle creative mode  
-  (**Note**: Enabling creative mode will auto-enable Infinite Inventory, Instant Build and Instant Research)
-* You need to be in creative mode to use the rest of the functions below
+* Press Shift + F4 to open the creative mode settings window
+![Creative Mode Settings Window](https://github.com/Velociraptor115/DSPMods/blob/main/ExposeCreativeMode/Docs/CreativeModeSettingsWindow.png?raw=true)
+![Creative Mode Settings Window Enabled](https://github.com/Velociraptor115/DSPMods/blob/main/ExposeCreativeMode/Docs/CreativeModeSettingsWindow_Enabled.png?raw=true)
+* You need to enable creative mode to use the rest of the functions below
 
 ## Functions
 
@@ -15,24 +21,38 @@ All controls are rebindable. Detailed explanation of functions are given further
 | Function                          | Default Keybind                | Description |
 | --------------------------------- | ------------------------------ | ----------- |
 | Infinite&nbsp;Inventory           | Ctrl&nbsp;+&nbsp;Numpad&nbsp;1 | Toggles Infinite Inventory mode |
-| Instant&nbsp;Build                | Ctrl&nbsp;+&nbsp;Numpad&nbsp;2 | Toggles Instant Build mode |
+| Infinite&nbsp;Station             | Ctrl&nbsp;+&nbsp;Numpad&nbsp;0 | Toggles Infinite Station mode |
+| Infinite&nbsp;Reach               | -                              | Auto-enabled when in creative mode |
+| Infinite&nbsp;Power               | -                              | Auto-enabled when in creative mode  |
 | Instant&nbsp;Research             | Ctrl&nbsp;+&nbsp;Numpad&nbsp;6 | Toggles Instant Research mode |
 | Lock&nbsp;Research                | L                              | While Instant Research mode is active, hold this keybind to toggle locking tech |
-| Infinite&nbsp;Power               | -                              | Auto-enabled when in creative mode  |
-| Infinite&nbsp;Reach               | -                              | Auto-enabled when in creative mode |
+| Instant&nbsp;Build                | Ctrl&nbsp;+&nbsp;Numpad&nbsp;2 | Toggles Instant Build mode |
+| Instant&nbsp;Replicate            | -                              | Toggles Instant Replicate mode<br><br> This is an adaptation of Instant Handcraft and Free Handcraft from [DSPCheats](https://dsp.thunderstore.io/package/Windows10CE/DSPCheats/) by [Windows10CE](https://dsp.thunderstore.io/package/Windows10CE/) |
 | Unlock&nbsp;all&nbsp;tech         | Ctrl&nbsp;+&nbsp;T             | Press keybind to unlock all tech<br>5 levels of each infinite tech will be unlocked |
 | Flatten&nbsp;Terrain              | Numpad&nbsp;3                  | Foundations entire planet with the "no decoration" option |
 | Restore&nbsp;Terrain              | -                              | Hold a combination of the Ctrl and Shift keys while pressing the "Flatten Terrain" keybind to restore terrain<br><br>Ctrl - Restore shallow oceans<br>Shift - Restore mid-level oceans<br>Ctrl + Shift - Restore deep oceans<br><br>You will not be able to apply foundation over restored terrain using the foundation tool, unless you also install the [UncoverFoundationedOceans](https://dsp.thunderstore.io/package/Raptor/UncoverFoundationedOceans/) mod.<br> I recommend to install that mod also so that you can partially flatten an area after restoring terrain, otherwise you will have to "Flatten Terrain" again to be able to build on ocean level area |
 | Bury&nbsp;/&nbsp;Raise&nbsp;Veins | Numpad&nbsp;4                  | Toggles bury/raise all veins on the planet |
-| Infinite&nbsp;Station             | Ctrl&nbsp;+&nbsp;Numpad&nbsp;0 | Toggles Infinite Station mode |
 
 ### Infinite Inventory mode
 
-* Makes the player inventory have all items present in the game
+* Makes the player inventory have all unlocked items in the game
+* If "Include Locked Items" is enabled, then all the items present in the game will be available in the inventory
 * All items are reset to 9999, with the stack size being 30000 every frame
 * Because the stack is greater, items which go into the inventory are effectively "deleted"  
 
-(**Note**: Infinite Inventory is skipped when saving game data, so you will have your previous inventory when you load it the next time)
+### Infinite Station mode
+
+* This mode is primarily for testing blueprints, by making stations infinitely output to belt and consume from belt without needing any drones/vessels
+* Makes all stations set to supply have items less than half of max
+* Makes all stations set to demand have items more than half of max
+* In the case of ILS, only remote supply/demand is checked. If remote is set to storage, then local is taken
+
+### Infinite Reach
+* You can now inspect, interact with, build and delete items across the entire planet. Inspect works even in Planet View mode
+
+### Infinite Power
+* All buildings connected to a power network will work at 100% regardless of the amount of power supply
+* Buildings not connected to a power network will still **NOT** work
 
 ### Instant Research mode
 
@@ -46,19 +66,11 @@ All controls are rebindable. Detailed explanation of functions are given further
   | Shift        |  100 |
   | Ctrl + Shift | 1000 |  
 
-### Infinite Station mode
-
-* This mode is primarily for testing blueprints, by making stations infinitely output to belt and consume from belt without needing any drones/vessels
-* Makes all stations set to supply have items less than half of max
-* Makes all stations set to demand have items more than half of max
-* In the case of ILS, only remote supply/demand is checked. If remote is set to storage, then local is taken
-
-### Infinite Power
-* All buildings connected to a power network will work at 100% regardless of the amount of power supply
-* Buildings not connected to a power network will still **NOT** work
-
-### Infinite Reach
-* You can now inspect, interact with, build and delete items across the entire planet. Inspect works even in Planet View mode
+### Instant Replicate
+* The 3 options govern how Instant Replicate works. When all of them are off, it is no different from vanilla
+  * **Is Instant**: Replicates every item in a single frame
+  * **Is Free**: Does not use any materials from inventory for replicating
+  * **Allow All**: Allows to replicate materials marked "Cannot make in replicator"
 
 ## Contact / Feedback / Bug Reports
 You can either find me on the DSP Discord's #modding channel  
@@ -66,6 +78,13 @@ Or you can create an issue on [GitHub](https://github.com/Velociraptor115/DSPMod
 \- Raptor#4825
 
 ## Changelog
+
+### [v0.0.14](https://dsp.thunderstore.io/package/Raptor/ExposeCreativeMode/0.0.14/)
+* Revamp internal working of the mod
+* Removed code reverse patched from `PlayerAction_Test` in favour of custom code
+* Add DSPCheat's InstantHandcraft and FreeHandcraft
+* Add save support
+* Add settings UI
 
 ### [v0.0.13](https://dsp.thunderstore.io/package/Raptor/ExposeCreativeMode/0.0.13/)
 * Disable achievements for the save when enabling creative mode
