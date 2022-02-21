@@ -9,6 +9,7 @@ using UnityEngine;
 using CommonAPI;
 using CommonAPI.Systems;
 using crecheng.DSPModSave;
+using DysonSphereProgram.Modding.ExposeCreativeMode.UI.Builder;
 
 namespace DysonSphereProgram.Modding.ExposeCreativeMode
 {
@@ -35,6 +36,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       _harmony.PatchAll(typeof(InfiniteReachPatch));
       _harmony.PatchAll(typeof(InstantResearchPatch));
       _harmony.PatchAll(typeof(InstantReplicatePatch));
+      _harmony.PatchAll(typeof(UIPatches));
       CreativeModeLifecyclePatches.ApplyPatch(_harmony);
       _harmony.PatchAll(typeof(VanillaSavePreservationPatch));
       KeyBinds.RegisterKeyBinds();
@@ -71,6 +73,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     public static void ApplyPatch(Harmony harmony)
     {
       harmony.PatchAll(typeof(CreativeModeLifecyclePatches));
+      UIBuilderPlugin.Create(Plugin.GUID, UIManager.CreateUIManager);
       var player = GameMain.mainPlayer;
       if (player != null)
         Create(ref player);
@@ -78,7 +81,9 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
     public static void DestroyPatch()
     {
-      instance.Free();
+      Free();
+      UIManager.DestroyUIManager();
+      UIBuilderPlugin.Destroy();
     }
     
     [HarmonyPostfix]
@@ -93,6 +98,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
       instance = new CreativeModeController();
       instance.Init(__result);
+      UIManager.Instance?.Init(instance);
     }
 
     [HarmonyPostfix]
@@ -115,7 +121,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     {
       if (instance == null)
         return;
-      
+      UIManager.Instance?.Free();
       instance.Free();
       instance = null;
     }

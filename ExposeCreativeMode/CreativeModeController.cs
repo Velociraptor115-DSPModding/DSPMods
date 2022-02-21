@@ -14,7 +14,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     const string uiVersionTextPath = uiCreativeModeContainerPath + "/" + uiVersionTextName;
     const float uiCreativeModeTextOffset = 0.55f;
 
-    bool veinsBury = false;
+    public bool veinsBury = false;
 
     private bool active = false;
 
@@ -24,14 +24,14 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       set => SetActive(value);
     }
 
-    Player player;
-    InfiniteInventory infiniteInventory;
-    InfiniteStation infiniteStation;
-    InfiniteReach infiniteReach;
-    InfinitePower infinitePower;
-    InstantResearch instantResearch;
-    InstantBuild instantBuild;
-    InstantReplicate instantReplicate;
+    public Player player;
+    public InfiniteInventory infiniteInventory;
+    public InfiniteStation infiniteStation;
+    public InfiniteReach infiniteReach;
+    public InfinitePower infinitePower;
+    public InstantResearch instantResearch;
+    public InstantBuild instantBuild;
+    public InstantReplicate instantReplicate;
 
     public void Free()
     {
@@ -61,7 +61,17 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     {
       if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleCreativeMode).keyValue)
       {
-        Active = !Active;
+        var window = UIManager.Instance?.window;
+        if (window)
+        {
+          if (window.active)
+            window._Close();
+          else
+          {
+            window._Open();
+            window.transform.SetAsLastSibling();
+          }
+        }
       }
 
       if (active)

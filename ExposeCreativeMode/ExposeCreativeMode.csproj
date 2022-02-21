@@ -1,9 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>10.0</LangVersion>
+    <RootNamespace>DysonSphereProgram.Modding.ExposeCreativeMode</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,6 +13,10 @@
     <PackageReference Include="DysonSphereProgram.Modding.CommonAPI" Version="*" IncludeAssets="compile" PrivateAssets="all" />
     <PackageReference Include="DysonSphereProgram.Modding.DSPModSave" Version="1.1.3" IncludeAssets="compile" PrivateAssets="all" />
     <PackageReference Include="UnityEngine.Modules" Version="2018.4.12" IncludeAssets="compile" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DysonSphereProgram.Modding.UI.Builder" Version="0.0.1" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>
