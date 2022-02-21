@@ -14,7 +14,7 @@ namespace DysonSphereProgram.Modding.UncoverFoundationedOceans
   {
     public const string GUID = "dev.raptor.dsp.UncoverFoundationedOceans";
     public const string NAME = "UncoverFoundationedOceans";
-    public const string VERSION = "0.0.2";
+    public const string VERSION = "0.0.3";
 
     private Harmony _harmony;
     internal static ManualLogSource Log;

@@ -13,6 +13,9 @@ Please contact me in case of any bugs, or if you have suggestions to improve thi
 
 ## Changelog
 
+### [v0.0.3](https://dsp.thunderstore.io/package/Raptor/UncoverFoundationedOceans/0.0.3/)
+* Fix a transient error when trying to foundation on a fresh planet
+
 ### [v0.0.2](https://dsp.thunderstore.io/package/Raptor/UncoverFoundationedOceans/0.0.2/)
 * Fix soil calculations to be exactly reversible
 * Fix [unnecessary foundation usage](https://github.com/Velociraptor115/DSPMods/issues/6)
