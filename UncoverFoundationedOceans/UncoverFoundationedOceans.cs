@@ -153,6 +153,7 @@ namespace DysonSphereProgram.Modding.UncoverFoundationedOceans
         Array.Copy(__instance.cursorIndices, cursorIndicesRestore, cursorIndicesRestore.Length);
       var countToCover = __instance.brushSize * __instance.brushSize;
       var platformSystem = __instance.factory.platformSystem;
+      platformSystem.EnsureReformData();
       for (var i = 0; i < countToCover; i++)
       {
         var reformIndex = __instance.cursorIndices[i];
