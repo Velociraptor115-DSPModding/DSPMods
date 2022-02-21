@@ -184,6 +184,26 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
           uiGame.OpenPlayerInventory();
       }
     }
+    
+    public void PreserveVanillaSaveBefore()
+    {
+      if (!isEnabled)
+        return;
+      
+      if (infiniteInventoryRestore != null)
+        player.package = infiniteInventoryRestore;
+      if (sandRestore.HasValue)
+        player.sandCount = sandRestore.Value;
+    }
+
+    public void PreserveVanillaSaveAfter()
+    {
+      if (!isEnabled)
+        return;
+
+      player.package = infiniteInventory;
+      player.sandCount = 999999;
+    }
   }
 
   [HarmonyPatch]

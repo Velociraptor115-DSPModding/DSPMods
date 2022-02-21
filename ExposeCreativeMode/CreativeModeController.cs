@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using CommonAPI.Systems;
 
@@ -171,6 +172,52 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       // So we set it's index next to the version-text
       creativeModeText.transform.SetSiblingIndex(versionText.transform.GetSiblingIndex() + 1);
       return creativeModeText;
+    }
+
+    const int saveLogicVersion = 1;
+    public void PreserveVanillaSaveBefore()
+    {
+      infiniteInventory.PreserveVanillaSaveBefore();
+      infiniteReach.PreserveVanillaSaveBefore();
+    }
+
+    public void PreserveVanillaSaveAfter()
+    {
+      infiniteInventory.PreserveVanillaSaveAfter();
+      infiniteReach.PreserveVanillaSaveAfter();
+    }
+    
+    public void Export(BinaryWriter w)
+    {
+      w.Write(saveLogicVersion);
+      w.Write(Active);
+      w.Write(infiniteInventory.IncludeLocked);
+      w.Write(infiniteInventory.IsEnabled);
+      w.Write(infiniteStation.IsEnabled);
+      w.Write(infiniteReach.IsEnabled);
+      w.Write(infinitePower.IsEnabled);
+      w.Write(instantResearch.IsEnabled);
+      w.Write(instantBuild.IsEnabled);
+      w.Write(instantReplicate.IsInstant);
+      w.Write(instantReplicate.IsFree);
+      w.Write(instantReplicate.AllowAll);
+      w.Write(instantReplicate.IsEnabled);
+    }
+    public void Import(BinaryReader r)
+    {
+      var saveLogicVersion = r.ReadInt32();
+      Active = r.ReadBoolean();
+      infiniteInventory.IncludeLocked = r.ReadBoolean();
+      infiniteInventory.IsEnabled = r.ReadBoolean();
+      infiniteStation.IsEnabled = r.ReadBoolean();
+      infiniteReach.IsEnabled = r.ReadBoolean();
+      infinitePower.IsEnabled = r.ReadBoolean();
+      instantResearch.IsEnabled = r.ReadBoolean();
+      instantBuild.IsEnabled = r.ReadBoolean();
+      instantReplicate.IsInstant = r.ReadBoolean();
+      instantReplicate.IsFree = r.ReadBoolean();
+      instantReplicate.AllowAll = r.ReadBoolean();
+      instantReplicate.IsEnabled = r.ReadBoolean();
     }
   }
 }

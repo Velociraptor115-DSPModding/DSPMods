@@ -58,6 +58,21 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
         Disable();
     }
     
+    public void PreserveVanillaSaveBefore()
+    {
+      if (!isEnabled)
+        return;
+      
+      player.mecha.buildArea = buildAreaRestore.GetValueOrDefault(Configs.freeMode.mechaBuildArea);
+    }
+
+    public void PreserveVanillaSaveAfter()
+    {
+      if (!isEnabled)
+        return;
+
+      player.mecha.buildArea = 600;
+    }
   }
 
   [HarmonyPatch]

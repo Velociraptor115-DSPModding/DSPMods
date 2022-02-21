@@ -8,6 +8,7 @@ using HarmonyLib;
 using UnityEngine;
 using CommonAPI;
 using CommonAPI.Systems;
+using crecheng.DSPModSave;
 
 namespace DysonSphereProgram.Modding.ExposeCreativeMode
 {
@@ -15,7 +16,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
   [BepInProcess("DSPGAME.exe")]
   [BepInDependency(CommonAPIPlugin.GUID)]
   [CommonAPISubmoduleDependency(nameof(ProtoRegistry), nameof(CustomKeyBindSystem))]
-  public class Plugin : BaseUnityPlugin
+  public class Plugin : BaseUnityPlugin, IModCanSave
   {
     public const string GUID = "dev.raptor.dsp.ExposeCreativeMode";
     public const string NAME = "ExposeCreativeMode";
@@ -35,6 +36,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       _harmony.PatchAll(typeof(InstantResearchPatch));
       _harmony.PatchAll(typeof(InstantReplicatePatch));
       CreativeModeLifecyclePatches.ApplyPatch(_harmony);
+      _harmony.PatchAll(typeof(VanillaSavePreservationPatch));
       KeyBinds.RegisterKeyBinds();
       Logger.LogInfo("ExposeCreativeMode Awake() called");
     }
@@ -46,12 +48,25 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       _harmony?.UnpatchSelf();
       Plugin.Log = null;
     }
+    
+    public void Export(BinaryWriter w)
+    {
+      CreativeModeLifecyclePatches.instance.Export(w);
+    }
+    public void Import(BinaryReader r)
+    {
+      CreativeModeLifecyclePatches.instance.Import(r);
+    }
+    public void IntoOtherSave()
+    {
+      
+    }
   }
   
   [HarmonyPatch]
   public static class CreativeModeLifecyclePatches
   {
-    private static CreativeModeController instance;
+    internal static CreativeModeController instance;
 
     public static void ApplyPatch(Harmony harmony)
     {
@@ -103,6 +118,22 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       
       instance.Free();
       instance = null;
+    }
+  }
+  
+  [HarmonyPatch(typeof(GameSave), nameof(GameSave.SaveCurrentGame))]
+  class VanillaSavePreservationPatch
+  {
+    [HarmonyPrefix]
+    static void Prefix()
+    {
+      CreativeModeLifecyclePatches.instance?.PreserveVanillaSaveBefore();
+    }
+
+    [HarmonyPostfix]
+    static void Postfix()
+    {
+      CreativeModeLifecyclePatches.instance?.PreserveVanillaSaveAfter();
     }
   }
 }
