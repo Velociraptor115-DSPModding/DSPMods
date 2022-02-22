@@ -1,0 +1,7 @@
+{
+  "name": "UIEnchancements",
+  "version_number": "0.0.1",
+  "website_url": "https://github.com/Velociraptor115/DSPMods",
+  "description": "Enhances DSP's UI for ease=of-use",
+  "dependencies": [ "xiaoye97-BepInEx-5.4.11" ]
+}
