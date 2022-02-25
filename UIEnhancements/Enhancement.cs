@@ -23,7 +23,7 @@ namespace DysonSphereProgram.Modding.UIEnhancements
 
     public void LifecycleUseConfig(ConfigFile configFile)
     {
-      IsEnabled = configFile.Bind(enhancementEnableDisableSection, Name, true);
+      IsEnabled = configFile.Bind(enhancementEnableDisableSection, Name, false);
       UseConfig(configFile);
     }
 
