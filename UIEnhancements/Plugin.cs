@@ -25,6 +25,8 @@ namespace DysonSphereProgram.Modding.UIEnhancements
       enhancements.Add(new EditableStationStorageMax());
       enhancements.Add(new UnrestrictedUIScaler());
       enhancements.Add(new PartialOffscreenWindows());
+      enhancements.Add(new HideRealTimeDisplay());
+      enhancements.Add(new HideGameTimeDisplay());
       
       _harmony = new Harmony(GUID);
       enhancements.ForEach(x => x.LifecycleUseConfig(Config));
