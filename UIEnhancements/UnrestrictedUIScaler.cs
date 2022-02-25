@@ -28,7 +28,7 @@ public class UnrestrictedUIScaler: EnhancementBase
   
   protected override void UseConfig(ConfigFile configFile)
   {
-    uiScale = configFile.Bind("UI Scaler", "UI Reference Height", 900);
+    uiScale = configFile.Bind(ConfigSection, "UI Reference Height", 900);
   }
   protected override void Patch(Harmony _harmony)
   {
@@ -218,8 +218,8 @@ public class UnrestrictedUIScaler: EnhancementBase
     }
   }
   
-  protected override string EnhancementKey => nameof(UnrestrictedUIScaler);
-  
+  protected override string Name => "Unrestricted UI Scaler";
+
   [HarmonyPostfix]
   [HarmonyPatch(typeof(GameOption), nameof(GameOption.Apply))]
   public static void ApplyUIScaleAgain()

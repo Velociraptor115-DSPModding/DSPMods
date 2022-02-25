@@ -160,5 +160,5 @@ public class EditableStationStorageMax: EnhancementBase
   {
     
   }
-  protected override string EnhancementKey => nameof(EditableStationStorageMax);
+  protected override string Name => "Editable Station Storage Max";
 }

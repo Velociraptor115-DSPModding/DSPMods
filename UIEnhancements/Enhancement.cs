@@ -1,4 +1,4 @@
-﻿using BepInEx;
+using BepInEx;
 using BepInEx.Configuration;
 using HarmonyLib;
 
@@ -13,15 +13,17 @@ namespace DysonSphereProgram.Modding.UIEnhancements
     protected abstract void CreateUI();
     protected abstract void DestroyUI();
     
-    protected abstract string EnhancementKey { get; }
+    protected abstract string Name { get; }
 
-    public const string enhancementEnableDisableSection = "Enable / Disable Enhancements";
+    protected string ConfigSection => "## " + Name;
+
+    public const string enhancementEnableDisableSection = "# Enable / Disable Enhancements";
 
     public ConfigEntry<bool> IsEnabled;
 
     public void LifecycleUseConfig(ConfigFile configFile)
     {
-      IsEnabled = configFile.Bind(enhancementEnableDisableSection, EnhancementKey, true);
+      IsEnabled = configFile.Bind(enhancementEnableDisableSection, Name, true);
       UseConfig(configFile);
     }
 
