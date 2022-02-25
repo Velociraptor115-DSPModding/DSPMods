@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DysonSphereProgram.Modding.UI.Builder" Version="0.0.2" PrivateAssets="all" />
+    <PackageReference Include="DysonSphereProgram.Modding.UI.Builder" Version="0.0.3" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>
