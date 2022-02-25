@@ -1,3 +1,4 @@
+﻿using System;
 using BepInEx;
 using BepInEx.Configuration;
 using HarmonyLib;
@@ -31,28 +32,56 @@ namespace DysonSphereProgram.Modding.UIEnhancements
     {
       if (!IsEnabled.Value)
         return;
-      Patch(_harmony);
+      try
+      {
+        Patch(_harmony);
+      }
+      catch (Exception e)
+      {
+        Plugin.Log.LogError(e);
+      }
     }
 
     public void LifecycleUnpatch()
     {
       if (!IsEnabled.Value)
         return;
-      Unpatch();
+      try
+      {
+        Unpatch();
+      }
+      catch (Exception e)
+      {
+        Plugin.Log.LogError(e);
+      }
     }
     
     public void LifecycleCreateUI()
     {
       if (!IsEnabled.Value)
         return;
-      CreateUI();
+      try
+      {
+        CreateUI();
+      }
+      catch (Exception e)
+      {
+        Plugin.Log.LogError(e);
+      }
     }
     
     public void LifecycleDestroyUI()
     {
       if (!IsEnabled.Value)
         return;
-      DestroyUI();
+      try
+      {
+        DestroyUI();
+      }
+      catch (Exception e)
+      {
+        Plugin.Log.LogError(e);
+      }
     }
   }
 }
