@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
@@ -24,6 +24,7 @@ namespace DysonSphereProgram.Modding.UIEnhancements
       Plugin.Log = Logger;
       enhancements.Add(new EditableStationStorageMax());
       enhancements.Add(new UnrestrictedUIScaler());
+      enhancements.Add(new PartialOffscreenWindows());
       
       _harmony = new Harmony(GUID);
       enhancements.ForEach(x => x.LifecycleUseConfig(Config));
