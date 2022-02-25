@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
@@ -12,7 +12,7 @@ namespace DysonSphereProgram.Modding.UIEnhancements
   {
     public const string GUID = "dev.raptor.dsp.UIEnhancements";
     public const string NAME = "UIEnhancements";
-    public const string VERSION = "0.0.1";
+    public const string VERSION = "0.0.2";
 
     private Harmony _harmony;
     internal static ManualLogSource Log;
