@@ -68,7 +68,7 @@ public class EditableStationStorageMax: EnhancementBase
     {
       context
         .WithAnchor(Anchor.StretchRight)
-        .OfSize(35, -6)
+        .OfSize(50, -6)
         .Bind(binding);
     });
     
