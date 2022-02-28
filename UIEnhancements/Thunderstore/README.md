@@ -53,6 +53,10 @@ Or you can create an issue on [GitHub](https://github.com/Velociraptor115/DSPMod
 
 ## Changelog
 
+### [v0.0.3](https://dsp.thunderstore.io/package/Raptor/UIEnhancements/0.0.3/)
+
+* Fix [issue](https://github.com/Velociraptor115/DSPMods/issues/8) with station UI clipping the max to 5 digits. Increased limit to 7 digits
+
 ### [v0.0.2](https://dsp.thunderstore.io/package/Raptor/UIEnhancements/0.0.2/)
 
 * Add "Partial Off-screen Windows"
