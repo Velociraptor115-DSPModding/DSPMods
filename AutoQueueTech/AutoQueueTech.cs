@@ -51,9 +51,9 @@ namespace DysonSphereProgram.Modding.AutoQueueTech
     
     [HarmonyPostfix]
     [HarmonyPatch(typeof(GameHistoryData), nameof(GameHistoryData.NotifyTechUnlock))]
-    static void CaptureLastResearchedTech(int _techId)
+    static void CaptureLastResearchedTech(ref GameHistoryData __instance, int _techId)
     {
-      if (GameMain.history.techQueueLength > 1)
+      if (__instance.techQueue == null || __instance.techQueueLength > 1)
         return;
       lastResearchedTechId = _techId;
     }
@@ -70,7 +70,7 @@ namespace DysonSphereProgram.Modding.AutoQueueTech
         return;
 
       var history = GameMain.history;
-      if (history.techQueueLength > 0)
+      if (history.techQueue == null || history.techQueueLength > 0)
         return;
       var techStates = history.techStates;
 
