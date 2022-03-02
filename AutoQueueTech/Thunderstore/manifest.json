@@ -1,6 +1,6 @@
 {
   "name": "AutoQueueTech",
-  "version_number": "0.0.1",
+  "version_number": "0.0.2",
   "website_url": "https://github.com/Velociraptor115/DSPMods",
   "description": "Automatically queues next tech based on setting, when tech queue becomes empty",
   "dependencies": [ "xiaoye97-BepInEx-5.4.11" ]

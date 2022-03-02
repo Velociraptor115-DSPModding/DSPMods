@@ -19,6 +19,10 @@ This mod automatically queues the next tech based on the configured setting, whe
 
 ## Changelog
 
+### [v0.0.2](https://dsp.thunderstore.io/package/Raptor/AutoQueueTech/0.0.2/)
+
+* Fix a null reference exception that occurs on starting a new game
+
 ### [v0.0.1](https://dsp.thunderstore.io/package/Raptor/AutoQueueTech/0.0.1/)
 
 * Add queue mode "Last Researched Tech"
