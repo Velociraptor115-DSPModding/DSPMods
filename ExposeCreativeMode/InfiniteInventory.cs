@@ -132,22 +132,46 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     private void RestockInfiniteInventory(IList<int> itemIds)
     {
       var grids = infiniteInventory.grids;
+      
+      StorageComponent.GRID tmpGrid;
+
+      static bool IsEqual(in StorageComponent.GRID g1, in StorageComponent.GRID g2) =>
+        g1.itemId == g2.itemId
+        && g1.filter == g2.filter
+        && g1.stackSize == g2.stackSize
+        && g1.count == g2.count
+        && g1.inc == g2.inc;
+
+      bool hasChanged = false;
+      
+      tmpGrid.stackSize = 30000;
+      tmpGrid.count = 9999;
+      tmpGrid.inc = 0;
       for (int i = 0; i < itemIds.Count; ++i)
       {
-        grids[i].itemId = itemIds[i];
-        grids[i].filter = itemIds[i];
-        grids[i].stackSize = 30000;
-        grids[i].count = 9999;
+        tmpGrid.itemId = tmpGrid.filter = itemIds[i];
+        if (!IsEqual(grids[i], tmpGrid))
+        {
+          hasChanged = true;
+          grids[i] = tmpGrid;
+        }
       }
+
+      tmpGrid.itemId = 0;
+      // We need to do this, because filter <= 0 is considered fair game by the UI
+      tmpGrid.filter = int.MaxValue;
+      tmpGrid.stackSize = tmpGrid.count = tmpGrid.inc = 0;
       for (int i = itemIds.Count; i < infiniteInventory.size; i++)
       {
-        grids[i].itemId = 0;
-        // We need to do this, because filter <= 0 is considered fair game by the UI
-        grids[i].filter = int.MaxValue;
-        grids[i].stackSize = 0;
-        grids[i].count = 0;
+        if (!IsEqual(grids[i], tmpGrid))
+        {
+          hasChanged = true;
+          grids[i] = tmpGrid;
+        }
       }
-      infiniteInventory.NotifyStorageChange();
+
+      if (hasChanged)
+        infiniteInventory.NotifyStorageChange();
     }
 
     private IList<int> GetItemIdsFiltered() => LDB.items.dataArray.Where(itemFilter).Select(x => x.ID).ToList();
