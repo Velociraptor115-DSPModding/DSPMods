@@ -256,10 +256,60 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       if (infiniteInventory == null || __instance.storage != infiniteInventory.storage)
         return;
 
-      for (int i = 0; i < __instance.numTexts.Length; i++)
-      {
+      var grids = __instance.storage.grids;
+
+      for (int i = 0; i < grids.Length; i++)
         if (__instance.numTexts[i] != null)
+        {
           __instance.numTexts[i].color = __instance.prefabNumText.color;
+          __instance.numTexts[i].text = "∞";
+        }
+    }
+    
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(UIItemupNode), nameof(UIItemupNode.SetData))]
+    [HarmonyPatch(typeof(UIItemupNode), nameof(UIItemupNode._OnUpdate))]
+    static void SetCountTextToInfinity__UIItemupNode(UIItemupNode __instance)
+    {
+      if (infiniteInventory is not { IsEnabled: true })
+        return;
+
+      __instance.totalNumText.text = "∞";
+    }
+    
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(UIHandTip), nameof(UIHandTip.SetHandTip))]
+    static void SetCountTextToInfinity__UIHandTip(UIHandTip __instance)
+    {
+      if (infiniteInventory is not { IsEnabled: true })
+        return;
+
+      var itemProto = LDB.items.Select(__instance.itemId);
+      if (itemProto != null)
+        __instance.tipText.text = string.Concat(new object[] { itemProto.name, "\r\n( ∞ )" });
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(UIBuildMenu), nameof(UIBuildMenu.SetCurrentCategory))]
+    [HarmonyPatch(typeof(UIBuildMenu), nameof(UIBuildMenu._OnUpdate))]
+    static void SetCountTextToInfinity__UIBuildMenu(UIBuildMenu __instance)
+    {
+      if (infiniteInventory is not { IsEnabled: true })
+        return;
+
+      if (__instance.currentCategory is < 1 or > 9)
+        return;
+
+      var history = GameMain.history;
+
+      for (int i = 0; i < 12 && i < __instance.childNumTexts.Length; i++)
+      {
+        if (UIBuildMenu.protos[__instance.currentCategory, i] != null && __instance.childNumTexts[i] != null)
+        {
+          int id = UIBuildMenu.protos[__instance.currentCategory, i].ID;
+          if (history.ItemUnlocked(id))
+            __instance.childNumTexts[i].text = "∞";
+        }
       }
     }
 
