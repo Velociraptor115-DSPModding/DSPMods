@@ -52,47 +52,51 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
         Disable();
     }
 
-    public void GameTick()
+    public void GameTick(bool skipInventory)
     {
       if (!isEnabled)
         return;
 
-      if (player.factory == null || player.factory.prebuildCount == 0)
+      var factory = player.factory;
+      if (factory == null || factory.prebuildCount == 0)
         return;
 
-      void BuildInstantly(int prebuildIdx)
+      var startIdx = 1;
+
+      // This means that we can probably get away with just looking at the recycle instances
+      if (factory.prebuildRecycleCursor > 0)
+        startIdx = factory.prebuildRecycleCursor;
+
+      var endIdx = factory.prebuildCursor;
+      var prebuildRecycle = factory.prebuildRecycle;
+      var prebuildPool = factory.prebuildPool;
+      var playerPackage = player.package;
+
+      for (int i = startIdx; i < endIdx; i++)
       {
-        ref var prebuild = ref player.factory.prebuildPool[prebuildIdx];
+        var prebuildIdx = prebuildRecycle[i] > 0 ? prebuildRecycle[i] : i;
+        ref var prebuild = ref prebuildPool[prebuildIdx];
+        
         if (prebuild.id != prebuildIdx)
-          return;
+          continue;
+        
+        if (skipInventory)
+        {
+          factory.BuildFinally(player, prebuild.id);
+          continue;
+        }
+
         if (prebuild.itemRequired > 0)
         {
           int protoId = prebuild.protoId;
           int itemRequired = prebuild.itemRequired;
-          player.package.TakeTailItems(ref protoId, ref itemRequired, out _, false);
+          playerPackage.TakeTailItems(ref protoId, ref itemRequired, out _, false);
           prebuild.itemRequired -= itemRequired;
-          player.factory.AlterPrebuildModelState(prebuildIdx);
         }
         if (prebuild.itemRequired <= 0)
         {
-          player.factory.BuildFinally(player, prebuild.id);
+          factory.BuildFinally(player, prebuild.id);
         }
-      }
-
-      if (player.factory.prebuildRecycleCursor > 0)
-      {
-        // This means that we can probably get away with just looking at the recycle instances
-        for (int i = player.factory.prebuildRecycleCursor; i < player.factory.prebuildCursor; i++)
-          BuildInstantly(player.factory.prebuildRecycle[i]);
-      }
-      else
-      {
-        // Highly probable that a prebuildPool resize took place this tick.
-        // Better to go over the entire array
-
-        // Don't ask me why the loop starts from 1. I'm merely following `MechaDroneLogic.UpdateTargets()`
-        for (int i = 1; i < player.factory.prebuildCursor; i++)
-          BuildInstantly(i);
       }
     }
   }

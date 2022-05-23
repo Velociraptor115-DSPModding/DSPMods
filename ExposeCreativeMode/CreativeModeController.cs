@@ -156,7 +156,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       infiniteInventory.GameTick();
       infiniteStation.GameTick();
       instantResearch.GameTick();
-      instantBuild.GameTick();
+      instantBuild.GameTick(infiniteInventory.IsEnabled);
     }
 
     void OnActiveChange(bool active)
