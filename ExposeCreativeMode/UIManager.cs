@@ -256,6 +256,11 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
               , CreateOnOffToggleButton(binding).BindInteractive(creativeModeBinding).transform
               , CreateAutoEnableButton(CreativeModeConfig.autoEnableInstantResearch).transform
             );
+            CreateSection(mainSection, binding, section =>
+            {
+              var enableLocking = new DelegateDataBindSource<bool>(() => controller?.instantResearch?.EnableLocking ?? false, value => { if (controller?.instantResearch != null) controller.instantResearch.EnableLocking = value; });
+              CreateEntry(section, "Enable Locking", CreateOnOffToggleButton(enableLocking, "Yes", "No").transform);
+            });
           }
           
           {

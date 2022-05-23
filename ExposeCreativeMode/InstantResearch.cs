@@ -25,6 +25,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       }
     }
 
+    public bool EnableLocking = true;
+
     public void Enable()
     {
       isEnabled = true;
@@ -99,6 +101,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       var isEnabled = instantResearch?.IsEnabled ?? false;
       if (!isEnabled)
         return;
+      if (!instantResearch.EnableLocking)
+        return;
 
       if (!__instance.selected)
         return;
@@ -157,6 +161,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     {
       var isEnabled = instantResearch?.IsEnabled ?? false;
       if (!isEnabled)
+        return;
+      if (!instantResearch.EnableLocking)
         return;
 
       if (!__instance.selected)

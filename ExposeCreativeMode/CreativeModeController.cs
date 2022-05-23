@@ -184,7 +184,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       return creativeModeText;
     }
 
-    const int saveLogicVersion = 1;
+    const int saveLogicVersion = 2;
     public void PreserveVanillaSaveBefore()
     {
       infiniteInventory.PreserveVanillaSaveBefore();
@@ -207,6 +207,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       w.Write(infiniteReach.IsEnabled);
       w.Write(infinitePower.IsEnabled);
       w.Write(instantResearch.IsEnabled);
+      w.Write(instantResearch.EnableLocking);
       w.Write(instantBuild.IsEnabled);
       w.Write(instantReplicate.IsInstant);
       w.Write(instantReplicate.IsFree);
@@ -223,6 +224,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       infiniteReach.IsEnabled = r.ReadBoolean();
       infinitePower.IsEnabled = r.ReadBoolean();
       instantResearch.IsEnabled = r.ReadBoolean();
+      instantResearch.EnableLocking = saveLogicVersion > 1 ? r.ReadBoolean() : instantResearch.IsEnabled;
       instantBuild.IsEnabled = r.ReadBoolean();
       instantReplicate.IsInstant = r.ReadBoolean();
       instantReplicate.IsFree = r.ReadBoolean();
