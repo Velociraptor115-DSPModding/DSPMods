@@ -9,7 +9,7 @@ Enabling "Creative Mode" will disable achievements for the save, so keep a separ
 
 ## How to use this mod
 * First install the mod, and reboot the game.
-* Press Shift + F4 to open the creative mode settings window
+* Press Shift + F4 to open the creative mode settings window  
 ![Creative Mode Settings Window](https://github.com/Velociraptor115/DSPMods/blob/main/ExposeCreativeMode/Docs/CreativeModeSettingsWindow.png?raw=true)
 ![Creative Mode Settings Window Enabled](https://github.com/Velociraptor115/DSPMods/blob/main/ExposeCreativeMode/Docs/CreativeModeSettingsWindow_Enabled.png?raw=true)
 * You need to enable creative mode to use the rest of the functions below
