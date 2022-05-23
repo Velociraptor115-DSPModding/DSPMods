@@ -105,6 +105,10 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
           infiniteStation.Toggle();
         if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ToggleInstantBuild).keyValue)
           instantBuild.Toggle();
+        if (CustomKeyBindSystem.GetKeyBind(KeyBinds.ForwardUniverseSimulation).keyValue)
+          OrbitalMechanicsOverride.Offset += 10;
+        if (CustomKeyBindSystem.GetKeyBind(KeyBinds.BackwardUniverseSimulation).keyValue)
+          OrbitalMechanicsOverride.Offset -= 10;
       }
     }
 
@@ -189,12 +193,14 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     {
       infiniteInventory.PreserveVanillaSaveBefore();
       infiniteReach.PreserveVanillaSaveBefore();
+      OrbitalMechanicsOverride.PreserveVanillaSaveBefore();
     }
 
     public void PreserveVanillaSaveAfter()
     {
       infiniteInventory.PreserveVanillaSaveAfter();
       infiniteReach.PreserveVanillaSaveAfter();
+      OrbitalMechanicsOverride.PreserveVanillaSaveAfter();
     }
     
     public void Export(BinaryWriter w)

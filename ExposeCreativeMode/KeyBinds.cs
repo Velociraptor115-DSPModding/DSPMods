@@ -15,6 +15,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     public const string ToggleInstantResearch = nameof(ToggleInstantResearch);
     public const string ToggleAllVeinsOnPlanet = nameof(ToggleAllVeinsOnPlanet);
     public const string HoldLockResearch = nameof(HoldLockResearch);
+    public const string ForwardUniverseSimulation = nameof(ForwardUniverseSimulation);
+    public const string BackwardUniverseSimulation = nameof(BackwardUniverseSimulation);
 
     private static List<string> keyBinds = new List<string>
     {
@@ -27,6 +29,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       ToggleInstantResearch,
       ToggleAllVeinsOnPlanet,
       HoldLockResearch,
+      ForwardUniverseSimulation,
+      BackwardUniverseSimulation,
     };
 
     private static List<CombineKey> defaultBindings = new List<CombineKey>
@@ -40,6 +44,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       new CombineKey((int)KeyCode.Keypad6, CombineKey.CTRL_COMB, ECombineKeyAction.OnceClick, false),
       new CombineKey((int)KeyCode.Keypad4, 0, ECombineKeyAction.OnceClick, false),
       new CombineKey((int)KeyCode.L, 8, ECombineKeyAction.LongPress, false),
+      new CombineKey((int)KeyCode.Period, CombineKey.CTRL_COMB | CombineKey.SHIFT_COMB, ECombineKeyAction.LongPress, false),
+      new CombineKey((int)KeyCode.Comma, CombineKey.CTRL_COMB | CombineKey.SHIFT_COMB, ECombineKeyAction.LongPress, false),
     };
 
     private static List<string> keyBindDescriptions = new List<string>
@@ -53,6 +59,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       "(Creative Mode) Toggle Instant Research",
       "(Creative Mode) Toggle All Veins on Planet",
       "(Creative Mode) Lock Research",
+      "(Creative Mode) Fast Forward Orbital Mechanics",
+      "(Creative Mode) Rewind Orbital Mechanics",
     };
 
     private static int keyBindId(string keyBind) => keyBinds.IndexOf(keyBind) + 200;

@@ -37,6 +37,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       _harmony.PatchAll(typeof(InstantResearchPatch));
       _harmony.PatchAll(typeof(InstantReplicatePatch));
       _harmony.PatchAll(typeof(UIPatches));
+      _harmony.PatchAll(typeof(OrbitalMechanicsOverride));
       CreativeModeLifecyclePatches.ApplyPatch(_harmony);
       _harmony.PatchAll(typeof(VanillaSavePreservationPatch));
       KeyBinds.RegisterKeyBinds();
