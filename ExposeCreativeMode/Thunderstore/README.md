@@ -3,14 +3,16 @@ This mod allows you to enable "Creative Mode" and play without limitations (Well
 Enabling "Creative Mode" will disable achievements for the save, so keep a separate save to use it on.
 
 ## What's new in this update?
-* Adapted Instant Handcraft and Free Handcraft from [DSPCheats](https://dsp.thunderstore.io/package/Windows10CE/DSPCheats/) by [Windows10CE](https://dsp.thunderstore.io/package/Windows10CE/) as Instant Replicate
-* Added save support, so you will now keep your creative mode settings from when you saved it. The mod continues to preserve vanilla save compatibility, so your creative saves can be loaded in vanilla or without the mod.
-* Added a settings UI, so it will be easier to figure out if a particular mode is active or not
+* Added Orbital Mechanics Override. You can now move the planets forward and backward in their orbit and rotation.  
+(**NOTE**: The planet offsets will not be stored in the savefile, so it will reset when you reload the save)
+* Significantly increased Infinite Inventory stack size and replaced item count in UI with infinity symbol
+* Added button for Unlock All Tech in the creative mode settings UI and changed default keybind to Ctrl + Shift + T
+* Added separate options for Instant Research and tech relocking in UI
 
 ## How to use this mod
 * First install the mod, and reboot the game.
 * Press Shift + F4 to open the creative mode settings window  
-![Creative Mode Settings Window](https://github.com/Velociraptor115/DSPMods/blob/main/ExposeCreativeMode/Docs/CreativeModeSettingsWindow.png?raw=true)
+![Creative Mode Settings Window](https://github.com/Velociraptor115/DSPMods/blob/main/ExposeCreativeMode/Docs/CreativeModeSettingsWindow.png?raw=true)  
 ![Creative Mode Settings Window Enabled](https://github.com/Velociraptor115/DSPMods/blob/main/ExposeCreativeMode/Docs/CreativeModeSettingsWindow_Enabled.png?raw=true)
 * You need to enable creative mode to use the rest of the functions below
 
@@ -18,21 +20,22 @@ Enabling "Creative Mode" will disable achievements for the save, so keep a separ
 
 All controls are rebindable. Detailed explanation of functions are given further below.  
 
-| Function                          | Default Keybind                | Description |
-| --------------------------------- | ------------------------------ | ----------- |
-| Infinite&nbsp;Inventory           | Ctrl&nbsp;+&nbsp;Numpad&nbsp;1 | Toggles Infinite Inventory mode |
-| Infinite&nbsp;Station             | Ctrl&nbsp;+&nbsp;Numpad&nbsp;0 | Toggles Infinite Station mode |
-| Infinite&nbsp;Reach               | -                              | Auto-enabled when in creative mode |
-| Infinite&nbsp;Power               | -                              | Auto-enabled when in creative mode  |
-| Instant&nbsp;Research             | Ctrl&nbsp;+&nbsp;Numpad&nbsp;6 | Toggles Instant Research mode |
-| Lock&nbsp;Research                | L                              | While Instant Research mode is active, hold this keybind to toggle locking tech |
-| Instant&nbsp;Build                | Ctrl&nbsp;+&nbsp;Numpad&nbsp;2 | Toggles Instant Build mode |
-| Instant&nbsp;Replicate            | -                              | Toggles Instant Replicate mode<br><br> This is an adaptation of Instant Handcraft and Free Handcraft from [DSPCheats](https://dsp.thunderstore.io/package/Windows10CE/DSPCheats/) by [Windows10CE](https://dsp.thunderstore.io/package/Windows10CE/) |
-| Unlock&nbsp;all&nbsp;tech         | Ctrl&nbsp;+&nbsp;T             | Press keybind to unlock all tech<br>5 levels of each infinite tech will be unlocked |
-| Flatten&nbsp;Terrain              | Numpad&nbsp;3                  | Foundations entire planet with the "no decoration" option |
-| Restore&nbsp;Terrain              | -                              | Hold a combination of the Ctrl and Shift keys while pressing the "Flatten Terrain" keybind to restore terrain<br><br>Ctrl - Restore shallow oceans<br>Shift - Restore mid-level oceans<br>Ctrl + Shift - Restore deep oceans<br><br>You will not be able to apply foundation over restored terrain using the foundation tool, unless you also install the [UncoverFoundationedOceans](https://dsp.thunderstore.io/package/Raptor/UncoverFoundationedOceans/) mod.<br> I recommend to install that mod also so that you can partially flatten an area after restoring terrain, otherwise you will have to "Flatten Terrain" again to be able to build on ocean level area |
-| Bury&nbsp;/&nbsp;Raise&nbsp;Veins | Numpad&nbsp;4                  | Toggles bury/raise all veins on the planet |
-
+| Function                          | Default Keybind                      | Description |
+| --------------------------------- | ------------------------------------ | ----------- |
+| Infinite&nbsp;Inventory           | Ctrl&nbsp;+&nbsp;Numpad&nbsp;1       | Toggles Infinite Inventory mode |
+| Infinite&nbsp;Station             | Ctrl&nbsp;+&nbsp;Numpad&nbsp;0       | Toggles Infinite Station mode |
+| Infinite&nbsp;Reach               | -                                    | Auto-enabled when in creative mode |
+| Infinite&nbsp;Power               | -                                    | Auto-enabled when in creative mode  |
+| Instant&nbsp;Research             | Ctrl&nbsp;+&nbsp;Numpad&nbsp;6       | Toggles Instant Research mode |
+| Lock&nbsp;Research                | L                                    | While Instant Research mode is active, hold this keybind to toggle locking tech |
+| Instant&nbsp;Build                | Ctrl&nbsp;+&nbsp;Numpad&nbsp;2       | Toggles Instant Build mode |
+| Instant&nbsp;Replicate            | -                                    | Toggles Instant Replicate mode<br><br> This is an adaptation of Instant Handcraft and Free Handcraft from [DSPCheats](https://dsp.thunderstore.io/package/Windows10CE/DSPCheats/) by [Windows10CE](https://dsp.thunderstore.io/package/Windows10CE/) |
+| Unlock&nbsp;all&nbsp;tech         | Ctrl&nbsp;+&nbsp;Shift&nbsp;+&nbsp;T | Press keybind to unlock all tech<br>5 levels of each infinite tech will be unlocked |
+| Flatten&nbsp;Terrain              | Numpad&nbsp;3                        | Foundations entire planet with the "no decoration" option |
+| Restore&nbsp;Terrain              | -                                    | Hold a combination of the Ctrl and Shift keys while pressing the "Flatten Terrain" keybind to restore terrain<br><br>Ctrl - Restore shallow oceans<br>Shift - Restore mid-level oceans<br>Ctrl + Shift - Restore deep oceans<br><br>You will not be able to apply foundation over restored terrain using the foundation tool, unless you also install the [UncoverFoundationedOceans](https://dsp.thunderstore.io/package/Raptor/UncoverFoundationedOceans/) mod.<br> I recommend to install that mod also so that you can partially flatten an area after restoring terrain, otherwise you will have to "Flatten Terrain" again to be able to build on ocean level area |
+| Bury&nbsp;/&nbsp;Raise&nbsp;Veins | Numpad&nbsp;4                        | Toggles bury/raise all veins on the planet |
+| Fast Forward Orbital Mechanics    | Ctrl&nbsp;+&nbsp;Shift&nbsp;+&nbsp;> | Moves all planets forward in orbit and rotation |
+| Rewind Orbital Mechanics          | Ctrl&nbsp;+&nbsp;Shift&nbsp;+&nbsp;< | Moves all planets backward in orbit and rotation |
 ### Infinite Inventory mode
 
 * Makes the player inventory have all unlocked items in the game
@@ -78,6 +81,15 @@ Or you can create an issue on [GitHub](https://github.com/Velociraptor115/DSPMod
 \- Raptor#4825
 
 ## Changelog
+
+### [v0.0.15](https://dsp.thunderstore.io/package/Raptor/ExposeCreativeMode/0.0.15/)
+* Added Orbital Mechanics Override
+* Split Instant Research and the tech relocking functionality
+* Changed default keybind for Unlock All Tech to Ctrl + Shift + T
+* Added button for Unlock All Tech in the creative mode settings UI
+* Significantly increased Infinite Inventory stack size and replaced item count in UI with infinity symbol
+* Fixed an [issue](https://github.com/Velociraptor115-DSPModding/DSPMods/issues/14) that caused rounding errors when unlocking tech with InstantResearch
+* Fixed an [issue](https://github.com/Velociraptor115-DSPModding/DSPMods/issues/15) where Instant Build failed to construct buildings after running out of items in inventory during construction of big blueprints
 
 ### [v0.0.14](https://dsp.thunderstore.io/package/Raptor/ExposeCreativeMode/0.0.14/)
 * Revamp internal working of the mod
