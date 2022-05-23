@@ -36,7 +36,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       new CombineKey((int)KeyCode.Keypad0, CombineKey.CTRL_COMB, ECombineKeyAction.OnceClick, false),
       new CombineKey((int)KeyCode.Keypad2, CombineKey.CTRL_COMB, ECombineKeyAction.OnceClick, false),
       new CombineKey((int)KeyCode.Keypad3, 8, ECombineKeyAction.OnceClick, false),
-      new CombineKey((int)KeyCode.T, CombineKey.CTRL_COMB, ECombineKeyAction.OnceClick, false),
+      new CombineKey((int)KeyCode.T, CombineKey.CTRL_COMB | CombineKey.SHIFT_COMB, ECombineKeyAction.OnceClick, false),
       new CombineKey((int)KeyCode.Keypad6, CombineKey.CTRL_COMB, ECombineKeyAction.OnceClick, false),
       new CombineKey((int)KeyCode.Keypad4, 0, ECombineKeyAction.OnceClick, false),
       new CombineKey((int)KeyCode.L, 8, ECombineKeyAction.LongPress, false),

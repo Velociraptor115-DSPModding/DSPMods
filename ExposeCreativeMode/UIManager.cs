@@ -260,6 +260,12 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
             {
               var enableLocking = new DelegateDataBindSource<bool>(() => controller?.instantResearch?.EnableLocking ?? false, value => { if (controller?.instantResearch != null) controller.instantResearch.EnableLocking = value; });
               CreateEntry(section, "Enable Locking", CreateOnOffToggleButton(enableLocking, "Yes", "No").transform);
+              var unlockAllTechButton = 
+                MakeFancyButton("Unlock")
+                  .SetClickListener(InfiniteResearchHelper.UnlockAllTech)
+                  .BindInteractive(binding)
+                  ;
+              CreateEntry(section, "Unlock All Tech", unlockAllTechButton.transform);
             });
           }
           
