@@ -13,23 +13,19 @@ using DysonSphereProgram.Modding.ExposeCreativeMode.UI.Builder;
 
 namespace DysonSphereProgram.Modding.ExposeCreativeMode
 {
-  [BepInPlugin(GUID, NAME, VERSION)]
+  [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
   [BepInProcess("DSPGAME.exe")]
   [BepInDependency(CommonAPIPlugin.GUID)]
   [CommonAPISubmoduleDependency(nameof(ProtoRegistry), nameof(CustomKeyBindSystem))]
   public class Plugin : BaseUnityPlugin, IModCanSave
   {
-    public const string GUID = "dev.raptor.dsp.ExposeCreativeMode";
-    public const string NAME = "ExposeCreativeMode";
-    public const string VERSION = "0.0.14";
-
     private Harmony _harmony;
     internal static ManualLogSource Log;
 
     private void Awake()
     {
       Plugin.Log = Logger;
-      _harmony = new Harmony(GUID);
+      _harmony = new Harmony(PluginInfo.PLUGIN_GUID);
       CreativeModeConfig.Init(Config);
       _harmony.PatchAll(typeof(InfiniteInventoryPatch));
       _harmony.PatchAll(typeof(InfinitePowerPatch));
@@ -74,7 +70,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     public static void ApplyPatch(Harmony harmony)
     {
       harmony.PatchAll(typeof(CreativeModeLifecyclePatches));
-      UIBuilderPlugin.Create(Plugin.GUID, UIManager.CreateUIManager);
+      UIBuilderPlugin.Create(PluginInfo.PLUGIN_GUID, UIManager.CreateUIManager);
       var player = GameMain.mainPlayer;
       if (player != null)
         Create(ref player);
