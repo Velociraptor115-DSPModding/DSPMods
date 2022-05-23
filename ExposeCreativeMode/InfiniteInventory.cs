@@ -129,6 +129,9 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
       cachedTime = Time.time;
     }
 
+    private const int infiniteItemCount = int.MaxValue / 4;
+    private const int infiniteItemStack = int.MaxValue / 2;
+
     private void RestockInfiniteInventory(IList<int> itemIds)
     {
       var grids = infiniteInventory.grids;
@@ -144,8 +147,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
       bool hasChanged = false;
       
-      tmpGrid.stackSize = 30000;
-      tmpGrid.count = 9999;
+      tmpGrid.stackSize = infiniteItemStack;
+      tmpGrid.count = infiniteItemCount;
       tmpGrid.inc = 0;
       for (int i = 0; i < itemIds.Count; ++i)
       {
