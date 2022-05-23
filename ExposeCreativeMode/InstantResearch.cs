@@ -410,7 +410,24 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
         if (level < minLevel)
           break;
         var times = (level > maxLevel ? maxLevel : level) - minLevel + 1;
-        result += times * levelDetails[i].value;
+        for (int j = 0; j < times; j++)
+          result += levelDetails[i].value;
+      }
+      return result;
+    }
+
+    private static float SumLevelValuesFloat(float init, List<TechFunctionLevelRangeValue> levelDetails, int level)
+    {
+      var result = init;
+      for (int i = 0; i < levelDetails.Count; i++)
+      {
+        var maxLevel = levelDetails[i].maxLevel;
+        var minLevel = levelDetails[i].minLevel;
+        if (level < minLevel)
+          break;
+        var times = (level > maxLevel ? maxLevel : level) - minLevel + 1;
+        for (int j = 0; j < times; j++)
+          result += (float)levelDetails[i].value;
       }
       return result;
     }
@@ -427,12 +444,13 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
         var times = (level > maxLevel ? maxLevel : level) - minLevel + 1;
         var value = levelDetails[i].value;
         var valueRounded = (int)((value > 0.0) ? (value + 0.5) : (value - 0.5));
-        result += times * valueRounded;
+        for (int j = 0; j < times; j++)
+          result += valueRounded;
       }
       return result;
     }
 
-    private static double MulLevelValues(double init, List<TechFunctionLevelRangeValue> levelDetails, int level)
+    private static float MulLevelValuesFloat(float init, List<TechFunctionLevelRangeValue> levelDetails, int level)
     {
       var result = init;
       for (int i = 0; i < levelDetails.Count; i++)
@@ -443,7 +461,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
           break;
         var times = (level > maxLevel ? maxLevel : level) - minLevel + 1;
         for (int j = 0; j < times; j++)
-          result *= levelDetails[i].value;
+          result *= (float)levelDetails[i].value;
       }
       return result;
     }
@@ -483,13 +501,13 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
           mecha.reactorPowerGen = SumLevelValues(freeMode.mechaReactorPowerGen, levelDetails, level);
           break;
         case 3:
-          mecha.walkSpeed = (float)SumLevelValues(freeMode.mechaWalkSpeed, levelDetails, level);
+          mecha.walkSpeed = SumLevelValuesFloat(freeMode.mechaWalkSpeed, levelDetails, level);
           break;
         case 4:
           mecha.thrusterLevel = MaxLevelValueInt(freeMode.mechaThrusterLevel, levelDetails, level);
           break;
         case 5:
-          var funcValue = (int)SumLevelValues(0, levelDetails, level);
+          var funcValue = SumLevelValuesInt(0, levelDetails, level);
           player.package.SetSize(freeMode.playerPackageSize + funcValue * 10);
           break;
         case 6:
@@ -497,7 +515,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
           mecha.coreLevel = level;
           break;
         case 7:
-          mecha.replicateSpeed = (float)SumLevelValues(freeMode.mechaReplicateSpeed, levelDetails, level);
+          mecha.replicateSpeed = SumLevelValuesFloat(freeMode.mechaReplicateSpeed, levelDetails, level);
           break;
         case 8:
           history.useIonLayer = level >= 0;
@@ -506,25 +524,25 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
           mecha.droneMovement = SumLevelValuesInt(freeMode.mechaDroneMovement, levelDetails, level);
           break;
         case 10:
-          mecha.droneSpeed = (float)SumLevelValues(freeMode.mechaDroneSpeed, levelDetails, level);
+          mecha.droneSpeed = SumLevelValuesFloat(freeMode.mechaDroneSpeed, levelDetails, level);
           break;
         case 11:
-          mecha.maxSailSpeed = (float)SumLevelValues(freeMode.mechaSailSpeedMax, levelDetails, level);
+          mecha.maxSailSpeed = SumLevelValuesFloat(freeMode.mechaSailSpeedMax, levelDetails, level);
           break;
         case 12:
-          history.solarSailLife = (float)SumLevelValues(freeMode.solarSailLife, levelDetails, level);
+          history.solarSailLife = SumLevelValuesFloat(freeMode.solarSailLife, levelDetails, level);
           break;
         case 13:
-          history.solarEnergyLossRate = (float)MulLevelValues(freeMode.solarEnergyLossRate, levelDetails, level);
+          history.solarEnergyLossRate = MulLevelValuesFloat(freeMode.solarEnergyLossRate, levelDetails, level);
           break;
         case 14:
           history.inserterStackCount = MaxLevelValueInt(freeMode.inserterStackCount, levelDetails, level);
           break;
         case 15:
-          history.logisticDroneSpeedScale = (float)SumLevelValues(1f, levelDetails, level);
+          history.logisticDroneSpeedScale = SumLevelValuesFloat(1f, levelDetails, level);
           break;
         case 16:
-          history.logisticShipSpeedScale = (float)SumLevelValues(1f, levelDetails, level);
+          history.logisticShipSpeedScale = SumLevelValuesFloat(1f, levelDetails, level);
           break;
         case 17:
           history.logisticShipWarpDrive = level >= 4;
@@ -536,10 +554,10 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
           history.logisticShipCarries = SumLevelValuesInt(freeMode.logisticShipCarries, levelDetails, level);
           break;
         case 20:
-          history.miningCostRate = (float)MulLevelValues(freeMode.miningCostRate, levelDetails, level);
+          history.miningCostRate = MulLevelValuesFloat(freeMode.miningCostRate, levelDetails, level);
           break;
         case 21:
-          history.miningSpeedScale = (float)SumLevelValues(freeMode.miningSpeedScale, levelDetails, level);
+          history.miningSpeedScale = SumLevelValuesFloat(freeMode.miningSpeedScale, levelDetails, level);
           history.miningSpeedScale = Mathf.Round(history.miningSpeedScale * 1000f) / 1000f;
           break;
         case 22:
@@ -555,11 +573,12 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
           history.labLevel = SumLevelValuesInt(3, levelDetails, level);
           break;
         case 26:
-          history.dysonNodeLatitude = (float)SumLevelValues(0, levelDetails, level);
+          history.dysonNodeLatitude = SumLevelValuesFloat(0, levelDetails, level);
           break;
         case 27:
           var baseValue = freeMode.mechaWarpSpeedMax;
           var sumValue = SumLevelValues(0, levelDetails, level);
+          // TODO: Fix precision issues in this later
           mecha.maxWarpSpeed = baseValue + (float)(sumValue * 40000.0);
           break;
         case 28:
