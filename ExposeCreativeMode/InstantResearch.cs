@@ -310,8 +310,8 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
 
     static void NotifyTechUnlocked(int techId, int level)
     {
-      UIRoot.instance.uiGame.replicator.OnTechUnlocked(techId, level);
-      UIRoot.instance.uiGame.techTree.OnTechUnlocked(techId, level);
+      UIRoot.instance.uiGame.replicator.OnTechUnlocked(techId, level, true);
+      UIRoot.instance.uiGame.techTree.OnTechUnlocked(techId, level, true);
     }
 
     public static void LockTech(int techId)
