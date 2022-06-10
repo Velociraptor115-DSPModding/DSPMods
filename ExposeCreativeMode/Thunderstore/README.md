@@ -3,11 +3,8 @@ This mod allows you to enable "Creative Mode" and play without limitations (Well
 Enabling "Creative Mode" will disable achievements for the save, so keep a separate save to use it on.
 
 ## What's new in this update?
-* Added Orbital Mechanics Override. You can now move the planets forward and backward in their orbit and rotation.  
-(**NOTE**: The planet offsets will not be stored in the savefile, so it will reset when you reload the save)
-* Significantly increased Infinite Inventory stack size and replaced item count in UI with infinity symbol
-* Added button for Unlock All Tech in the creative mode settings UI and changed default keybind to Ctrl + Shift + T
-* Added separate options for Instant Research and tech relocking in UI
+* Fixed compatibility with the June 10, 2022 patch (Game version 0.9.26.12891)
+* A more comprehensive revamp of the mod will be uploaded in a few days
 
 ## How to use this mod
 * First install the mod, and reboot the game.
@@ -81,6 +78,9 @@ Or you can create an issue on [GitHub](https://github.com/Velociraptor115/DSPMod
 \- Raptor#4825
 
 ## Changelog
+
+### [v0.0.16](https://dsp.thunderstore.io/package/Raptor/ExposeCreativeMode/0.0.16/)
+* Fixed compatibility with the June 10, 2022 patch (Game version 0.9.26.12891)
 
 ### [v0.0.15](https://dsp.thunderstore.io/package/Raptor/ExposeCreativeMode/0.0.15/)
 * Added Orbital Mechanics Override
