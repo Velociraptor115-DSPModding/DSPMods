@@ -7,7 +7,7 @@
     <RootNamespace>DysonSphereProgram.Modding.ExposeCreativeMode</RootNamespace>
     <BepInExPluginGuid>dev.raptor.dsp.ExposeCreativeMode</BepInExPluginGuid>
     <BepInExPluginName>ExposeCreativeMode</BepInExPluginName>
-    <Version>0.0.16</Version>
+    <Version>0.0.17</Version>
   </PropertyGroup>
 
   <ItemGroup>

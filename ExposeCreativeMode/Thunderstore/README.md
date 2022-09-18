@@ -3,8 +3,8 @@ This mod allows you to enable "Creative Mode" and play without limitations (Well
 Enabling "Creative Mode" will disable achievements for the save, so keep a separate save to use it on.
 
 ## What's new in this update?
-* Fixed compatibility with the June 10, 2022 patch (Game version 0.9.26.12891)
-* A more comprehensive revamp of the mod will be uploaded in a few days
+* Fixed a compatibility issue with BulletTime mod
+* A more comprehensive revamp of the mod will be uploaded in a few days (not kidding)
 
 ## How to use this mod
 * First install the mod, and reboot the game.
@@ -78,6 +78,9 @@ Or you can create an issue on [GitHub](https://github.com/Velociraptor115/DSPMod
 \- Raptor#4825
 
 ## Changelog
+
+### [v0.0.17](https://dsp.thunderstore.io/package/Raptor/ExposeCreativeMode/0.0.16/)
+* Fixed a compatiblity issue with BulletTime mod
 
 ### [v0.0.16](https://dsp.thunderstore.io/package/Raptor/ExposeCreativeMode/0.0.16/)
 * Fixed compatibility with the June 10, 2022 patch (Game version 0.9.26.12891)
