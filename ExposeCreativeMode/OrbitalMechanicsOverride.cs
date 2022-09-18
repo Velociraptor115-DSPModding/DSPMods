@@ -25,7 +25,7 @@ namespace DysonSphereProgram.Modding.ExposeCreativeMode
     {
       var tmp = Offset;
       Offset = 0;
-      GameMain.universeSimulator.GameTick(GameMain.instance.timef);
+      GameMain.universeSimulator.galaxyData.UpdatePoses(GameMain.instance.timef);
       GameMain.data.DetermineRelative();
       GameMain.mainPlayer.controller.UpdatePhysicsDirect();
       Offset = tmp;
