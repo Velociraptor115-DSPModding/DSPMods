@@ -1,7 +1,0 @@
-{
-  "name": "PortraitResolutions",
-  "version_number": "1.0.0",
-  "website_url": "https://github.com/Velociraptor115/DSPMods",
-  "description": "Allows you to also use portrait/landscape resolutions when monitor is in landscape/portrait mode",
-  "dependencies": [ "xiaoye97-BepInEx-5.4.11" ]
-}
