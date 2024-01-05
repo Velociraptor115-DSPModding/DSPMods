@@ -11,7 +11,7 @@ namespace DysonSphereProgram.Modding.UIEnhancements
   {
     public const string GUID = "dev.raptor.dsp.UIEnhancements";
     public const string NAME = "UIEnhancements";
-    public const string VERSION = "0.0.3";
+    public const string VERSION = "0.0.4";
 
     private Harmony _harmony;
     internal static ManualLogSource Log;

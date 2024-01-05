@@ -5,10 +5,7 @@ This mod aims to enhance DSP's UI for ease-of-use
 * First install the mod, and reboot the game.
 
 ## What's new in this update
-* Changed the names of some of the config items. If you are updating from a previous version and want to keep your config file clean without obsolete options, you might want to delete the config file in the mod manager.  
-* Add option to hide the real-time clock
-* Add option to hide the game-time clock
-* Add option to move windows partially off-screen
+* Fixed compatibility with combat update. (Tested on game version 0.10.28.21219)
 
 ## Enhancements
 
@@ -52,6 +49,12 @@ Or you can create an issue on [GitHub](https://github.com/Velociraptor115/DSPMod
 \- Raptor#4825
 
 ## Changelog
+
+### [v0.0.4](https://dsp.thunderstore.io/package/Raptor/UIEnhancements/0.0.4/)
+
+* Removed process filters for compatibility with Xbox Game Pass version
+* Fix transpiler code for Partial Off-screen Windows that broke due to game update 0.10.28.20759
+* Fix double bloom UI bug due to how the UI for UnrestrictedUIScaler was implemented
 
 ### [v0.0.3](https://dsp.thunderstore.io/package/Raptor/UIEnhancements/0.0.3/)
 
