@@ -7,7 +7,6 @@ using DysonSphereProgram.Modding.UIEnhancements.UI.Builder;
 namespace DysonSphereProgram.Modding.UIEnhancements
 {
   [BepInPlugin(GUID, NAME, VERSION)]
-  [BepInProcess("DSPGAME.exe")]
   public class Plugin : BaseUnityPlugin
   {
     public const string GUID = "dev.raptor.dsp.UIEnhancements";
