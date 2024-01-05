@@ -30,7 +30,7 @@ namespace DysonSphereProgram.Modding.BetterWarningIcons
 
     const int texAtlasEntrySize = 256;
 
-    public const uint INSUFFICIENT_INPUT_SIGN_TYPE = 15U;
+    public const uint INSUFFICIENT_INPUT_SIGN_TYPE = 31U;
     public const int InsufficientInputSignalId = (int)(500 + INSUFFICIENT_INPUT_SIGN_TYPE);
 
     static void EnsureLoaded()
@@ -124,7 +124,7 @@ namespace DysonSphereProgram.Modding.BetterWarningIcons
       RenderTexture.ReleaseTemporary(tmpRenderTexture);
 
       var pixels = insufficientInputTex.GetPixels(0, 0, texAtlasEntrySize, texAtlasEntrySize);
-      entitySignRendererTextureModified.SetPixels(3 * texAtlasEntrySize, 3 * texAtlasEntrySize, texAtlasEntrySize, texAtlasEntrySize, pixels);
+      entitySignRendererTextureModified.SetPixels(3 * texAtlasEntrySize, 7 * texAtlasEntrySize, texAtlasEntrySize, texAtlasEntrySize, pixels);
       entitySignRendererTextureModified.Apply();
 
       material.mainTexture = entitySignRendererTextureModified;
