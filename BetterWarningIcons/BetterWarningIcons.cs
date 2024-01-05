@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using BepInEx;
@@ -9,7 +9,6 @@ using System.Reflection.Emit;
 namespace DysonSphereProgram.Modding.BetterWarningIcons
 {
   [BepInPlugin(GUID, NAME, VERSION)]
-  [BepInProcess("DSPGAME.exe")]
   public class Plugin : BaseUnityPlugin
   {
     public const string GUID = "dev.raptor.dsp.BetterWarningIcons";
