@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using BepInEx;
@@ -13,7 +13,7 @@ namespace DysonSphereProgram.Modding.BetterWarningIcons
   {
     public const string GUID = "dev.raptor.dsp.BetterWarningIcons";
     public const string NAME = "BetterWarningIcons";
-    public const string VERSION = "0.0.3";
+    public const string VERSION = "0.0.4";
 
     private Harmony _harmony;
     public static ManualLogSource Log;

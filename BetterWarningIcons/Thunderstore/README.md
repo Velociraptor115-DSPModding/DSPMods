@@ -29,10 +29,13 @@ Or you can create an issue on [GitHub](https://github.com/Velociraptor115/DSPMod
 
 ## Changelog
 
-### [v0.0.3](https://dsp.thunderstore.io/package/Raptor/BetterWarningIcons/0.0.1/)
+### [v0.0.4](https://dsp.thunderstore.io/package/Raptor/BetterWarningIcons/0.0.4/)
+* Fix conflict with shield charging icon
+
+### [v0.0.3](https://dsp.thunderstore.io/package/Raptor/BetterWarningIcons/0.0.3/)
 * Fix links to images in the README
 
-### [v0.0.2](https://dsp.thunderstore.io/package/Raptor/BetterWarningIcons/0.0.1/)
+### [v0.0.2](https://dsp.thunderstore.io/package/Raptor/BetterWarningIcons/0.0.2/)
 * Fix the asset load path due to how Thunderstore installs mods
 
 ### [v0.0.1](https://dsp.thunderstore.io/package/Raptor/BetterWarningIcons/0.0.1/)
