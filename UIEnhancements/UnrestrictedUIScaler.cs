@@ -84,20 +84,24 @@ public class UnrestrictedUIScaler: EnhancementBase
     var sliderHandleConfiguration = new SliderHandleConfiguration(80f, 0.6f, sliderHandleImg);
     var sliderConfiguration = new SliderConfiguration(minBoth, maxBoth, true, handle: sliderHandleConfiguration);
 
-    var overlayCanvasTop = UIRoot.instance.overlayCanvasTop;
-    var overlayCanvasTopParent = overlayCanvasTop.transform.parent;
-    
-    uiScaleSliderCanvas = Object.Instantiate(overlayCanvasTop, overlayCanvasTopParent);
-    uiScaleSliderCanvas.name = "ui-scale-slider-canvas";
-    var childCount = uiScaleSliderCanvas.transform.childCount;
-    var children = Enumerable.Range(0, childCount).Select(i => uiScaleSliderCanvas.transform.GetChild(i));
-    foreach (var child in children)
-      Object.Destroy(child.gameObject);
-    uiScaleSliderCanvas.gameObject.DestroyComponent<UICanvasScalerHandler>();
-    var scaler = uiScaleSliderCanvas.gameObject.GetComponent<CanvasScaler>();
-    scaler.referenceResolution = new Vector2(DSPGame.globalOption.resolution.height, DSPGame.globalOption.resolution.height);
+    var overlayCanvas = UIRoot.instance.overlayCanvas;
+    var overlayCanvasParent = overlayCanvas.transform.parent;
+
+    Create.UIElement("ui-scale-slider-canvas")
+      .ChildOf(overlayCanvasParent)
+      .WithComponent((CanvasScaler scaler) =>
+      {
+        var height = DSPGame.globalOption.resolution.height;
+        scaler.referenceResolution = new Vector2(height, height);
+      })
+      .WithComponent(out uiScaleSliderCanvas)
+      .WithComponent(out GraphicRaycaster _)
+      ;
     
     uiScaleSliderCanvas.gameObject.SetActive(false);
+    uiScaleSliderCanvas.planeDistance = overlayCanvas.planeDistance;
+    uiScaleSliderCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+    uiScaleSliderCanvas.worldCamera = overlayCanvas.worldCamera;
 
     var uiScaleSliderCtx =
       Create.Slider("ui-scale-slider", sliderConfiguration)
@@ -187,8 +191,6 @@ public class UnrestrictedUIScaler: EnhancementBase
       livePreviewButton = livePreviewButtonCtx.button;
       vanillaUiSliderRectTransform.gameObject.SetActive(false);
     }
-    
-    overlayCanvasTopParent.gameObject.SetActive(true);
   }
   
   protected override void DestroyUI()
