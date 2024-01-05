@@ -6,7 +6,22 @@ namespace DysonSphereProgram.Modding.UIEnhancements;
 
 public static class TranspilerHelpers
 {
-
+  private static int GetLocalIdxFromOperand(object operand)
+  {
+    if (operand is LocalBuilder builder)
+      return builder.LocalIndex;
+    try
+    {
+      return Convert.ToInt32(operand);
+    }
+    catch (Exception)
+    {
+      Plugin.Log.LogError("Failed to convert operand to int: " + operand);
+      Plugin.Log.LogDebug("The type of local operand is " + operand.GetType());
+      throw;
+    }
+  }
+  
   public static bool LoadsLocal(this CodeInstruction code, out LocalHelper? local)
   {
     local = null;
@@ -21,9 +36,9 @@ public static class TranspilerHelpers
     else if (code.opcode == OpCodes.Ldloc_3)
       local = new LocalHelper(3);
     else if (code.opcode == OpCodes.Ldloc_S || code.opcode == OpCodes.Ldloca_S)
-      local = new LocalHelper(Convert.ToInt32(code.operand));
+      local = new LocalHelper(GetLocalIdxFromOperand(code.operand));
     else if (code.opcode == OpCodes.Ldloc || code.opcode == OpCodes.Ldloca)
-      local = new LocalHelper(Convert.ToInt32(code.operand));
+      local = new LocalHelper(GetLocalIdxFromOperand(code.operand));
     return true;
   }
   
@@ -41,9 +56,9 @@ public static class TranspilerHelpers
     else if (code.opcode == OpCodes.Stloc_3)
       local = new LocalHelper(3);
     else if (code.opcode == OpCodes.Stloc_S)
-      local = new LocalHelper(Convert.ToInt32(code.operand));
+      local = new LocalHelper(GetLocalIdxFromOperand(code.operand));
     else if (code.opcode == OpCodes.Stloc)
-      local = new LocalHelper(Convert.ToInt32(code.operand));
+      local = new LocalHelper(GetLocalIdxFromOperand(code.operand));
     return true;
   }
 
