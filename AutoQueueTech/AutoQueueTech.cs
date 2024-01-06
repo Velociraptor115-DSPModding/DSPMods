@@ -6,7 +6,6 @@ using HarmonyLib;
 namespace DysonSphereProgram.Modding.AutoQueueTech
 {
     [BepInPlugin(GUID, NAME, VERSION)]
-    [BepInProcess("DSPGAME.exe")]
     public class Plugin : BaseUnityPlugin
     {
         public const string GUID = "dev.raptor.dsp.AutoQueueTech";
