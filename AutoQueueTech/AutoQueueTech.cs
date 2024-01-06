@@ -1,8 +1,7 @@
-﻿using BepInEx;
+using BepInEx;
 using BepInEx.Logging;
 using BepInEx.Configuration;
 using HarmonyLib;
-using System.Runtime.Remoting.Messaging;
 
 namespace DysonSphereProgram.Modding.AutoQueueTech
 {
@@ -60,7 +59,8 @@ namespace DysonSphereProgram.Modding.AutoQueueTech
             lastResearchedTechId = _techId;
         }
 
-        [HarmonyPatch(typeof(GameMain), "Update"), HarmonyPostfix]
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(GameMain), nameof(GameMain.FixedUpdate))]
         public static void AutoQueueNext()
         {
             if (DSPGame.IsMenuDemo)
