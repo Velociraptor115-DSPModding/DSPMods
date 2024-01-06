@@ -1,4 +1,4 @@
-using BepInEx;
+﻿using BepInEx;
 using BepInEx.Logging;
 using BepInEx.Configuration;
 using HarmonyLib;
@@ -10,7 +10,7 @@ namespace DysonSphereProgram.Modding.AutoQueueTech
     {
         public const string GUID = "dev.raptor.dsp.AutoQueueTech";
         public const string NAME = "AutoQueueTech";
-        public const string VERSION = "0.0.2";
+        public const string VERSION = "0.0.3";
 
         private Harmony _harmony;
         internal static ManualLogSource Log;

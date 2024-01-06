@@ -8,16 +8,25 @@ This mod automatically queues the next tech based on the configured setting, whe
 
 ## Queue Modes
 
-### Last Researched Tech (Default)
+### Least Hashes Required - Tech Level Aware (Default)
 
-* Repeats the last researched tech if it is still not fully unlocked
+* Queues the tech which can be researched with the lowest tier of matrices, with the least amount of hashes
+(Contributed by [Jiesi Luo](https://github.com/luojiesi))
 
 ### Least Hashes Required
 
 * Queues the tech which can be researched with the least amount of hashes
 
+### Last Researched Tech
+
+* Repeats the last researched tech if it is still not fully unlocked
+
 
 ## Changelog
+
+### [v0.0.3](https://dsp.thunderstore.io/package/Raptor/AutoQueueTech/0.0.3/)
+
+* Add queue mode "Least Hashes Required - Tech Level Aware", courtesy of [Jiesi Luo](https://github.com/luojiesi)
 
 ### [v0.0.2](https://dsp.thunderstore.io/package/Raptor/AutoQueueTech/0.0.2/)
 
