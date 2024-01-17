@@ -29,6 +29,9 @@ Or you can create an issue on [GitHub](https://github.com/Velociraptor115/DSPMod
 
 ## Changelog
 
+### [v0.0.5](https://dsp.thunderstore.io/package/Raptor/BetterWarningIcons/0.0.5/)
+* Fix non-vein miners (pumps, oil extractors) showing vein depletion warning icon when warning mode is set to use total vein amount
+
 ### [v0.0.4](https://dsp.thunderstore.io/package/Raptor/BetterWarningIcons/0.0.4/)
 * Fix conflict with shield charging icon
 

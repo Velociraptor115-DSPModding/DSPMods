@@ -1,6 +1,6 @@
 {
   "name": "BetterWarningIcons",
-  "version_number": "0.0.4",
+  "version_number": "0.0.5",
   "website_url": "https://github.com/Velociraptor115/DSPMods",
   "description": "Gives better options for the warning icons",
   "dependencies": [ "xiaoye97-BepInEx-5.4.11" ]
