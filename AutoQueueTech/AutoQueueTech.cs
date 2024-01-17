@@ -1,4 +1,6 @@
-﻿using BepInEx;
+﻿using System;
+using System.Collections.Generic;
+using BepInEx;
 using BepInEx.Logging;
 using BepInEx.Configuration;
 using HarmonyLib;
@@ -96,9 +98,10 @@ namespace DysonSphereProgram.Modding.AutoQueueTech
                     if (!history.CanEnqueueTechIgnoreFull(kvp.Key))
                         continue;
 
-                    if (techState.hashNeeded < minTechHash)
+                    var hashesLeft = techState.hashNeeded - techState.hashUploaded;
+                    if (hashesLeft < minTechHash)
                     {
-                        minTechHash = techState.hashNeeded;
+                        minTechHash = hashesLeft;
                         minTechId = kvp.Key;
                     }
                 }
@@ -140,7 +143,7 @@ namespace DysonSphereProgram.Modding.AutoQueueTech
                         }
                         continue;
                     }
-                    int cmp = CompareTechs(minTech, tech);
+                    int cmp = CompareTechs(minTech, tech, techStates);
                     if (cmp == 0 || cmp == 1)
                     {
                         minTech = tech;
@@ -148,7 +151,7 @@ namespace DysonSphereProgram.Modding.AutoQueueTech
 
                         continue;
                     }
-                    
+
                 }
                 if (minTechId != 0)
                 {
@@ -161,7 +164,7 @@ namespace DysonSphereProgram.Modding.AutoQueueTech
         // Return highest tech (cube) id
         public static int GetHighestTechID(TechProto tech)
         {
-            for (int i = TechProto.matrixIds.Length - 1; i >= 0; i --)
+            for (int i = TechProto.matrixIds.Length - 1; i >= 0; i--)
             {
                 foreach (var j in tech.Items)
                 {
@@ -173,17 +176,17 @@ namespace DysonSphereProgram.Modding.AutoQueueTech
         }
 
         // return -1 if t1 < t2, 0 if t1 == t2, 1 if t1 > t2
-        public static int CompareTechs(TechProto t1, TechProto t2)
+        public static int CompareTechs(TechProto t1, TechProto t2, Dictionary<int, TechState> techStates)
         {
             int id1 = GetHighestTechID(t1);
             int id2 = GetHighestTechID(t2);
 
             if (id1 == 0 && id2 == 0)
-                return CompareHashNeeded(t1, t2);
+                return CompareHashNeeded(techStates[t1.ID], techStates[t2.ID]);
             if (id1 != 0 && id2 != 0)
             {
                 if (id1 == id2)
-                    return CompareHashNeeded(t1, t2);
+                    return CompareHashNeeded(techStates[t1.ID], techStates[t2.ID]);
                 if (id1 > id2)
                     return 1;
                 return -1;
@@ -197,14 +200,11 @@ namespace DysonSphereProgram.Modding.AutoQueueTech
             return t2.HashNeeded > 18000L ? -1 : 1;
         }
 
-        public static int CompareHashNeeded(TechProto t1, TechProto t2)
+        public static int CompareHashNeeded(in TechState ts1, in TechState ts2)
         {
-            if (t1.HashNeeded == t2.HashNeeded)
-                return 0;
-            else if (t1.HashNeeded < t2.HashNeeded)
-                return -1;
-            else
-                return 1; 
+            var t1HashesLeft = ts1.hashNeeded - ts1.hashUploaded;
+            var t2HashesLeft = ts2.hashNeeded - ts1.hashUploaded;
+            return Math.Sign(t1HashesLeft - t2HashesLeft);
         }
     }
 }
