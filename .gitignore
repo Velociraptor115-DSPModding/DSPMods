@@ -1,3 +1,6 @@
+# For Thunderstore output directory
+.thunderstore
+
 # For Mac
 .DS_Store
 
