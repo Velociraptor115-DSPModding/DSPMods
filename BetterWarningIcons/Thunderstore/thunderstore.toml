@@ -1,0 +1,34 @@
+[config]
+schemaVersion = "0.0.1"
+
+[package]
+namespace = "Raptor"
+name = "BetterWarningIcons"
+versionNumber = "0.0.5"
+description = "Gives better options for the warning icons"
+websiteUrl = "https://github.com/Velociraptor115/DSPMods"
+containsNsfwContent = false
+
+[package.dependencies]
+xiaoye97-BepInEx = "5.4.11"
+
+[build]
+icon = "./icon.png"
+readme = "./README.md"
+outdir = "../.thunderstore"
+
+[[build.copy]]
+source = "../Assets"
+target = ""
+
+[[build.copy]]
+source = "../bin/Release/net48"
+target = ""
+
+[publish]
+repository = "https://thunderstore.io"
+communities = [ "dyson-sphere-program", ]
+[publish.categories]
+dyson-sphere-program = [ "quality-of-life", "info", ]
+
+
