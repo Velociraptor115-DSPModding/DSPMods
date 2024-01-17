@@ -24,6 +24,10 @@ This mod automatically queues the next tech based on the configured setting, whe
 
 ## Changelog
 
+### [v0.0.4](https://dsp.thunderstore.io/package/Raptor/AutoQueueTech/0.0.4/)
+
+* Fix least hashes logic
+
 ### [v0.0.3](https://dsp.thunderstore.io/package/Raptor/AutoQueueTech/0.0.3/)
 
 * Add queue mode "Least Hashes Required - Tech Level Aware", courtesy of [Jiesi Luo](https://github.com/luojiesi)
