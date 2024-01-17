@@ -37,6 +37,9 @@ namespace DysonSphereProgram.Modding.BetterWarningIcons
         if (miner.id != i)
           continue;
         
+        if (miner.type != EMinerType.Vein)
+          continue;
+        
         var entityId = miner.entityId;
 
         if (signPool[entityId].signType >= SignData.NO_POWER_CONN && signPool[entityId].signType <= SignData.LOW_POWER)
