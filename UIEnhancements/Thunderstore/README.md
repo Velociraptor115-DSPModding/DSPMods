@@ -5,7 +5,7 @@ This mod aims to enhance DSP's UI for ease-of-use
 * First install the mod, and reboot the game.
 
 ## What's new in this update
-* Fixed compatibility with combat update. (Tested on game version 0.10.28.21219)
+* Add "Swap New Game and Continue" enhancement to swap the positions of the "New Game" and "Continue" buttons in the main menu
 
 ## Enhancements
 
@@ -43,12 +43,20 @@ This mod aims to enhance DSP's UI for ease-of-use
 
 * Hides the game-time clock in the bottom right
 
+### Swap New Game and Continue
+
+* Swaps the positions of the "New Game" and "Continue" buttons in the main menu  
+
 ## Contact / Feedback / Bug Reports
 You can either find me on the DSP Discord's #modding channel  
 Or you can create an issue on [GitHub](https://github.com/Velociraptor115/DSPMods)  
 \- Raptor#4825
 
 ## Changelog
+
+### [v0.0.5](https://dsp.thunderstore.io/package/Raptor/UIEnhancements/0.0.5/)
+
+* Add "Swap New Game and Continue"
 
 ### [v0.0.4](https://dsp.thunderstore.io/package/Raptor/UIEnhancements/0.0.4/)
 
