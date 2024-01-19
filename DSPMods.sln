@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomResolutions", "Custom
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DontPauseInMechaEditor", "DontPauseInMechaEditor\DontPauseInMechaEditor.csproj", "{490A65EF-FD8E-4B4B-BE18-84D7C4868539}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DroneControl", "DroneControl\DroneControl.csproj", "{2DA04D48-E910-4EBD-9870-428A5A9070E4}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HideRandomTips", "HideRandomTips\HideRandomTips.csproj", "{A22A527B-9D82-469E-8E0E-A4D3793D0DC0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIEnhancements", "UIEnhancements\UIEnhancements.csproj", "{D016DE74-4FAF-4C7E-81E9-D03F91C7CF35}"
@@ -47,10 +45,6 @@ Global
 		{490A65EF-FD8E-4B4B-BE18-84D7C4868539}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{490A65EF-FD8E-4B4B-BE18-84D7C4868539}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{490A65EF-FD8E-4B4B-BE18-84D7C4868539}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2DA04D48-E910-4EBD-9870-428A5A9070E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2DA04D48-E910-4EBD-9870-428A5A9070E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2DA04D48-E910-4EBD-9870-428A5A9070E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2DA04D48-E910-4EBD-9870-428A5A9070E4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A22A527B-9D82-469E-8E0E-A4D3793D0DC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A22A527B-9D82-469E-8E0E-A4D3793D0DC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A22A527B-9D82-469E-8E0E-A4D3793D0DC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
