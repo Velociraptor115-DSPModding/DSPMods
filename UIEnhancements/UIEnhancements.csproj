@@ -5,6 +5,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>10.0</LangVersion>
     <RootNamespace>DysonSphereProgram.Modding.UIEnhancements</RootNamespace>
+    <UIBuilderRootNamespace>DysonSphereProgram.Modding.UIEnhancements.UI.Builder</UIBuilderRootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DysonSphereProgram.Modding.UI.Builder" Version="0.0.3" PrivateAssets="all" />
+    <PackageReference Include="DysonSphereProgram.Modding.UI.Builder" Version="0.0.5" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>
