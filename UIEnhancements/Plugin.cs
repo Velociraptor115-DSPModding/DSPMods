@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
@@ -26,6 +26,7 @@ namespace DysonSphereProgram.Modding.UIEnhancements
       enhancements.Add(new PartialOffscreenWindows());
       enhancements.Add(new HideRealTimeDisplay());
       enhancements.Add(new HideGameTimeDisplay());
+      enhancements.Add(new SwapNewGameAndContinue());
       
       _harmony = new Harmony(GUID);
       enhancements.ForEach(x => x.LifecycleUseConfig(Config));
