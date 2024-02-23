@@ -12,7 +12,7 @@ namespace DysonSphereProgram.Modding.AutoQueueTech
     {
         public const string GUID = "dev.raptor.dsp.AutoQueueTech";
         public const string NAME = "AutoQueueTech";
-        public const string VERSION = "0.0.4";
+        public const string VERSION = "0.0.5";
 
         private Harmony _harmony;
         internal static ManualLogSource Log;
