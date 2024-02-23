@@ -127,6 +127,8 @@ namespace DysonSphereProgram.Modding.AutoQueueTech
                         continue;
                     if (techState.unlocked)
                         continue;
+                    if (tech.IsObsolete)
+                        continue;
                     if (tech.IsHiddenTech)
                         continue;
                     if (!history.CanEnqueueTechIgnoreFull(kvp.Key))
