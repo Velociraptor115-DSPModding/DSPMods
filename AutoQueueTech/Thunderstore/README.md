@@ -24,6 +24,10 @@ This mod automatically queues the next tech based on the configured setting, whe
 
 ## Changelog
 
+### [v0.0.6](https://dsp.thunderstore.io/package/Raptor/AutoQueueTech/0.0.6/)
+
+* Ignore obsolete tech in LeastHashesRequired mode as well
+
 ### [v0.0.5](https://dsp.thunderstore.io/package/Raptor/AutoQueueTech/0.0.5/)
 
 * Ignore obsolete tech while queueing. Fixes [pile sorter issues](https://github.com/Velociraptor115-DSPModding/DSPMods/issues/26)
