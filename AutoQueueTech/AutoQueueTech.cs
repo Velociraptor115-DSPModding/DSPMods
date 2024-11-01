@@ -93,8 +93,13 @@ namespace DysonSphereProgram.Modding.AutoQueueTech
                     if (kvp.Key == 0)
                         continue;
                     var techState = kvp.Value;
+                    var tech = LDB.techs.Select(kvp.Key);
                     if (techState.unlocked)
                         continue;
+                    if (tech.IsObsolete)
+                      continue;
+                    if (tech.IsHiddenTech)
+                      continue;
                     if (!history.CanEnqueueTechIgnoreFull(kvp.Key))
                         continue;
 
