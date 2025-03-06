@@ -201,7 +201,7 @@ namespace DysonSphereProgram.Modding.UncoverFoundationedOceans
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(PlanetFactory), nameof(PlanetFactory.ComputeFlattenTerrainReform))]
-    static void PostCompute(ref PlanetFactory __instance, ref int __result)
+    static void PostCompute(ref PlanetFactory __instance, ref int costSandCount, ref int getSandCount)
     {
       __instance.tmp_levelChanges.Clear();
 
@@ -241,9 +241,18 @@ namespace DysonSphereProgram.Modding.UncoverFoundationedOceans
         }
       }
 
-      //Plugin.Log.LogDebug($"Total: {totalCount}; Effective: {effectiveCount}");
+      if (soilRequired < 0)
+      {
+        costSandCount = 0;
+        getSandCount = -soilRequired;
+      }
+      else
+      {
+        costSandCount = soilRequired;
+        getSandCount = 0;
+      }
 
-      __result = soilRequired;
+      //Plugin.Log.LogDebug($"Total: {totalCount}; Effective: {effectiveCount}");
     }
 
     [HarmonyTranspiler]
