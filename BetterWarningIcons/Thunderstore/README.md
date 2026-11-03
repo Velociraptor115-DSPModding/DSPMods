@@ -29,6 +29,10 @@ Or you can create an issue on [GitHub](https://github.com/Velociraptor115/DSPMod
 
 ## Changelog
 
+### [v0.0.6](https://dsp.thunderstore.io/package/Raptor/BetterWarningIcons/0.0.6/)
+* Fix insufficient input and vein depletion warnings on game version 0.10.35.29151
+* Fix total vein amount warning using a stale vein amount
+
 ### [v0.0.5](https://dsp.thunderstore.io/package/Raptor/BetterWarningIcons/0.0.5/)
 * Fix non-vein miners (pumps, oil extractors) showing vein depletion warning icon when warning mode is set to use total vein amount
 

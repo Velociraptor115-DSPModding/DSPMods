@@ -1,11 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using BepInEx;
-using BepInEx.Logging;
-using HarmonyLib;
-using System.Reflection.Emit;
-using UnityEngine;
 using BepInEx.Configuration;
+using HarmonyLib;
 
 namespace DysonSphereProgram.Modding.BetterWarningIcons
 {
@@ -19,50 +13,61 @@ namespace DysonSphereProgram.Modding.BetterWarningIcons
     public static void InitConfig(ConfigFile confFile)
     {
       enablePatch = confFile.Bind(ConfigSection, "Enable Patch", true, ConfigDescription.Empty);
-      useTotalVeinDepletionAmountPatch = confFile.Bind(ConfigSection, "Use Total Vein Amount", true, "Use total vein amount for vein depletion warning instead of minimum vein amount");
-      veinAmountToWarnFor = confFile.Bind(ConfigSection, "Vein Amount Threshold", 1000L, "The amount at or below which the warning will trigger");
+      useTotalVeinDepletionAmountPatch = confFile.Bind(
+        ConfigSection,
+        "Use Total Vein Amount",
+        true,
+        "Use total vein amount for vein depletion warning instead of minimum vein amount");
+      veinAmountToWarnFor = confFile.Bind(
+        ConfigSection,
+        "Vein Amount Threshold",
+        1000L,
+        "The amount at or below which the warning will trigger");
     }
 
-    static void Patch_Miners_VeinDepletion(FactorySystem __instance, int start, int end)
+    static void PatchMinersVeinDepletion(FactorySystem factorySystem, int start, int end)
     {
-      var signPool = __instance.factory.entitySignPool;
-      var veinPool = __instance.factory.veinPool;
-
+      var signPool = factorySystem.factory.entitySignPool;
+      var veinPool = factorySystem.factory.veinPool;
       var compareWithTotal = useTotalVeinDepletionAmountPatch.Value;
       var warnValue = veinAmountToWarnFor.Value;
 
       for (var i = start; i < end; i++)
       {
-        ref readonly var miner = ref __instance.minerPool[i];
-        if (miner.id != i)
+        ref var miner = ref factorySystem.minerPool[i];
+        if (miner.id != i || miner.type != EMinerType.Vein)
           continue;
-        
-        if (miner.type != EMinerType.Vein)
-          continue;
-        
-        var entityId = miner.entityId;
 
-        if (signPool[entityId].signType >= SignData.NO_POWER_CONN && signPool[entityId].signType <= SignData.LOW_POWER)
+        var entityId = miner.entityId;
+        var signType = signPool[entityId].signType;
+        if (signType >= SignData.NO_POWER_CONN && signType <= SignData.LOW_POWER)
           continue;
-        
+
         if (compareWithTotal)
           miner.GetTotalVeinAmount(veinPool);
 
         long compareAmount = compareWithTotal ? miner.totalVeinAmount : miner.minimumVeinAmount;
-        signPool[entityId].signType = (compareAmount < warnValue) ? SignData.CUT_PRODUCTION_SOON : SignData.NONE;
+        signPool[entityId].signType = compareAmount < warnValue
+          ? SignData.CUT_PRODUCTION_SOON
+          : SignData.NONE;
       }
     }
 
     [HarmonyPostfix]
-    [HarmonyPatch(typeof(FactorySystem), nameof(FactorySystem.GameTick), typeof(long), typeof(bool))]
-    static void Patch_Miners_VeinDepletion_SingleThread(FactorySystem __instance) => Patch_Miners_VeinDepletion(__instance, 1, __instance.minerCapacity);
-
-    [HarmonyPostfix]
-    [HarmonyPatch(typeof(FactorySystem), nameof(FactorySystem.GameTick), typeof(long), typeof(bool), typeof(int), typeof(int), typeof(int))]
-    static void Patch_Miners_VeinDepletion_MultiThread(FactorySystem __instance, int _usedThreadCnt, int _curThreadIdx, int _minimumMissionCnt)
+    [HarmonyPatch(typeof(GameLogic), nameof(GameLogic.OnFactoryFrameEnd))]
+    static void PatchMinersAfterProcessing()
     {
-      if (WorkerThreadExecutor.CalculateMissionIndex(1, __instance.minerCursor - 1, _usedThreadCnt, _curThreadIdx, _minimumMissionCnt, out var start, out var end))
-        Patch_Miners_VeinDepletion(__instance, start, end);
+      var data = GameMain.data;
+      if (data?.factories == null)
+        return;
+
+      for (var i = 0; i < data.factoryCount; i++)
+      {
+        var factory = data.factories[i];
+        if (factory?.factorySystem == null)
+          continue;
+        PatchMinersVeinDepletion(factory.factorySystem, 1, factory.factorySystem.minerCapacity);
+      }
     }
   }
 }
