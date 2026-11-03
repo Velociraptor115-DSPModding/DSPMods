@@ -1,10 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
-using System.Reflection.Emit;
 
 namespace DysonSphereProgram.Modding.BetterWarningIcons
 {
@@ -13,7 +9,7 @@ namespace DysonSphereProgram.Modding.BetterWarningIcons
   {
     public const string GUID = "dev.raptor.dsp.BetterWarningIcons";
     public const string NAME = "BetterWarningIcons";
-    public const string VERSION = "0.0.5";
+    public const string VERSION = "0.0.6";
 
     private Harmony _harmony;
     public static ManualLogSource Log;
@@ -21,8 +17,8 @@ namespace DysonSphereProgram.Modding.BetterWarningIcons
 
     private void Awake()
     {
-      Plugin.Log = Logger;
-      Plugin.Path = Info.Location;
+      Log = Logger;
+      Path = Info.Location;
       InsufficientInputIconPatch.InitConfig(Config);
       VeinDepletionIconPatch.InitConfig(Config);
       _harmony = new Harmony(GUID);
@@ -37,7 +33,7 @@ namespace DysonSphereProgram.Modding.BetterWarningIcons
     {
       Logger.LogInfo("BetterWarningIcons OnDestroy() called");
       _harmony?.UnpatchSelf();
-      Plugin.Log = null;
+      Log = null;
     }
   }
 }

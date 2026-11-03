@@ -4,7 +4,7 @@ schemaVersion = "0.0.1"
 [package]
 namespace = "Raptor"
 name = "BetterWarningIcons"
-versionNumber = "0.0.5"
+versionNumber = "0.0.6"
 description = "Gives better options for the warning icons"
 websiteUrl = "https://github.com/Velociraptor115/DSPMods"
 containsNsfwContent = false
