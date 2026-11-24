@@ -38,17 +38,29 @@ namespace DysonSphereProgram.Modding.AutoQueueTech
     {
         LeastHashesRequired,
         LastResearchedTech,
-        LeastHashesRequiredTechAware
+        LeastHashesRequiredTechAware,
+        UsefulUpgradesOnly
     }
 
     class AutoQueueTech
     {
+        // Late-game list: the upgrades that raise white matrix output (mining, research, logistics); internal tech names, so it matches in every language
+        public const string DefaultUsefulUpgrades =
+            "矿物利用, 研究速度, 无人机引擎, 运输船引擎, 运输机舱扩容, 运输站集装物流, 分拣器货物叠加, 分拣器货物集装, 集装分拣器叠加, 垂直建造, 配送范围, 戴森球吸附速度";
+
         private static ConfigEntry<AutoQueueMode> QueueMode;
+        private static ConfigEntry<string> UsefulUpgrades;
         private static int lastResearchedTechId = 0;
 
         public static void InitConfig(ConfigFile configFile)
         {
-            QueueMode = configFile.Bind("AutoQueueMode", "Auto-Queue Mode", AutoQueueMode.LeastHashesRequiredTechAware);
+            QueueMode = configFile.Bind("AutoQueueMode", "Auto-Queue Mode", AutoQueueMode.LeastHashesRequiredTechAware,
+                "UsefulUpgradesOnly = like LeastHashesRequiredTechAware, but upgrade techs (id 2000 and up) are only queued when they are on the Useful Upgrades list "
+                + "(UsefulUpgradesOnly：和 LeastHashesRequiredTechAware 一样，但升级科技只排 Useful Upgrades 名单里的)");
+            UsefulUpgrades = configFile.Bind("AutoQueueMode", "Useful Upgrades", DefaultUsefulUpgrades,
+                "Used by UsefulUpgradesOnly. Comma separated tech names as the game shows them (any language) or tech ids; add :N to stop after level N, e.g. 研究速度:140. "
+                + "Main-tree techs are always allowed, and so are the techs a listed upgrade still needs first. "
+                + "(UsefulUpgradesOnly 用的名单：逗号分隔，名字照游戏里写，或写科技编号；加 :N 表示研究到第 N 级为止。主线科技不受限，名单里科技需要的前置也会排)");
         }
 
         [HarmonyPostfix]
@@ -116,14 +128,17 @@ namespace DysonSphereProgram.Modding.AutoQueueTech
                 }
                 lastResearchedTechId = 0;
             }
-            else if (QueueMode.Value == AutoQueueMode.LeastHashesRequiredTechAware)
+            else if (QueueMode.Value == AutoQueueMode.LeastHashesRequiredTechAware || QueueMode.Value == AutoQueueMode.UsefulUpgradesOnly)
             {
                 var minTechId = 0;
                 var minTech = new TechProto();
+                var allowedUpgrades = QueueMode.Value == AutoQueueMode.UsefulUpgradesOnly ? AllowedUpgrades(history) : null;
 
                 foreach (var kvp in techStates)
                 {
                     if (kvp.Key == 0)
+                        continue;
+                    if (allowedUpgrades != null && kvp.Key >= FirstUpgradeTechId && !allowedUpgrades.Contains(kvp.Key))
                         continue;
 
                     var techState = kvp.Value;
@@ -163,9 +178,101 @@ namespace DysonSphereProgram.Modding.AutoQueueTech
                 if (minTechId != 0)
                 {
                     history.EnqueueTech(minTechId);
+                    if (allowedUpgrades != null)
+                        Plugin.Log?.LogInfo($"UsefulUpgradesOnly queued {minTechId} {minTech.name} level {history.TechState(minTechId).curLevel}");
+                }
+                else if (allowedUpgrades != null)
+                {
+                    Plugin.Log?.LogInfo("UsefulUpgradesOnly: nothing on the list can be researched now, queue left empty");
                 }
                 lastResearchedTechId = 0;
             }
+        }
+
+        // Tech ids from here on are the upgrades (mecha, logistics, mining, research, combat upgrades ...); below are the main tree
+        public const int FirstUpgradeTechId = 2000;
+
+        private static string parsedList;
+        private static readonly Dictionary<string, int> usefulCaps = new Dictionary<string, int>(); // chain name -> last level, 0 = no cap
+
+        // All levels of one upgrade share the proto name ("T矿物利用"); that is the chain key
+        private static string ChainKey(TechProto tech) => tech.Name.StartsWith("T") ? tech.Name.Substring(1) : tech.Name;
+
+        private static void ParseUsefulUpgrades()
+        {
+            var text = UsefulUpgrades.Value ?? "";
+            if (text == parsedList)
+                return;
+            parsedList = text;
+            usefulCaps.Clear();
+            var byName = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var tech in LDB.techs.dataArray)
+            {
+                if (tech == null)
+                    continue;
+                var key = ChainKey(tech);
+                byName[key] = key;
+                if (!string.IsNullOrEmpty(tech.name))
+                    byName[tech.name.Trim()] = key;
+                byName[tech.ID.ToString()] = key;
+            }
+            foreach (var raw in text.Split(new[] { ',', '，', ';', '；' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                var item = raw.Trim();
+                if (item.Length == 0)
+                    continue;
+                var cap = 0;
+                var colon = item.LastIndexOfAny(new[] { ':', '：' });
+                if (colon > 0 && int.TryParse(item.Substring(colon + 1).Trim(), out var n))
+                {
+                    cap = n;
+                    item = item.Substring(0, colon).Trim();
+                }
+                if (byName.TryGetValue(item, out var chain))
+                    usefulCaps[chain] = cap;
+                else
+                    Plugin.Log?.LogWarning($"Useful Upgrades: '{item}' is not a tech name or id, ignored");
+            }
+            var shown = new List<string>();
+            foreach (var kv in usefulCaps)
+                shown.Add(kv.Value > 0 ? $"{kv.Key} up to level {kv.Value}" : kv.Key);
+            Plugin.Log?.LogInfo("Useful Upgrades: " + string.Join(", ", shown.ToArray()));
+        }
+
+        // Upgrades that may be queued now: every not-yet-researched level of a listed upgrade (up to its cap),
+        // plus every not-yet-researched tech those still need first (e.g. 机甲核心 before 无人机引擎)
+        private static HashSet<int> AllowedUpgrades(GameHistoryData history)
+        {
+            ParseUsefulUpgrades();
+            var allowed = new HashSet<int>();
+            var stack = new Stack<int>();
+            foreach (var tech in LDB.techs.dataArray)
+            {
+                if (tech == null || !usefulCaps.TryGetValue(ChainKey(tech), out var cap))
+                    continue;
+                var state = history.TechState(tech.ID);
+                if (state.unlocked)
+                    continue;
+                if (cap > 0 && Math.Max(state.curLevel, tech.Level) > cap)
+                    continue;
+                stack.Push(tech.ID);
+            }
+            while (stack.Count > 0)
+            {
+                var id = stack.Pop();
+                if (!allowed.Add(id))
+                    continue;
+                var tech = LDB.techs.Select(id);
+                if (tech == null)
+                    continue;
+                foreach (var pre in tech.PreTechs)
+                    if (!history.TechUnlocked(pre, tech.PreTechsMax))
+                        stack.Push(pre);
+                foreach (var pre in tech.PreTechsImplicit)
+                    if (!history.TechUnlocked(pre))
+                        stack.Push(pre);
+            }
+            return allowed;
         }
 
         // Return highest tech (cube) id
