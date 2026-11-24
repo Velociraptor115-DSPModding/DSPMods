@@ -13,6 +13,12 @@ This mod automatically queues the next tech based on the configured setting, whe
 * Queues the tech which can be researched with the lowest tier of matrices, with the least amount of hashes
 (Contributed by [Jiesi Luo](https://github.com/luojiesi))
 
+### Useful Upgrades Only
+
+* Same as "Least Hashes Required - Tech Level Aware", but upgrade techs (mining, research speed, logistics, mecha, combat upgrades ...) are only queued when they are on the `Useful Upgrades` list. Main-tree techs are not limited, and the techs a listed upgrade still needs first are queued too.
+* `Useful Upgrades`: comma separated tech names as the game shows them (any language) or tech ids. Add `:N` to stop after level N, e.g. `Research Speed:140`. The default list is the late-game white matrix set: Vein Utilization, Research Speed, Drone Engine, Logistics Carrier Engine, plus the finite logistics / stacking upgrades. It is written with the game's internal (Chinese) tech names, which match in every language.
+* Useful when the queue runs dry overnight: without it the cheapest upgrade is queued, which in late game keeps pulling every infinite upgrade (Ray Transmission Efficiency, Mecha Core, Drive Engine ...) to the same cost.
+
 ### Least Hashes Required
 
 * Queues the tech which can be researched with the least amount of hashes
